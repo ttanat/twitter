@@ -52,4 +52,5 @@ const userSchema = new mongoose.Schema({
   isDeleted: Boolean,
 })
 
-module.exports = mongoose.model("User", userSchema)
+const collectionName = "users"
+module.exports = mongoose.model("User", userSchema, collectionName)

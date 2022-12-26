@@ -13,4 +13,5 @@ const likeSchema = new mongoose.Schema({
 
 likeSchema.index({ "user.id": 1, "tweet.id": 1 }, { unique: true })
 
-module.exports = mongoose.model("Like", likeSchema)
+const collectionName = "likes"
+module.exports = mongoose.model("Like", likeSchema, collectionName)

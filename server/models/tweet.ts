@@ -68,4 +68,5 @@ tweetSchema.pre("save", function(next) {
   next()
 })
 
-module.exports = mongoose.model("Tweet", tweetSchema)
+const collectionName = "tweets"
+module.exports = mongoose.model("Tweet", tweetSchema, collectionName)
