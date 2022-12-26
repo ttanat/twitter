@@ -6,7 +6,7 @@ export default defineNuxtConfig({
   nitro: {
     plugins: ["~/server/db/index.ts"],
   },
-  css: ["vuetify/lib/styles/main.sass"],
+  css: ["vuetify/lib/styles/main.sass", "@mdi/font/css/materialdesignicons.min.css"],
   build: {
     transpile: ["vuetify"]
   },
