@@ -20,10 +20,8 @@
   <v-col md="4" lg="3" class="nav d-none d-md-block">
     <v-container fluid>
       <v-row justify="end" align="center" class="px-2 py-1">
-        <div class="nav-component">
-          <v-btn rounded="pill" class="mr-3">Login</v-btn>
-          <v-btn color="primary" rounded="pill">Sign Up</v-btn>
-        </div>
+        <HeaderLoginModal />
+        <HeaderSignUpModal />
       </v-row>
     </v-container>
   </v-col>
