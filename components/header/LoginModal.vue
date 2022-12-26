@@ -44,10 +44,15 @@
   const loading = ref(false)
   const message = ref("")
 
-  function onSubmit() {
+  async function onSubmit() {
     if (!username.value.match(/\w{3,32}/) || password.value.length === 0) {
       message.value = "Username or password incorrect"
       return false
     }
+    const { data } = await useFetch("/api/user", {
+      method: "GET",
+      params: { username: username.value, password: password.value }
+    })
+    console.log(data.value)
   }
 </script>
