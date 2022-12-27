@@ -4,9 +4,9 @@
       <template v-slot:activator="{ props }">
         <v-btn rounded="pill" v-bind="props" class="mr-3">Login</v-btn>
       </template>
-      <v-card>
-        <v-card-text>Login</v-card-text>
-        <v-card-text class="pb-5">
+      <v-card class="py-2" style="border-radius: 30px">
+        <v-card-text class="text-h6">Login</v-card-text>
+        <v-card-text class="pt-2 pb-5">
           <v-form ref="form" @submit.prevent="onSubmit" :readonly="loading">
             <v-text-field
               variant="outlined"
