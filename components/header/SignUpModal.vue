@@ -53,7 +53,7 @@
               v-model="password"
               label="Password"
               type="password"
-              :rules="[() => password.length || 'Password cannot be blank']"
+              :rules="[() => !!password.length || 'Password cannot be blank']"
               density="compact"
               class="mb-2"
               @input="message=''"
