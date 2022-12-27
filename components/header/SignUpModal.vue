@@ -4,9 +4,9 @@
       <template v-slot:activator="{ props }">
         <v-btn color="primary" rounded="pill" v-bind="props">Sign Up</v-btn>
       </template>
-      <v-card>
-        <v-card-text>Sign Up</v-card-text>
-        <v-card-text class="pb-5">
+      <v-card class="py-2" style="border-radius: 30px">
+        <v-card-text class="text-h6">Sign Up</v-card-text>
+        <v-card-text class="pt-2 pb-5">
           <v-form
             ref="form"
             v-model="valid"
@@ -39,12 +39,12 @@
             >
               <template v-slot:append-inner>
                 <v-fade-transition leave-absolute>
-                  <v-progress-circular
-                    v-if="checkingTakenUsername"
-                    color="primary"
-                    indeterminate
+                  <v-icon
+                    v-if="usernameTaken"
+                    icon="mdi-close"
+                    color="error"
                     size="24"
-                  ></v-progress-circular>
+                  ></v-icon>
                 </v-fade-transition>
               </template>
             </v-text-field>
@@ -69,7 +69,7 @@
               @input="message=''"
             ></v-text-field>
             <div v-show="message.length" class="mb-5 text-red">{{ message }}</div>
-            <v-btn color="primary" block :loading="loading" type="submit">Sign Up</v-btn>
+            <v-btn color="primary" rounded="pill" block :loading="loading" type="submit">Sign Up</v-btn>
           </v-form>
         </v-card-text>
       </v-card>
@@ -88,13 +88,15 @@
   ]
 
   const username = ref("")
-  const checkingTakenUsername = ref(false)
-  const takenUsernames = new Set()
+  const takenUsernames = ref(new Set())
+  const usernameTaken = computed(() => {
+    return takenUsernames.value.has(username.value)
+  })
   const usernameRules = [
     v => (v || "").length >= 3 || "Username must be at least 3 characters",
     v => (v || "").length <= 32 || "Username must be less than 32 characters",
-    v => !!v.match(/^\w{1,32}$/) || "Letters, numbers, and underscores only",
-    v => !takenUsernames.has(v) || "Username already taken",
+    v => !!v.match(/^\w+$/) || "Letters, numbers, and underscores only",
+    v => !takenUsernames.value.has(v) || "Username already taken",
   ]
 
   const password = ref("")
@@ -106,14 +108,15 @@
   async function onSubmit() {
     loading.value = true
     const { data, error } = await useFetch("/api/user", {
+      server: false,
       method: "POST",
-      body: { username: username.value, password: password.value }
+      body: { username, password }
     })
     loading.value = false
     if (error) {
       switch (error?.value?.statusCode) {
         case 409:
-          takenUsernames.add(username.value)
+          takenUsernames.value.add(username.value)
           form.value.validate()
           break
         case 500:
