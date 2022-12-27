@@ -106,6 +106,8 @@
   const message = ref("")
 
   async function onSubmit() {
+    const { valid } = await form.value.validate()
+    if (!valid) return false
     loading.value = true
     const { data, error } = await useFetch("/api/user", {
       server: false,
