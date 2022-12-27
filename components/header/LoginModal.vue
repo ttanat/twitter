@@ -27,8 +27,8 @@
               density="compact"
               class="mb-2"
             ></v-text-field>
-            <div v-show="message.length" class="mb-5 text-red">{{ message }}</div>
-            <v-btn color="primary" block :loading="loading" type="submit">Login</v-btn>
+            <div v-show="message.length" class="mb-5 text-error">{{ message }}</div>
+            <v-btn color="primary" rounded="pill" block :loading="loading" type="submit">Login</v-btn>
           </v-form>
         </v-card-text>
       </v-card>

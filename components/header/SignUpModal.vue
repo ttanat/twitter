@@ -68,7 +68,7 @@
               class="mb-2"
               @input="message=''"
             ></v-text-field>
-            <div v-show="message.length" class="mb-5 text-red">{{ message }}</div>
+            <div v-show="message.length" class="mb-5 text-error">{{ message }}</div>
             <v-btn color="primary" rounded="pill" block :loading="loading" type="submit">Sign Up</v-btn>
           </v-form>
         </v-card-text>
