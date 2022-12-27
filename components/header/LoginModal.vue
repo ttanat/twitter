@@ -14,7 +14,7 @@
               label="Username"
               prefix="@"
               maxlength="32"
-              @keyup="message=''"
+              @input="message=''"
               density="compact"
               class="mb-1"
             ></v-text-field>
@@ -23,7 +23,7 @@
               v-model="password"
               label="Password"
               type="password"
-              @keyup="message=''"
+              @input="message=''"
               density="compact"
               class="mb-2"
             ></v-text-field>
@@ -45,6 +45,7 @@
   const message = ref("")
 
   async function onSubmit() {
+    loading.value = true
     if (!username.value.match(/\w{3,32}/) || password.value.length === 0) {
       message.value = "Username or password incorrect"
       return false
@@ -53,6 +54,7 @@
       method: "GET",
       params: { username: username.value, password: password.value }
     })
+    loading.value = false
     console.log(data.value)
   }
 </script>
