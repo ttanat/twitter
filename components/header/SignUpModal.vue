@@ -11,13 +11,14 @@
             <v-text-field
               variant="outlined"
               v-model="name"
-              label="Name"
+              label="Name (Optional)"
               :rules="nameRules"
               :counter="32"
               maxlength="32"
               :readonly="loading"
               density="compact"
               class="mb-2"
+              @input="clearMessage"
             ></v-text-field>
             <v-text-field
               variant="outlined"
@@ -31,6 +32,7 @@
               :readonly="loading"
               density="compact"
               class="mb-2"
+              @input="clearMessage"
             ></v-text-field>
             <v-text-field
               variant="outlined"
@@ -41,6 +43,7 @@
               :readonly="loading"
               density="compact"
               class="mb-2"
+              @input="clearMessage"
             ></v-text-field>
             <v-text-field
               variant="outlined"
@@ -51,6 +54,7 @@
               :readonly="loading"
               density="compact"
               class="mb-2"
+              @input="clearMessage"
             ></v-text-field>
             <div v-show="message.length" class="mb-5 text-red">{{ message }}</div>
             <v-btn color="primary" block :loading="loading" type="submit">Sign Up</v-btn>
@@ -83,11 +87,29 @@
   const loading = ref(false)
   const message = ref("")
 
-  function onSubmit() {
-    setTimeout(() => {
-      takenUsernames.add("abc")
-      console.log(form.value)
-      form.value.validate()
-    }, 1000)
+  function clearMessage() {
+    message.value = ""
+  }
+
+  async function onSubmit() {
+    const { data, error } = await useFetch("/api/user", {
+      method: "POST",
+      body: { username: username.value, password: password.value }
+    })
+    if (error) {
+      switch (error?.value?.statusCode) {
+        case 409:
+          takenUsernames.add(username.value)
+          form.value.validate()
+          break
+        case 500:
+          message.value = "Oops, something went wrong. Please try again."
+          break
+        default:
+          message.value = ""
+      }
+    } else {
+      console.log(data.value)
+    }
   }
 </script>
