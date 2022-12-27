@@ -110,7 +110,7 @@
     const { data, error } = await useFetch("/api/user", {
       server: false,
       method: "POST",
-      body: { username, password }
+      body: { username: username.value, password: password.value }
     })
     loading.value = false
     if (error) {
