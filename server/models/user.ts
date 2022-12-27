@@ -7,7 +7,7 @@ const userSchema = new mongoose.Schema({
     index: { unique: true, collation: { locale: "en", strength: 2 }},
     maxlength: 32,
     trim: true,
-    match: /\w{1,32}/,
+    match: /\w{3,32}/,
   },
   password: { type: String, required: true },
   name: { type: String, maxlength: 32, trim: true },
