@@ -7,7 +7,7 @@
     <v-btn
       variant="text"
       size="x-large"
-      block
+      rounded="pill"
       class="left-link"
       :to="link.url"
     >
@@ -21,7 +21,7 @@
   </div>
   <div class="mx-2">
     <v-btn
-      class="mt-3 tweet-btn"
+      class="mt-3 ml-2 tweet-btn"
       size="large"
       color="primary"
       rounded="pill"

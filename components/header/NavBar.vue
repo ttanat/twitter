@@ -1,10 +1,12 @@
 <template>
   <v-app-bar height="48" color="grey-darken-4 px-5">
     <!-- Left -->
-    <NuxtLink class="text-h6 nav-component ml-5" id="nav-title" to="/">
-      <v-icon icon="mdi-twitter" color="primary"></v-icon>&nbsp;
-      Twitter
-    </NuxtLink>
+    <div class="ml-lg-5">
+      <NuxtLink class="text-h6 nav-component pl-lg-5 pl-md-2" id="nav-title" to="/">
+        <v-icon icon="mdi-twitter" color="primary"></v-icon>
+        <span class="d-none d-lg-block">&ensp;Twitter</span>
+      </NuxtLink>
+    </div>
 
     <v-spacer></v-spacer>
 
@@ -23,7 +25,7 @@
     <v-spacer></v-spacer>
 
     <!-- Right -->
-    <div class="nav-right mr-2">
+    <div class="nav-right mr-md-2">
       <v-avatar
         v-if="$auth.loggedIn()"
         :image="$auth.getImage()||''"
@@ -54,7 +56,7 @@
 }
 .nav-right {
   display: flex;
-  justify-content: end;
+  justify-content: flex-end;
   width: 250px;
 }
 .mid-col {
