@@ -115,7 +115,7 @@
       body: { username: username.value, password: password.value }
     })
     loading.value = false
-    if (error) {
+    if (error.value) {
       switch (error?.value?.statusCode) {
         case 409:
           takenUsernames.value.add(username.value)
@@ -128,7 +128,8 @@
           message.value = ""
       }
     } else {
-      console.log(data.value)
+      useNuxtApp().$auth.login(data.value)
+      await navigateTo("/profile")
     }
   }
 </script>

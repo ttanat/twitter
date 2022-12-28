@@ -20,8 +20,15 @@
   <v-col md="4" lg="3" class="nav d-none d-md-block">
     <v-container fluid>
       <v-row justify="end" align="center" class="px-2 py-1">
-        <HeaderLoginModal />
-        <HeaderSignUpModal />
+        <v-avatar
+          v-if="$auth.loggedIn()"
+          :image="$auth.getImage()||''"
+          icon="mdi-account-circle"
+        ></v-avatar>
+        <template v-else>
+          <HeaderLoginModal />
+          <HeaderSignUpModal />
+        </template>
       </v-row>
     </v-container>
   </v-col>

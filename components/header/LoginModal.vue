@@ -50,11 +50,16 @@
       message.value = "Username or password incorrect"
       return false
     }
-    const { data } = await useFetch("/api/user", {
-      method: "GET",
-      params: { username: username.value, password: password.value }
+    const { data, error } = await useFetch("/api/token", {
+      method: "POST",
+      body: { username: username.value, password: password.value }
     })
     loading.value = false
-    console.log(data.value)
+    if (error.value) {
+      message.value = "Oops, something went wrong. Please try again."
+    } else {
+      await useNuxtApp().$auth.login(data.value)
+      await navigateTo("/profile")
+    }
   }
 </script>

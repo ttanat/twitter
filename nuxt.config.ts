@@ -1,7 +1,11 @@
+import { nodePolyfills } from "vite-plugin-node-polyfills";
+
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   runtimeConfig: {
     MONGO_URI: process.env.MONGO_URI,
+    ACCESS_SECRET_KEY: process.env.ACCESS_SECRET_KEY,
+    REFRESH_SECRET_KEY: process.env.REFRESH_SECRET_KEY,
   },
   nitro: {
     plugins: ["~/server/db/index.ts"],
@@ -11,6 +15,11 @@ export default defineNuxtConfig({
     transpile: ["vuetify"]
   },
   vite: {
+    plugins: [
+      nodePolyfills({
+        protocolImports: true,
+      }),
+    ],
     define: {
       "process.env.DEBUG": false
     }
