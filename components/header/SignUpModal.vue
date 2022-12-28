@@ -2,9 +2,9 @@
   <ClientOnly>
     <v-dialog v-model="dialog" width="500" transition="scale-transition">
       <template v-slot:activator="{ props }">
-        <v-btn color="primary" rounded="pill" v-bind="props">Sign Up</v-btn>
+        <v-btn color="primary" rounded="pill" variant="outlined" v-bind="props">Sign Up</v-btn>
       </template>
-      <v-card class="py-2" style="border-radius: 30px">
+      <v-card class="py-2" style="border-radius: 18px">
         <v-card-text class="text-h6">Sign Up</v-card-text>
         <v-card-text class="pt-2 pb-5">
           <v-form
