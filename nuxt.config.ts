@@ -12,7 +12,7 @@ export default defineNuxtConfig({
   },
   css: ["vuetify/lib/styles/main.sass", "@mdi/font/css/materialdesignicons.min.css"],
   build: {
-    transpile: ["vuetify"]
+    transpile: ["vuetify"],
   },
   vite: {
     plugins: [
@@ -22,6 +22,14 @@ export default defineNuxtConfig({
     ],
     define: {
       "process.env.DEBUG": false
+    }
+  },
+  modules: ["@nuxtjs/google-fonts"],
+  googleFonts: {
+    families: {
+      Roboto: true,
+      // 'Noto+Sans': true,
+      // Ubuntu: true,
     }
   }
 })
