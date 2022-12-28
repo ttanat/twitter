@@ -6,11 +6,16 @@
   >
     <v-btn
       variant="text"
-      size="large"
+      size="x-large"
       block
       class="left-link"
       :to="link.url"
     >
+      <v-icon
+        start
+        :icon="link.icon"
+        color="primary"
+      ></v-icon>
       {{ link.title }}
     </v-btn>
   </div>
@@ -29,12 +34,12 @@
 
 <script setup>
   const links = ref([
-    { title: "Explore",  url: "/explore" },
-    { title: "Notifications", url: "/notifications" },
-    { title: "Messages", url: "/messages" },
-    { title: "Bookmarks", url: "/bookmarks" },
-    { title: "Profile", url: "/profile" },
-    { title: "Settings", url: "/settings" },
+    { title: "Explore",  url: "/explore", icon: "mdi-pound" },
+    { title: "Notifications", url: "/notifications", icon: "mdi-bell" },
+    { title: "Messages", url: "/messages", icon: "mdi-email" },
+    { title: "Bookmarks", url: "/bookmarks", icon: "mdi-bookmark" },
+    { title: "Profile", url: "/profile", icon: "mdi-account" },
+    { title: "Settings", url: "/settings", icon: "mdi-cog" },
   ])
 </script>
 
