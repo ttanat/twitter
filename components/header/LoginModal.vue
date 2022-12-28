@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <ClientOnly>
     <v-dialog v-model="dialog" width="500" transition="scale-transition">
       <template v-slot:activator="{ props }">
         <v-btn rounded="pill" v-bind="props" class="mr-3">Login</v-btn>
@@ -33,7 +33,7 @@
         </v-card-text>
       </v-card>
     </v-dialog>
-  </div>
+  </ClientOnly>
 </template>
 
 <script setup>
@@ -58,6 +58,7 @@
     if (error.value) {
       message.value = "Oops, something went wrong. Please try again."
     } else {
+      dialog.value = false
       await useNuxtApp().$auth.login(data.value)
       await navigateTo("/profile")
     }

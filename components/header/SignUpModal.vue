@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <ClientOnly>
     <v-dialog v-model="dialog" width="500" transition="scale-transition">
       <template v-slot:activator="{ props }">
         <v-btn color="primary" rounded="pill" v-bind="props">Sign Up</v-btn>
@@ -74,7 +74,7 @@
         </v-card-text>
       </v-card>
     </v-dialog>
-  </div>
+  </ClientOnly>
 </template>
 
 <script setup>
@@ -128,6 +128,7 @@
           message.value = ""
       }
     } else {
+      dialog.value = false
       useNuxtApp().$auth.login(data.value)
       await navigateTo("/profile")
     }
