@@ -14,9 +14,22 @@ interface Tokens {
 }
 
 export default defineNuxtPlugin(nuxtApp => {
-  const user = useCookie("user",  { default: () => null })
-  const accessToken = useCookie("accessToken", { default: () => "" })
-  const refreshToken = useCookie("refreshToken", { default: () => "" })
+  const user = useCookie("user",  {
+    default: () => null,
+    sameSite: true,
+    maxAge: 60 * 60 * 24 * 365 * 3, // 3 years
+  })
+  const accessToken = useCookie("accessToken", {
+    default: () => "",
+    sameSite: true,
+    maxAge: 60 * 60, // 1 hour
+  })
+  const refreshToken = useCookie("refreshToken", {
+    default: () => "",
+    sameSite: true,
+    maxAge: 60 * 60 * 24 * 365 * 3, // 3 years
+  })
+
   return {
     provide: {
       auth: {
@@ -40,7 +53,6 @@ export default defineNuxtPlugin(nuxtApp => {
           accessToken.value = tokens.accessToken
           refreshToken.value = tokens.refreshToken
           // Get username from access token
-          // let username: string = decodeJwt(accessToken.value)
           let username: string = jwt.decode(accessToken.value, { json: true })?.username
           // Get user data
           const { data } = await useFetch("/api/user", { query: { username }})
