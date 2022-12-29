@@ -1,39 +1,37 @@
 <template>
-  <ClientOnly>
-    <v-dialog v-model="dialog" width="500" transition="scale-transition">
-      <template v-slot:activator="{ props }">
-        <v-btn rounded="pill" class="mr-3" variant="outlined" color="secondary" v-bind="props">Login</v-btn>
-      </template>
-      <v-card class="py-2" style="border-radius: 18px">
-        <v-card-text class="text-h6">Login</v-card-text>
-        <v-card-text class="pt-2 pb-5">
-          <v-form ref="form" @submit.prevent="onSubmit" :readonly="loading">
-            <v-text-field
-              variant="outlined"
-              v-model="username"
-              label="Username"
-              prefix="@"
-              maxlength="32"
-              @input="message=''"
-              density="compact"
-              class="mb-1"
-            ></v-text-field>
-            <v-text-field
-              variant="outlined"
-              v-model="password"
-              label="Password"
-              type="password"
-              @input="message=''"
-              density="compact"
-              class="mb-2"
-            ></v-text-field>
-            <div v-show="message.length" class="mb-5 text-error">{{ message }}</div>
-            <v-btn color="primary" rounded="pill" block :loading="loading" type="submit">Login</v-btn>
-          </v-form>
-        </v-card-text>
-      </v-card>
-    </v-dialog>
-  </ClientOnly>
+  <v-dialog v-model="dialog" width="500" transition="scale-transition">
+    <template v-slot:activator="{ props }">
+      <v-btn rounded="pill" class="mr-3" variant="outlined" color="light" v-bind="props">Login</v-btn>
+    </template>
+    <v-card class="py-2" style="border-radius: 18px">
+      <v-card-text class="text-h6">Login</v-card-text>
+      <v-card-text class="pt-2 pb-5">
+        <v-form ref="form" @submit.prevent="onSubmit" :readonly="loading">
+          <v-text-field
+            variant="outlined"
+            v-model="username"
+            label="Username"
+            prefix="@"
+            maxlength="32"
+            @input="message=''"
+            density="compact"
+            class="mb-1"
+          ></v-text-field>
+          <v-text-field
+            variant="outlined"
+            v-model="password"
+            label="Password"
+            type="password"
+            @input="message=''"
+            density="compact"
+            class="mb-2"
+          ></v-text-field>
+          <div v-show="message.length" class="mb-5 text-error">{{ message }}</div>
+          <v-btn color="primary" rounded="pill" block :loading="loading" type="submit">Login</v-btn>
+        </v-form>
+      </v-card-text>
+    </v-card>
+  </v-dialog>
 </template>
 
 <script setup>

@@ -1,80 +1,78 @@
 <template>
-  <ClientOnly>
-    <v-dialog v-model="dialog" width="500" transition="scale-transition">
-      <template v-slot:activator="{ props }">
-        <v-btn color="primary" rounded="pill" variant="outlined" v-bind="props">Sign Up</v-btn>
-      </template>
-      <v-card class="py-2" style="border-radius: 18px">
-        <v-card-text class="text-h6">Sign Up</v-card-text>
-        <v-card-text class="pt-2 pb-5">
-          <v-form
-            ref="form"
-            v-model="valid"
-            lazy-validation
-            @submit.prevent="onSubmit"
-            :readonly="loading"
+  <v-dialog v-model="dialog" width="500" transition="scale-transition">
+    <template v-slot:activator="{ props }">
+      <v-btn color="primary" rounded="pill" variant="outlined" v-bind="props">Sign Up</v-btn>
+    </template>
+    <v-card class="py-2" style="border-radius: 18px">
+      <v-card-text class="text-h6">Sign Up</v-card-text>
+      <v-card-text class="pt-2 pb-5">
+        <v-form
+          ref="form"
+          v-model="valid"
+          lazy-validation
+          @submit.prevent="onSubmit"
+          :readonly="loading"
+        >
+          <v-text-field
+            variant="outlined"
+            v-model="name"
+            label="Name (Optional)"
+            :rules="nameRules"
+            :counter="32"
+            maxlength="32"
+            density="compact"
+            class="mb-2"
+            @input="message=''"
+          ></v-text-field>
+          <v-text-field
+            variant="outlined"
+            v-model="username"
+            label="Username"
+            prefix="@"
+            :rules="usernameRules"
+            :counter="32"
+            maxlength="32"
+            density="compact"
+            class="mb-2"
+            @input="message=''"
           >
-            <v-text-field
-              variant="outlined"
-              v-model="name"
-              label="Name (Optional)"
-              :rules="nameRules"
-              :counter="32"
-              maxlength="32"
-              density="compact"
-              class="mb-2"
-              @input="message=''"
-            ></v-text-field>
-            <v-text-field
-              variant="outlined"
-              v-model="username"
-              label="Username"
-              prefix="@"
-              :rules="usernameRules"
-              :counter="32"
-              maxlength="32"
-              density="compact"
-              class="mb-2"
-              @input="message=''"
-            >
-              <template v-slot:append-inner>
-                <v-fade-transition leave-absolute>
-                  <v-icon
-                    v-if="usernameTaken"
-                    icon="mdi-close"
-                    color="error"
-                    size="24"
-                  ></v-icon>
-                </v-fade-transition>
-              </template>
-            </v-text-field>
-            <v-text-field
-              variant="outlined"
-              v-model="password"
-              label="Password"
-              type="password"
-              :rules="[() => !!password.length || 'Password cannot be blank']"
-              density="compact"
-              class="mb-2"
-              @input="message=''"
-            ></v-text-field>
-            <v-text-field
-              variant="outlined"
-              v-model="confirmPassword"
-              label="Confirm Password"
-              type="password"
-              :rules="[v => v === password || 'Password does not match']"
-              density="compact"
-              class="mb-2"
-              @input="message=''"
-            ></v-text-field>
-            <div v-show="message.length" class="mb-5 text-error">{{ message }}</div>
-            <v-btn color="primary" rounded="pill" block :loading="loading" type="submit">Sign Up</v-btn>
-          </v-form>
-        </v-card-text>
-      </v-card>
-    </v-dialog>
-  </ClientOnly>
+            <template v-slot:append-inner>
+              <v-fade-transition leave-absolute>
+                <v-icon
+                  v-if="usernameTaken"
+                  icon="mdi-close"
+                  color="error"
+                  size="24"
+                ></v-icon>
+              </v-fade-transition>
+            </template>
+          </v-text-field>
+          <v-text-field
+            variant="outlined"
+            v-model="password"
+            label="Password"
+            type="password"
+            :rules="[() => !!password.length || 'Password cannot be blank']"
+            density="compact"
+            class="mb-2"
+            @input="message=''"
+          ></v-text-field>
+          <v-text-field
+            variant="outlined"
+            v-model="confirmPassword"
+            label="Confirm Password"
+            type="password"
+            :rules="[v => v === password || 'Password does not match']"
+            density="compact"
+            class="mb-2"
+            @input="message=''"
+          ></v-text-field>
+          <div v-show="message.length" class="mb-5 text-error">{{ message }}</div>
+          <v-btn color="primary" rounded="pill" block :loading="loading" type="submit">Sign Up</v-btn>
+        </v-form>
+      </v-card-text>
+    </v-card>
+  </v-dialog>
 </template>
 
 <script setup>
