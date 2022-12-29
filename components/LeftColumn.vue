@@ -8,8 +8,9 @@
       variant="text"
       size="x-large"
       rounded="pill"
-      class="left-link"
+      class="left-link px-5"
       :to="link.url"
+      :active="false"
     >
       <v-icon
         start
@@ -34,6 +35,7 @@
 
 <script setup>
   const links = ref([
+    { title: "Home",  url: "/", icon: "mdi-home" },
     { title: "Explore",  url: "/explore", icon: "mdi-pound" },
     { title: "Notifications", url: "/notifications", icon: "mdi-bell" },
     { title: "Messages", url: "/messages", icon: "mdi-email" },
