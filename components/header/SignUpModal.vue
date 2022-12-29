@@ -86,15 +86,16 @@
   ]
 
   const username = ref("")
+  const usernameLower = computed(() => username.value.toLowerCase())
   const takenUsernames = ref(new Set())
   const usernameTaken = computed(() => {
-    return takenUsernames.value.has(username.value)
+    return takenUsernames.value.has(usernameLower.value)
   })
   const usernameRules = [
     v => (v || "").length >= 3 || "Username must be at least 3 characters",
     v => (v || "").length <= 32 || "Username must be less than 32 characters",
     v => !!v.match(/^\w+$/) || "Letters, numbers, and underscores only",
-    v => !takenUsernames.value.has(v) || "Username already taken",
+    v => !takenUsernames.value.has(v.toLowerCase()) || "Username already taken", // or usernameLower.value, idk
   ]
 
   const password = ref("")
@@ -116,7 +117,7 @@
     if (error.value) {
       switch (error?.value?.statusCode) {
         case 409:
-          takenUsernames.value.add(username.value)
+          takenUsernames.value.add(usernameLower.value)
           form.value.validate()
           break
         case 500:
