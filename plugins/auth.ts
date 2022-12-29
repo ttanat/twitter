@@ -70,6 +70,7 @@ export default defineNuxtPlugin(nuxtApp => {
           user.value = null
           accessToken.value = ""
           refreshToken.value = ""
+          window.location.href = "/"
         },
       }
     }
