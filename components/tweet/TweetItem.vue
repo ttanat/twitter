@@ -36,7 +36,6 @@
 
 <style scoped>
 .tweet-item {
-  border-bottom: solid 1px grey;
   font-size: 15px;
 }
 .v-timeline-item > :first-child {

@@ -1,9 +1,10 @@
 <template>
   <TweetItem
-    v-for="tweet in tweets"
+    v-for="(tweet, i) in tweets"
     :key="tweet._id"
     :tweet="tweet"
     class="px-3"
+    :style="[i === 0 ? '' : 'border-top: solid 1px grey']"
   />
 </template>
 
