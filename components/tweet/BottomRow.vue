@@ -38,9 +38,9 @@
   color: #299ded;
 }
 .retweets:hover {
-  color: green;
+  color: #40a440;
 }
 .likes:hover {
-  color: red;
+  color: #dc3065;
 }
 </style>
