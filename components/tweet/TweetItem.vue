@@ -7,17 +7,15 @@
       side="end"
     >
       <v-timeline-item
-        icon="mdi-account"
-        size="45"
-        dot-color="secondary"
+        dot-color="#424242"
         class="pl-2"
         width="100%"
         @click="navigateTo('/status/'+tweet._id)"
         style="cursor: pointer"
       >
-        <template v-if="tweet.user.image" v-slot:icon>
+        <template v-slot:icon>
           <NuxtLink :to="'/'+tweet.user.username">
-            <v-avatar :image="tweet.user.image" size="45"></v-avatar>
+            <v-avatar :image="tweet.user.image" icon="mdi-account" size="45"></v-avatar>
           </NuxtLink>
         </template>
 
