@@ -14,7 +14,7 @@
   padding: unset;
 }
 .mid-col {
-  border-left: solid 1px whitesmoke;
-  border-right: solid 1px whitesmoke;
+  border-left: solid 1px grey;
+  border-right: solid 1px grey;
 }
 </style>
