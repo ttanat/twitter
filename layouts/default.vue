@@ -8,3 +8,9 @@
     </v-container>
   </v-main>
 </template>
+
+<style scoped>
+.v-main {
+  --v-layout-top: 44px !important;
+}
+</style>
