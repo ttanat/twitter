@@ -5,7 +5,7 @@
         {{ tweet.user.name }}
       </NuxtLink>
       <NuxtLink :to="'/'+tweet.user.username" class="top-row-link text-grey-darken-1">
-        <span>&ensp;@{{ tweet.user.username }}</span>
+        <span><template v-if="tweet.user.name">&ensp;</template>@{{ tweet.user.username }}</span>
       </NuxtLink>
     </div>
     <div class="text-grey-darken-1">
