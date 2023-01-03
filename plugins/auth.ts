@@ -13,41 +13,37 @@ interface Tokens {
   refreshToken: string
 }
 
-export default defineNuxtPlugin(nuxtApp => {
-  const user = useCookie("user",  {
-    default: () => null,
-    sameSite: true,
-    maxAge: 60 * 60 * 24 * 365 * 3, // 3 years
-  })
+export default defineNuxtPlugin(_ => {
   const accessToken = useCookie("accessToken", {
-    default: () => "",
     sameSite: true,
     maxAge: 60 * 60, // 1 hour
+    httpOnly: true,
   })
   const refreshToken = useCookie("refreshToken", {
-    default: () => "",
     sameSite: true,
-    maxAge: 60 * 60 * 24 * 365 * 3, // 3 years
+    maxAge: 60 * 60 * 24 * 365 * 10, // 10 years
+    httpOnly: true,
   })
+  const user = useCookie("user", { sameSite: true })
 
   return {
     provide: {
       auth: {
         // Logged in or not
-        loggedIn: (): Boolean => !!user.value?.["username"],
+        loggedIn: (): Boolean => !!(user.value as User)?.username,
         // User object
-        getUser: (): User => user.value,
-        setUser: (newUser: any/* supposed to be IUser */): void => {user.value = newUser},
-        getUsername: (): string|null => user.value?.["username"] ?? null,
-        getName: (): string|null => user.value?.["name"] ?? null,
-        getImage: (): string => user.value?.["image"] ?? "",
+        getUser: (): User => (user.value as User),
+        setUser: (newUser: User): void => {(user.value as User) = newUser},
+        getUsername: (): string|null => (user.value as User)?.username ?? null,
+        getName: (): string|null => (user.value as User)?.name ?? null,
+        getImage: (): string|null => (user.value as User)?.image ?? null,
         // Access token
         getAccessToken: (): string|null => accessToken.value,
         setAccessToken: (newToken: string): void => {accessToken.value = newToken},
         // Refresh token
         getRefreshToken: (): string|null => refreshToken.value,
         setRefreshToken: (newToken: string): void => {refreshToken.value = newToken},
-        // // Login
+        // Login
         login: async (tokens: Tokens): Promise<void> => {
           // Set tokens
           accessToken.value = tokens.accessToken
@@ -68,8 +64,8 @@ export default defineNuxtPlugin(nuxtApp => {
         // Logout
         logout: (): void => {
           user.value = null
-          accessToken.value = ""
-          refreshToken.value = ""
+          accessToken.value = null
+          refreshToken.value = null
           window.location.href = "/"
         },
       }
