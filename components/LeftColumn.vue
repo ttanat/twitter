@@ -1,35 +1,37 @@
 <template>
-  <div
-    v-for="(link, i) in links"
-    :key="i"
-    class="mx-2"
-  >
-    <v-btn
-      variant="text"
-      size="x-large"
-      rounded="pill"
-      class="left-link px-5"
-      :to="link.url"
-      :active="false"
+  <div style="position: sticky;top: 48px">
+    <div
+      v-for="(link, i) in links"
+      :key="i"
+      class="mx-2"
     >
-      <v-icon
-        start
-        :icon="link.icon"
+      <v-btn
+        variant="text"
+        size="x-large"
+        rounded="pill"
+        class="left-link px-5"
+        :to="link.url"
+        :active="false"
+      >
+        <v-icon
+          start
+          :icon="link.icon"
+          color="primary"
+        ></v-icon>
+        {{ link.title }}
+      </v-btn>
+    </div>
+    <div class="mx-2">
+      <v-btn
+        class="mt-3 ml-2 tweet-btn"
+        size="large"
         color="primary"
-      ></v-icon>
-      {{ link.title }}
-    </v-btn>
-  </div>
-  <div class="mx-2">
-    <v-btn
-      class="mt-3 ml-2 tweet-btn"
-      size="large"
-      color="primary"
-      rounded="pill"
-      block
-    >
-      Tweet
-    </v-btn>
+        rounded="pill"
+        block
+      >
+        Tweet
+      </v-btn>
+    </div>
   </div>
 </template>
 
