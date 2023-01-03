@@ -48,7 +48,7 @@
       message.value = "Username or password incorrect"
       return false
     }
-    const { data, error } = await useFetch("/api/auth/token", {
+    const { data, error } = await apiFetch("/api/auth/token", {
       method: "POST",
       body: { username: username.value, password: password.value }
     })
