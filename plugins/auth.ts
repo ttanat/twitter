@@ -55,7 +55,7 @@ export default defineNuxtPlugin(nuxtApp => {
           // Get username from access token
           let username: string = jwt.decode(accessToken.value, { json: true })?.username
           // Get user data
-          const { data } = await useFetch("/api/user", { query: { username }})
+          const { data } = await useFetch("/api/auth/user", { query: { username }})
           console.assert(username === data.value?.username)
           username = data.value?.username!
           // Use (tmp: any) to get around typescript error
