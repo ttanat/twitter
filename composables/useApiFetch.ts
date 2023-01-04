@@ -2,9 +2,13 @@ export const useApiFetch = async (url: string, options?: any): Promise<any> => {
   // Default options
   options = { ...options, server: options?.server || false, credentials: "omit" }
 
-  // Auth header
   const { $auth } = useNuxtApp()
   if ($auth.loggedIn()) {
+    // Check valid access token
+    if ($auth.accessTokenExpired()) {
+      await $auth.refresh()
+    }
+    // Auth header
     options.headers = options.headers || {}
     options.headers.authorization = `Bearer ${$auth.getAccessToken()}`
   }
