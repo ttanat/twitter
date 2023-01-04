@@ -42,8 +42,8 @@
 </template>
 
 <script setup>
-  const name = useRoute().name.toString()
-  const routeName = ref(`${name.charAt(0).toUpperCase()}${name.slice(1)}`)
+const name = useRoute().name.toString()
+const routeName = ref(`${name.charAt(0).toUpperCase()}${name.slice(1)}`)
 </script>
 
 <style scoped>

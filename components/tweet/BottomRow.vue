@@ -25,9 +25,9 @@
 </template>
 
 <script setup>
-  defineProps({
-    tweet: Object
-  })
+defineProps({
+  tweet: Object
+})
 </script>
 
 <style scoped>

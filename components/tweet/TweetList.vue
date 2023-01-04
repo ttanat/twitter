@@ -9,5 +9,5 @@
 </template>
 
 <script setup>
-  const { data: tweets } = await useApiFetch("/api/tweets")
+const { data: tweets } = await useApiFetch("/api/tweets")
 </script>

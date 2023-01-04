@@ -20,12 +20,12 @@
 </template>
 
 <script setup>
-  const username = useNuxtApp().$auth.getUsername()
-  const menuItems = ref([
-    { title: "Settings", value: "settings", props: { to: "/settings", prependIcon: "mdi-cog" }},
-    { title: "Logout", value: "logout", props: { to: "/logout", prependIcon: "mdi-logout" }},
-  ])
-  if (username) menuItems.value.unshift({ type: "subheader", title: username })
+const username = useNuxtApp().$auth.getUsername()
+const menuItems = ref([
+  { title: "Settings", value: "settings", props: { to: "/settings", prependIcon: "mdi-cog" }},
+  { title: "Logout", value: "logout", props: { to: "/logout", prependIcon: "mdi-logout" }},
+])
+if (username) menuItems.value.unshift({ type: "subheader", title: username })
 </script>
 
 <style scoped>

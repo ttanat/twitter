@@ -35,30 +35,30 @@
 </template>
 
 <script setup>
-  const dialog = ref(false)
-  const form = ref(null)
-  const username = ref("")
-  const password = ref("")
-  const loading = ref(false)
-  const message = ref("")
+const dialog = ref(false)
+const form = ref(null)
+const username = ref("")
+const password = ref("")
+const loading = ref(false)
+const message = ref("")
 
-  async function onSubmit() {
-    loading.value = true
-    if (!username.value.match(/\w{3,32}/) || password.value.length === 0) {
-      message.value = "Username or password incorrect"
-      return false
-    }
-    const { data, error } = await useAuthFetch("/api/auth/token", {
-      method: "POST",
-      body: { username: username.value, password: password.value }
-    })
-    loading.value = false
-    if (error.value) {
-      message.value = "Oops, something went wrong. Please try again."
-    } else {
-      dialog.value = false
-      await useNuxtApp().$auth.setUser(data.value)
-      navigateTo("/profile")
-    }
+async function onSubmit() {
+  loading.value = true
+  if (!username.value.match(/\w{3,32}/) || password.value.length === 0) {
+    message.value = "Username or password incorrect"
+    return false
   }
+  const { data, error } = await useAuthFetch("/api/auth/token", {
+    method: "POST",
+    body: { username: username.value, password: password.value }
+  })
+  loading.value = false
+  if (error.value) {
+    message.value = "Oops, something went wrong. Please try again."
+  } else {
+    dialog.value = false
+    await useNuxtApp().$auth.setUser(data.value)
+    navigateTo("/profile")
+  }
+}
 </script>

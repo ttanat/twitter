@@ -76,60 +76,60 @@
 </template>
 
 <script setup>
-  const dialog = ref(false)
-  const form = ref(null)
-  const valid = ref(true)
+const dialog = ref(false)
+const form = ref(null)
+const valid = ref(true)
 
-  const name = ref("")
-  const nameRules = [
-    v => (v || "").length <= 32 || "Name must be less than 32 characters"
-  ]
+const name = ref("")
+const nameRules = [
+  v => (v || "").length <= 32 || "Name must be less than 32 characters"
+]
 
-  const username = ref("")
-  const usernameLower = computed(() => username.value.toLowerCase())
-  const takenUsernames = ref(new Set())
-  const usernameTaken = computed(() => {
-    return takenUsernames.value.has(usernameLower.value)
+const username = ref("")
+const usernameLower = computed(() => username.value.toLowerCase())
+const takenUsernames = ref(new Set())
+const usernameTaken = computed(() => {
+  return takenUsernames.value.has(usernameLower.value)
+})
+const usernameRules = [
+  v => (v || "").length >= 3 || "Username must be at least 3 characters",
+  v => (v || "").length <= 32 || "Username must be less than 32 characters",
+  v => !!v.match(/^\w+$/) || "Letters, numbers, and underscores only",
+  v => !takenUsernames.value.has(v.toLowerCase()) || "Username already taken", // or usernameLower.value, idk
+]
+
+const password = ref("")
+const confirmPassword = ref("")
+
+const loading = ref(false)
+const message = ref("")
+
+async function onSubmit() {
+  const { valid } = await form.value.validate()
+  if (!valid) return false
+  loading.value = true
+  const { data, error } = await useAuthFetch("/api/auth/user", {
+    server: false,
+    method: "POST",
+    body: { username: username.value, password: password.value }
   })
-  const usernameRules = [
-    v => (v || "").length >= 3 || "Username must be at least 3 characters",
-    v => (v || "").length <= 32 || "Username must be less than 32 characters",
-    v => !!v.match(/^\w+$/) || "Letters, numbers, and underscores only",
-    v => !takenUsernames.value.has(v.toLowerCase()) || "Username already taken", // or usernameLower.value, idk
-  ]
-
-  const password = ref("")
-  const confirmPassword = ref("")
-
-  const loading = ref(false)
-  const message = ref("")
-
-  async function onSubmit() {
-    const { valid } = await form.value.validate()
-    if (!valid) return false
-    loading.value = true
-    const { data, error } = await useAuthFetch("/api/auth/user", {
-      server: false,
-      method: "POST",
-      body: { username: username.value, password: password.value }
-    })
-    loading.value = false
-    if (error.value) {
-      switch (error?.value?.statusCode) {
-        case 409:
-          takenUsernames.value.add(usernameLower.value)
-          form.value.validate()
-          break
-        case 500:
-          message.value = "Oops, something went wrong. Please try again."
-          break
-        default:
-          message.value = ""
-      }
-    } else {
-      dialog.value = false
-      await useNuxtApp().$auth.setUser(data.value)
-      navigateTo("/profile")
+  loading.value = false
+  if (error.value) {
+    switch (error?.value?.statusCode) {
+      case 409:
+        takenUsernames.value.add(usernameLower.value)
+        form.value.validate()
+        break
+      case 500:
+        message.value = "Oops, something went wrong. Please try again."
+        break
+      default:
+        message.value = ""
     }
+  } else {
+    dialog.value = false
+    await useNuxtApp().$auth.setUser(data.value)
+    navigateTo("/profile")
   }
+}
 </script>

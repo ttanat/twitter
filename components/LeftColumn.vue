@@ -36,15 +36,15 @@
 </template>
 
 <script setup>
-  const links = ref([
-    { title: "Home",  url: "/", icon: "mdi-home" },
-    { title: "Explore",  url: "/explore", icon: "mdi-pound" },
-    { title: "Notifications", url: "/notifications", icon: "mdi-bell" },
-    { title: "Messages", url: "/messages", icon: "mdi-email" },
-    { title: "Bookmarks", url: "/bookmarks", icon: "mdi-bookmark" },
-    { title: "Profile", url: "/profile", icon: "mdi-account" },
-    { title: "Settings", url: "/settings", icon: "mdi-cog" },
-  ])
+const links = ref([
+  { title: "Home",  url: "/", icon: "mdi-home" },
+  { title: "Explore",  url: "/explore", icon: "mdi-pound" },
+  { title: "Notifications", url: "/notifications", icon: "mdi-bell" },
+  { title: "Messages", url: "/messages", icon: "mdi-email" },
+  { title: "Bookmarks", url: "/bookmarks", icon: "mdi-bookmark" },
+  { title: "Profile", url: "/profile", icon: "mdi-account" },
+  { title: "Settings", url: "/settings", icon: "mdi-cog" },
+])
 </script>
 
 <style scoped>

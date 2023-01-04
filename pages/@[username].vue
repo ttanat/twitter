@@ -11,5 +11,5 @@
 </template>
 
 <script setup>
-  const { data: user, error } = await useApiFetch("/api/profile", { query: { username: useRoute().params.username }})
+const { data: user, error } = await useApiFetch("/api/profile", { query: { username: useRoute().params.username }})
 </script>

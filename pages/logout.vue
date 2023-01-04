@@ -5,5 +5,5 @@
 </template>
 
 <script setup>
-  useNuxtApp().$auth.logout()
+useNuxtApp().$auth.logout()
 </script>
