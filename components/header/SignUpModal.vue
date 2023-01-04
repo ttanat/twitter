@@ -128,8 +128,8 @@
       }
     } else {
       dialog.value = false
-      useNuxtApp().$auth.login(data.value)
-      await navigateTo("/profile")
+      await useNuxtApp().$auth.setUser(data.value)
+      navigateTo("/profile")
     }
   }
 </script>

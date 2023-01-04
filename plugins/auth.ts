@@ -31,20 +31,19 @@ export default defineNuxtPlugin(_ => {
       auth: {
         // Logged in or not
         loggedIn: (): Boolean => !!(user.value as User)?.username && !!accessToken.value && !!refreshToken.value,
-        // User object
-        getUser: (): User => (user.value as User),
-        setUser: (newUser: User): void => {(user.value as User) = newUser},
-        getUsername: (): string|null => (user.value as User)?.username ?? null,
-        getName: (): string|null => (user.value as User)?.name ?? null,
-        getImage: (): string|null => (user.value as User)?.image ?? null,
         // Access token
         getAccessToken: (): string|null => accessToken.value,
         setAccessToken: (newToken: string): void => {accessToken.value = newToken},
         // Refresh token
         getRefreshToken: (): string|null => refreshToken.value,
         setRefreshToken: (newToken: string): void => {refreshToken.value = newToken},
-        // Login
-        login: async (tokens: Tokens): Promise<void> => {
+        // User object properties
+        getUsername: (): string|null => (user.value as User)?.username ?? null,
+        getName: (): string|null => (user.value as User)?.name ?? null,
+        getImage: (): string|null => (user.value as User)?.image ?? null,
+        // User object
+        getUser: (): User => (user.value as User),
+        setUser: async (tokens: Tokens): Promise<void> => {
           // Set tokens
           accessToken.value = tokens.accessToken
           refreshToken.value = tokens.refreshToken

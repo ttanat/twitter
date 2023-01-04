@@ -57,8 +57,8 @@
       message.value = "Oops, something went wrong. Please try again."
     } else {
       dialog.value = false
-      await useNuxtApp().$auth.login(data.value)
-      await navigateTo("/profile")
+      await useNuxtApp().$auth.setUser(data.value)
+      navigateTo("/profile")
     }
   }
 </script>
