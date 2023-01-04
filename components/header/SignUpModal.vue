@@ -108,7 +108,7 @@
     const { valid } = await form.value.validate()
     if (!valid) return false
     loading.value = true
-    const { data, error } = await apiFetch("/api/auth/user", {
+    const { data, error } = await useAuthFetch("/api/auth/user", {
       server: false,
       method: "POST",
       body: { username: username.value, password: password.value }
