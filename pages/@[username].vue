@@ -3,13 +3,18 @@
     <LeftColumn />
   </v-col>
   <v-col sm="8" md="7" lg="6" class="mid-col ml-5">
-    <!-- <TweetList /> -->
-    {{ user }}
+    <ProfileItem />
   </v-col>
   <v-col md="4" lg="3" class="d-none d-md-block">
   </v-col>
 </template>
 
-<script setup>
-const { data: user, error } = await useApiFetch("/api/profile", { query: { username: useRoute().params.username }})
-</script>
+<style scoped>
+.v-col {
+  padding: unset;
+}
+.mid-col {
+  border-left: solid 1px grey;
+  border-right: solid 1px grey;
+}
+</style>
