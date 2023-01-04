@@ -11,7 +11,7 @@
 </template>
 
 <script setup>
-  const { data: profile } = await apiFetch("/api/profile", { server: true })
+  const { data: profile } = await useApiFetch("/api/profile", { server: true })
 </script>
 
 <style scoped>

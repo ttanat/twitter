@@ -1,4 +1,4 @@
-export const apiFetch = async (url: string, options?: any): Promise<any> => {
+export const useApiFetch = async (url: string, options?: any): Promise<any> => {
   // Default options
   options = { ...options, server: options?.server || false, credentials: "omit" }
 
