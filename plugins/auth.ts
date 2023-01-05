@@ -1,4 +1,4 @@
-import jwt from "jsonwebtoken"
+import jwt, { JwtPayload } from "jsonwebtoken"
 
 interface IUser {
   username: string
@@ -48,7 +48,7 @@ export default defineNuxtPlugin(_ => {
           accessToken.value = tokens.accessToken
           refreshToken.value = tokens.refreshToken
           // Get username from access token
-          const username: string = jwt.decode(accessToken.value, { json: true })!.username
+          const username: string = (jwt.decode(accessToken.value) as JwtPayload).username
           // Get user data
           const { data } = await useAuthFetch("/api/auth/user", { query: { username }})
           console.assert(username === data.value?.username)
@@ -69,7 +69,7 @@ export default defineNuxtPlugin(_ => {
         // Check access token is expired (5s from expiring ≈ expired)
         accessTokenExpired: (): Boolean => {
           // Get access token expiration
-          const { exp } = jwt.decode(accessToken.value!, { json: true })!
+          const { exp } = jwt.decode(accessToken.value!) as JwtPayload
           // Check if access token is 5s from expiring
           return new Date().getTime() + 5000 > (exp as number) * 1000
         },

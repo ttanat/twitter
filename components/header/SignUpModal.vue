@@ -52,7 +52,7 @@
             v-model="password"
             label="Password"
             type="password"
-            :rules="[() => !!password.length || 'Password cannot be blank']"
+            :rules="passwordRules"
             density="compact"
             class="mb-2"
             @input="message=''"
@@ -82,7 +82,7 @@ const valid = ref(true)
 
 const name = ref("")
 const nameRules = [
-  v => (v || "").length <= 32 || "Name must be less than 32 characters"
+  v => (v || "").length <= 32 || "Name cannot be longer than 32 characters"
 ]
 
 const username = ref("")
@@ -92,13 +92,17 @@ const usernameTaken = computed(() => {
   return takenUsernames.value.has(usernameLower.value)
 })
 const usernameRules = [
-  v => (v || "").length >= 3 || "Username must be at least 3 characters",
-  v => (v || "").length <= 32 || "Username must be less than 32 characters",
+  v => (v || "").length >= 3 || "Username must be at least 3 characters long",
+  v => (v || "").length <= 32 || "Username cannot be longer than 32 characters",
   v => !!v.match(/^\w+$/) || "Letters, numbers, and underscores only",
   v => !takenUsernames.value.has(v.toLowerCase()) || "Username already taken", // or usernameLower.value, idk
 ]
 
 const password = ref("")
+const passwordRules = [
+  () => !!password.value.length || "Password cannot be blank",
+  // v => (v || "").length >= 8 || "Password must be at least 8 characters long",
+]
 const confirmPassword = ref("")
 
 const loading = ref(false)
