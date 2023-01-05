@@ -10,9 +10,15 @@ export default eventHandler(async event => {
   if (user === null || !await bcrypt.compare(password, user.password)) {
     return createError({ statusCode: 404, statusMessage: "Username or password incorrect" })
   }
-  // Update last active
-  await User.updateOne({ username }, { lastActive: new Date() })
 
-  // Create new access and refresh tokens and respond with them
-  return createTokens(username)
+  // Create new access and refresh tokens
+  const { accessToken, refreshToken } = createTokens(username)
+  console.log(refreshToken)
+  // Update last active and save new refresh token
+  await User.updateOne({ username }, {
+    lastActive: new Date(),
+    $push: { validRefreshTokens: refreshToken },
+  })
+
+  return { accessToken, refreshToken }
 })

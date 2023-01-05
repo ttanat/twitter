@@ -45,6 +45,13 @@ const userSchema = new mongoose.Schema({
     trim: true,
     match: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/i
   },
+  validRefreshTokens: {
+    type: [{
+      type: String,
+      validate: (token: string) => /^[\w-]+\.[\w-]+\.[\w-]+$/.test(token),
+    }],
+  },
+
   isTweetsLimited: Boolean,
   isRepliesLimited: Boolean,
   isSuspended: Boolean,

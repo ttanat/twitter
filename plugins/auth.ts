@@ -48,7 +48,7 @@ export default defineNuxtPlugin(_ => {
           accessToken.value = tokens.accessToken
           refreshToken.value = tokens.refreshToken
           // Get username from access token
-          const username: string = (jwt.decode(accessToken.value) as JwtPayload).username
+          const { username } = jwt.decode(accessToken.value) as JwtPayload
           // Get user data
           const { data } = await useAuthFetch("/api/auth/user", { query: { username }})
           console.assert(username === data.value?.username)
@@ -60,7 +60,11 @@ export default defineNuxtPlugin(_ => {
           user.value = newUser as any
         },
         // Logout
-        logout: (): void => {
+        logout: async (): Promise<void> => {
+          await useAuthFetch("/api/auth/logout", {
+            method: "POST",
+            body: { refreshToken: refreshToken.value },
+          })
           user.value = null
           accessToken.value = null
           refreshToken.value = null
@@ -82,8 +86,6 @@ export default defineNuxtPlugin(_ => {
           })
           // Set new access token
           accessToken.value = data.value.accessToken
-          console.log(accessToken)
-          console.log(refreshToken)
         },
       }
     }

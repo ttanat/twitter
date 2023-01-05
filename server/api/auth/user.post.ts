@@ -11,9 +11,12 @@ export default defineEventHandler(async event => {
   try {
     // Create new user
     const user = await User.create({ name, username, password: hash })
+    // Create new access and refresh tokens
+    const { accessToken, refreshToken } = createTokens(user.username)
+    // Save new refresh token
+    await User.updateOne({ _id: user._id }, { $push: { validRefreshTokens: refreshToken }})
 
-    // Create new access and refresh tokens and respond with them
-    return createTokens(user.username)
+    return { accessToken, refreshToken }
   } catch (err: any) {
     // Duplicate error
     if (err.code === 11000) {
