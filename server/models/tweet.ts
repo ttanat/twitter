@@ -40,7 +40,6 @@ interface ITweet {
   numRetweets: number
   numQuotes: number
   numLikes: number
-  numDislikes: number
   isReply?: boolean
   root?: Types.ObjectId
   parent?: Types.ObjectId
@@ -73,7 +72,6 @@ const tweetSchema = new Schema<ITweet>({
   numRetweets: { type: Number, default: 0, min: 0 },
   numQuotes: { type: Number, default: 0, min: 0 },
   numLikes: { type: Number, default: 0, min: 0 },
-  numDislikes: { type: Number, default: 0, min: 0 },
 
   isReply: Boolean,
   root: { type: Schema.Types.ObjectId, ref: "Tweet" },

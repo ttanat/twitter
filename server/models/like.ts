@@ -3,14 +3,12 @@ import { model, Schema, Types } from "mongoose";
 interface ILike {
   user: Types.ObjectId
   tweet: Types.ObjectId
-  point: number
   timestamp: Date
 }
 
 const likeSchema = new Schema<ILike>({
   user: { type: Schema.Types.ObjectId, required: true, ref: "User" },
   tweet: { type: Schema.Types.ObjectId, required: true, ref: "Tweet" },
-  point: { type: Number, required: true, enum: [1, -1] },
   timestamp: { type: Date, default: Date.now, immutable: true },
 })
 
