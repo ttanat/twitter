@@ -1,16 +1,19 @@
-import mongoose from "mongoose";
+import { model, Schema, Types } from "mongoose";
 
-const likeSchema = new mongoose.Schema({
-  user: {
-    id: { type: mongoose.Types.ObjectId, required: true },
-  },
-  tweet: {
-    id: { type: mongoose.Types.ObjectId, required: true },
-  },
-  point: { type: Number, validate: (val: Number) => val === 1 || val === -1 },
-  timestamp: { type: Date, default: () => new Date(), immutable: true },
+interface ILike {
+  user: Types.ObjectId
+  tweet: Types.ObjectId
+  point: number
+  timestamp: Date
+}
+
+const likeSchema = new Schema<ILike>({
+  user: { type: Schema.Types.ObjectId, required: true, ref: "User" },
+  tweet: { type: Schema.Types.ObjectId, required: true, ref: "Tweet" },
+  point: { type: Number, required: true, enum: [1, -1] },
+  timestamp: { type: Date, default: Date.now, immutable: true },
 })
 
 likeSchema.index({ "user.id": 1, "tweet.id": 1 }, { unique: true })
 
-export default mongoose.model("Like", likeSchema)
+export default model<ILike>("Like", likeSchema)

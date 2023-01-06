@@ -17,14 +17,12 @@ const activitySchema = new Schema<IActivity>({
     required: true,
     maxlength: 16,
     match: /\w+/,
-    validate: (val: string) => {
-      [
-        "liked", "unliked",
-        "followed", "unfollowed",
-        "bookmarked", "unbookmarked",
-        "viewed", // view profile (user) or tweet
-      ].includes(val)
-    }
+    enum: [
+      "liked", "unliked",
+      "followed", "unfollowed",
+      "bookmarked", "unbookmarked",
+      "viewed", // view profile (user) or tweet
+    ]
   },
   // e.g. user liked post, post is target
   target: {

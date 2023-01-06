@@ -10,18 +10,18 @@ interface IUser {
   isVerified?: boolean
   numTweets: number
   dateJoined: Date
-  following: Array<IUser>
-  followers: Array<IUser>
+  following: Types.Array<Types.ObjectId>
+  followers: Types.Array<Types.ObjectId>
   numFollowing: number
   numFollowers: number
-  likes: Array<Types.ObjectId>
-  bookmarks: Array<Types.ObjectId>
-  pollsVoted: Array<IPollsVoted>
+  likes: Types.Array<Types.ObjectId>
+  bookmarks: Types.Array<Types.ObjectId>
+  pollsVoted: Types.Array<IPollsVoted>
   numReplies: number
   numPoints: number
   lastActive: Date
   email?: string
-  validRefreshTokens: Array<string>
+  validRefreshTokens: Types.Array<string>
   isTweetsLimited?: boolean
   isRepliesLimited?: boolean
   isSuspended?: boolean
@@ -49,27 +49,27 @@ const userSchema = new Schema<IUser>({
   banner: String,
   bio: { type: String, maxlength: 150, trim: true },
   isVerified: Boolean,
-  numTweets: { type: Number, default: 0 },
-  dateJoined: { type: Date, default: () => new Date(), immutable: true },
+  numTweets: { type: Number, default: 0, min: 0 },
+  dateJoined: { type: Date, default: Date.now, immutable: true },
 
   following: {
     type: [{ type: Schema.Types.ObjectId, ref: "User" }],
-    validate: [(followingList: Array<Object>) => followingList.length <= 5000, "Follow limit reached"]
+    validate: [(followingList: Types.Array<Types.ObjectId>) => followingList.length <= 5000, "Follow limit reached"]
   },
   followers: [{ type: Schema.Types.ObjectId, ref: "User" }],
-  numFollowing: { type: Number, default: 0, max: 5000 },
-  numFollowers: { type: Number, default: 0 },
+  numFollowing: { type: Number, default: 0, min: 0, max: 5000 },
+  numFollowers: { type: Number, default: 0, min: 0 },
 
   likes: [{ type: Schema.Types.ObjectId, ref: "Tweet" }],
   bookmarks: [{ type: Schema.Types.ObjectId, ref: "Tweet" }],
   pollsVoted: [{
     _id: { type: Schema.Types.ObjectId, required: true, ref: "Tweet" },
-    choice: { type: String, required: true },
+    choice: { type: String, required: true, maxlength: 25 },
   }],
 
-  numReplies: { type: Number, default: 0 },
+  numReplies: { type: Number, default: 0, min: 0 },
   numPoints: { type: Number, default: 0 }, // Number of likes on user's tweets and replies
-  lastActive: { type: Date, default: () => new Date() },
+  lastActive: { type: Date, default: Date.now },
   email: {
     type: String,
     unique: true,
