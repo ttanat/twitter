@@ -36,7 +36,7 @@ const activitySchema = new Schema<IActivity>({
     enum: ["Tweet", "User"],
   },
   // When action occurred
-  timestamp: { type: Date, required: true, default: Date.now },
+  timestamp: { type: Date, required: true, default: Date.now, immutable: true },
 })
 
 export default model<IActivity>("Activity", activitySchema)
