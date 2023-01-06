@@ -1,6 +1,40 @@
-import mongoose from "mongoose";
+import { model, Schema, Types } from "mongoose";
 
-const userSchema = new mongoose.Schema({
+interface IUser {
+  username: string
+  password: string
+  name?: string
+  image?: string
+  banner?: string
+  bio?: string
+  isVerified?: boolean
+  numTweets: number
+  dateJoined: Date
+  following: Array<IUser>
+  followers: Array<IUser>
+  numFollowing: number
+  numFollowers: number
+  likes: Array<Types.ObjectId>
+  bookmarks: Array<Types.ObjectId>
+  pollsVoted: Array<IPollsVoted>
+  numReplies: number
+  numPoints: number
+  lastActive: Date
+  email?: string
+  validRefreshTokens: Array<string>
+  isTweetsLimited?: boolean
+  isRepliesLimited?: boolean
+  isSuspended?: boolean
+  isDeactivated?: boolean
+  isDeleted?: boolean
+}
+
+interface IPollsVoted {
+  _id: Types.ObjectId
+  choice: string
+}
+
+const userSchema = new Schema<IUser>({
   username: {
     type: String,
     required: true,
@@ -19,22 +53,19 @@ const userSchema = new mongoose.Schema({
   dateJoined: { type: Date, default: () => new Date(), immutable: true },
 
   following: {
-    type: [{
-      id: { type: mongoose.Types.ObjectId, required: true },
-      followedOn: { type: Date, required: true }
-    }],
+    type: [{ type: Schema.Types.ObjectId, ref: "User" }],
     validate: [(followingList: Array<Object>) => followingList.length <= 5000, "Follow limit reached"]
   },
-  followers: [{
-    id: { type: mongoose.Types.ObjectId, required: true },
-    followedOn: { type: Date, required: true }
-  }],
+  followers: [{ type: Schema.Types.ObjectId, ref: "User" }],
   numFollowing: { type: Number, default: 0, max: 5000 },
   numFollowers: { type: Number, default: 0 },
 
-  likes: [{ id: mongoose.Types.ObjectId }],
-  bookmarks: [{ id: mongoose.Types.ObjectId }],
-  pollsVoted: [{ id: mongoose.Types.ObjectId, choice: String }],
+  likes: [{ type: Schema.Types.ObjectId, ref: "Tweet" }],
+  bookmarks: [{ type: Schema.Types.ObjectId, ref: "Tweet" }],
+  pollsVoted: [{
+    _id: { type: Schema.Types.ObjectId, required: true, ref: "Tweet" },
+    choice: { type: String, required: true },
+  }],
 
   numReplies: { type: Number, default: 0 },
   numPoints: { type: Number, default: 0 }, // Number of likes on user's tweets and replies
@@ -45,12 +76,7 @@ const userSchema = new mongoose.Schema({
     trim: true,
     match: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/i
   },
-  validRefreshTokens: {
-    type: [{
-      type: String,
-      validate: (token: string) => /^[\w-]+\.[\w-]+\.[\w-]+$/.test(token),
-    }],
-  },
+  validRefreshTokens: [{ type: String, match: /^[\w-]+\.[\w-]+\.[\w-]+$/ }],
 
   isTweetsLimited: Boolean,
   isRepliesLimited: Boolean,
@@ -59,4 +85,4 @@ const userSchema = new mongoose.Schema({
   isDeleted: Boolean,
 })
 
-export default mongoose.model("User", userSchema)
+export default model<IUser>("User", userSchema)
