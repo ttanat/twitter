@@ -1,7 +1,10 @@
-import { Schema, Types } from "mongoose";
-import { Analytics, IAnalytics, actorSchema, IActor } from "./analytics";
+import { model, Schema, Types } from "mongoose";
+import { actorSchema, IActor } from "./actorSchema";
 
-interface ITweetAnalytics extends IAnalytics {
+interface ITweetAnalytics {
+  startDate: Date
+  endDate: Date
+  target: Types.ObjectId
   numViews: number
   viewedBy: Types.Array<IActor>
   numEngagements: number
@@ -23,6 +26,9 @@ interface ITweetAnalytics extends IAnalytics {
 }
 
 const tweetAnalyticsSchema = new Schema<ITweetAnalytics>({
+  startDate: { type: Date, required: true },
+  endDate: { type: Date, required: true },
+  target: { type: Schema.Types.ObjectId, required: true, ref: "Tweet" },
   // Views and engagement
   numViews: { type: Number, min: 0 },
   viewedBy: [actorSchema],
@@ -49,4 +55,4 @@ const tweetAnalyticsSchema = new Schema<ITweetAnalytics>({
   bookmarkedBy: [actorSchema],
 })
 
-export default Analytics.discriminator("TweetAnalytics", tweetAnalyticsSchema)
+export default model<ITweetAnalytics>("TweetAnalytics", tweetAnalyticsSchema)
