@@ -3,10 +3,10 @@ import jwt, { JwtPayload } from "jsonwebtoken"
 
 export default defineEventHandler(async event => {
   const { refreshToken } = await readBody(event)
-  // Verify refresh token
+  // Get username from token
   const { username } = jwt.decode(refreshToken) as JwtPayload
   // Delete refresh token from database (invalidate)
-  await User.updateOne({ username }, { $pull: { validRefreshTokens: refreshToken }})
+  await User.updateOne({ username }, { $pull: { validRefreshTokens: refreshToken }}).exec()
 
   return {}
 })

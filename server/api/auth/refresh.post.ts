@@ -16,7 +16,7 @@ export default defineEventHandler(async event => {
   const count = await User.countDocuments(
     { username, validRefreshTokens: refreshToken },
     { limit: 1 },
-  )
+  ).exec()
   if (count < 1) {
     return createError({ statusCode: 401, statusMessage: "Verification error" })
   }

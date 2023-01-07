@@ -13,12 +13,11 @@ export default eventHandler(async event => {
 
   // Create new access and refresh tokens
   const { accessToken, refreshToken } = createTokens(username)
-  console.log(refreshToken)
   // Update last active and save new refresh token
   await User.updateOne({ username }, {
     lastActive: new Date(),
     $push: { validRefreshTokens: refreshToken },
-  })
+  }).exec()
 
   return { accessToken, refreshToken }
 })
