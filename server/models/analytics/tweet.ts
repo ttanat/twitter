@@ -1,61 +1,59 @@
 import { model, Schema, Types } from "mongoose";
-import { actorSchema, IActor } from "./actorSchema";
+import { counter, IChartData, chartData } from "./helpers";
 
 interface ITweetAnalytics {
+  tweet: Types.ObjectId
   startDate: Date
   endDate: Date
-  target: Types.ObjectId
   numViews: number
-  viewedBy: Types.Array<IActor>
+  viewData: Types.Array<IChartData>
   numEngagements: number
-  engagedBy: Types.Array<IActor>
+  engagementData: Types.Array<IChartData>
   numLikes: number
   numUnlikes: number
-  likedBy: Types.Array<IActor>
+  likeData: Types.Array<IChartData>
   numRetweets: number
   numUnretweets: number
-  retweetedBy: Types.Array<IActor>
+  retweetData: Types.Array<IChartData>
   numQuotes: number
   numUnquotes: number
-  quotedBy: Types.Array<IActor>
+  quoteData: Types.Array<IChartData>
   numReplies: number
-  repliedBy: Types.Array<IActor>
+  replyData: Types.Array<IChartData>
   numBookmarks: number
   numUnbookmarks: number
-  bookmarkedBy: Types.Array<IActor>
+  bookmarkData: Types.Array<IChartData>
 }
 
-const counter = { type: Number, default: 0, min: 0 }
-
 const tweetAnalyticsSchema = new Schema<ITweetAnalytics>({
+  tweet: { type: Schema.Types.ObjectId, required: true, ref: "Tweet" },
   startDate: { type: Date, required: true },
   endDate: { type: Date, required: true },
-  target: { type: Schema.Types.ObjectId, required: true, ref: "Tweet" },
   // Views
   numViews: counter,
-  viewedBy: [actorSchema],
+  viewData: [chartData],
   // Engagement
   numEngagements: counter,
-  engagedBy: [actorSchema],
+  engagementData: [chartData],
   // Likes
   numLikes: counter,
   numUnlikes: counter,
-  likedBy: [actorSchema],
+  likeData: [chartData],
   // Retweets
   numRetweets: counter,
   numUnretweets: counter,
-  retweetedBy: [actorSchema],
+  retweetData: [chartData],
   // Quote tweets
   numQuotes: counter,
   numUnquotes: counter,
-  quotedBy: [actorSchema],
+  quoteData: [chartData],
   // Replies
   numReplies: counter,
-  repliedBy: [actorSchema],
+  replyData: [chartData],
   // Bookmarks
   numBookmarks: counter,
   numUnbookmarks: counter,
-  bookmarkedBy: [actorSchema],
+  bookmarkData: [chartData],
 })
 
 export default model<ITweetAnalytics>("TweetAnalytics", tweetAnalyticsSchema)

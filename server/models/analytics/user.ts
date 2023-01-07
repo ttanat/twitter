@@ -1,35 +1,33 @@
 import { model, Schema, Types } from "mongoose";
-import { actorSchema, IActor } from "./actorSchema";
+import { counter, IChartData, chartData } from "./helpers";
 
 interface IUserAnalytics {
+  user: Types.ObjectId
   startDate: Date
   endDate: Date
-  target: Types.ObjectId
   numProfileVisits: number
-  profileVisitedBy: Types.Array<IActor>
+  profileVisitData: Types.Array<IChartData>
   numFollows: number
   numUnfollows: number
-  followedBy: Types.Array<IActor>
+  followData: Types.Array<IChartData>
   numMentions: number
-  mentionedBy: Types.Array<IActor>
+  mentionData: Types.Array<IChartData>
 }
 
-const counter = { type: Number, default: 0, min: 0 }
-
 const userAnalyticsSchema = new Schema<IUserAnalytics>({
+  user: { type: Schema.Types.ObjectId, required: true, ref: "Tweet" },
   startDate: { type: Date, required: true },
   endDate: { type: Date, required: true },
-  target: { type: Schema.Types.ObjectId, required: true, ref: "Tweet" },
   // Profile visits
   numProfileVisits: counter,
-  profileVisitedBy: [actorSchema],
+  profileVisitData: [chartData],
   // Following
   numFollows: counter,
   numUnfollows: counter,
-  followedBy: [actorSchema],
+  followData: [chartData],
   // Mentions
   numMentions: counter,
-  mentionedBy: [actorSchema],
+  mentionData: [chartData],
 })
 
 export default model<IUserAnalytics>("UserAnalytics", userAnalyticsSchema)
