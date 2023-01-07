@@ -1,14 +1,12 @@
 import { model, Schema, Types } from "mongoose";
 
 interface IPoll {
-  choices: Types.Array<IChoices>
+  choices: Types.Array<{
+    choice: string
+    numVotes: number
+  }>
   totalNumVotes: number
   expiry: Date
-}
-
-interface IChoices {
-  choice: string
-  numVotes: number
 }
 
 const pollSchema = new Schema<IPoll>({
@@ -18,9 +16,9 @@ const pollSchema = new Schema<IPoll>({
       numVotes: { type: Number, required: true, default: 0, min: 0 },
     }],
     validate: [
-      { validator: (choices: IPoll["choices"]) => choices.length >= 2, msg: "At least 2 choices needed" },
-      { validator: (choices: IPoll["choices"]) => choices.length <= 6, msg: "Maximum 6 choices" },
-      { validator: (choices: IPoll["choices"]) => new Set(choices).size === choices.length, msg: "No duplicates allowed" },
+      { validator: (choices: IPoll["choices"]): boolean => choices.length >= 2, msg: "Minimum 2 choices" },
+      { validator: (choices: IPoll["choices"]): boolean => choices.length <= 6, msg: "Maximum 6 choices" },
+      { validator: (choices: IPoll["choices"]): boolean => new Set(choices).size === choices.length, msg: "No duplicates allowed" },
     ],
   },
   totalNumVotes: { type: Number, default: 0, min: 0 },
@@ -28,7 +26,12 @@ const pollSchema = new Schema<IPoll>({
 })
 
 interface ITweet {
-  user: Types.ObjectId
+  user: {
+    _id: Types.ObjectId
+    name?: string
+    username: string
+    image?: string
+  }
   content?: string
   quotedTweet?: Types.ObjectId
   timestamp: Date
@@ -36,35 +39,37 @@ interface ITweet {
   media?: Types.Array<string>
   poll?: IPoll
   hashtags?: Types.Array<string>
+  mentions?: Types.Array<string>
   numReplies: number
   numRetweets: number
   numQuotes: number
   numLikes: number
   ancestors?: Types.Array<Types.ObjectId>
   parent?: Types.ObjectId
-  isLimited?: boolean
+  isPrivate?: boolean
   isRemoved?: boolean
   isDeleted?: boolean
 }
 
 const tweetSchema = new Schema<ITweet>({
   user: {
-    id: { type: Schema.Types.ObjectId, required: true },
+    _id: { type: Schema.Types.ObjectId, required: true },
     name: String,
     username: { type: String, required: true },
     image: String,
   },
 
-  content: { type: String },
+  content: { type: String, maxlength: 300, trim: true },
   quotedTweet: { type: Schema.Types.ObjectId, ref: "Tweet" },
   timestamp: { type: Date, default: Date.now, immutable: true },
   effectiveTimestamp: { type: Date, default: Date.now },
-  media: [String],
+  media: {
+    type: [String],
+    validate: [(val: Types.Array<string>): boolean => val.length <= 4, "Maximum 4 media files"]
+  },
   poll: pollSchema,
-  hashtags: [{
-    type: String,
-    match: /^#[a-zA-Z]\w{0,31}$/i,
-  }],
+  hashtags: [{ type: String, match: /^[a-z]\w{0,31}$/i }],
+  mentions: [{ type: String, match: /^\w{3,32}$/ }],
 
   numReplies: { type: Number, default: 0, min: 0 },
   numRetweets: { type: Number, default: 0, min: 0 },
@@ -74,7 +79,7 @@ const tweetSchema = new Schema<ITweet>({
   ancestors: [{ type: Schema.Types.ObjectId, ref: "Tweet" }],
   parent: { type: Schema.Types.ObjectId, ref: "Tweet" },
 
-  isLimited: Boolean,
+  isPrivate: Boolean,
   isRemoved: Boolean,
   isDeleted: Boolean,
 })

@@ -16,22 +16,17 @@ interface IUser {
   numFollowers: number
   likes: Types.Array<Types.ObjectId>
   bookmarks: Types.Array<Types.ObjectId>
-  pollsVoted: Types.Array<IPollsVoted>
-  numReplies: number
-  numPoints: number
+  pollsVoted: Types.Array<{
+    _id: Types.ObjectId
+    choice: string
+  }>
   lastActive: Date
   email?: string
   validRefreshTokens: Types.Array<string>
-  isTweetsLimited?: boolean
-  isRepliesLimited?: boolean
+  isPrivate?: boolean
   isSuspended?: boolean
   isDeactivated?: boolean
   isDeleted?: boolean
-}
-
-interface IPollsVoted {
-  _id: Types.ObjectId
-  choice: string
 }
 
 const userSchema = new Schema<IUser>({
@@ -41,7 +36,7 @@ const userSchema = new Schema<IUser>({
     index: { unique: true, collation: { locale: "en", strength: 2 }},
     maxlength: 32,
     trim: true,
-    match: /\w{3,32}/,
+    match: /^\w{3,32}$/,
   },
   password: { type: String, required: true },
   name: { type: String, maxlength: 32, trim: true },
@@ -54,7 +49,7 @@ const userSchema = new Schema<IUser>({
 
   following: {
     type: [{ type: Schema.Types.ObjectId, ref: "User" }],
-    validate: [(followingList: Types.Array<Types.ObjectId>) => followingList.length <= 5000, "Follow limit reached"]
+    validate: [(val: Types.Array<Types.ObjectId>): boolean => val.length <= 5000, "Follow limit reached"]
   },
   followers: [{ type: Schema.Types.ObjectId, ref: "User" }],
   numFollowing: { type: Number, default: 0, min: 0, max: 5000 },
@@ -67,8 +62,6 @@ const userSchema = new Schema<IUser>({
     choice: { type: String, required: true, maxlength: 25 },
   }],
 
-  numReplies: { type: Number, default: 0, min: 0 },
-  numPoints: { type: Number, default: 0 }, // Number of likes on user's tweets and replies
   lastActive: { type: Date, default: Date.now },
   email: {
     type: String,
@@ -78,8 +71,7 @@ const userSchema = new Schema<IUser>({
   },
   validRefreshTokens: [{ type: String, match: /^[\w-]+\.[\w-]+\.[\w-]+$/ }],
 
-  isTweetsLimited: Boolean,
-  isRepliesLimited: Boolean,
+  isPrivate: Boolean,
   isSuspended: Boolean,
   isDeactivated: Boolean,
   isDeleted: Boolean,

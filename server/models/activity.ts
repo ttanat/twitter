@@ -15,8 +15,6 @@ const activitySchema = new Schema<IActivity>({
   action: {
     type: String,
     required: true,
-    maxlength: 16,
-    match: /\w+/,
     enum: [
       "liked", "unliked",
       "followed", "unfollowed",
