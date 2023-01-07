@@ -14,19 +14,21 @@ interface IUserAnalytics {
   mentionedBy: Types.Array<IActor>
 }
 
+const counter = { type: Number, default: 0, min: 0 }
+
 const userAnalyticsSchema = new Schema<IUserAnalytics>({
   startDate: { type: Date, required: true },
   endDate: { type: Date, required: true },
   target: { type: Schema.Types.ObjectId, required: true, ref: "Tweet" },
   // Profile visits
-  numProfileVisits: { type: Number, min: 0 },
+  numProfileVisits: counter,
   profileVisitedBy: [actorSchema],
   // Following
-  numFollows: { type: Number, min: 0 },
-  numUnfollows: { type: Number, min: 0 },
+  numFollows: counter,
+  numUnfollows: counter,
   followedBy: [actorSchema],
   // Mentions
-  numMentions: { type: Number, min: 0 },
+  numMentions: counter,
   mentionedBy: [actorSchema],
 })
 

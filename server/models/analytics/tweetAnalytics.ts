@@ -25,33 +25,36 @@ interface ITweetAnalytics {
   bookmarkedBy: Types.Array<IActor>
 }
 
+const counter = { type: Number, default: 0, min: 0 }
+
 const tweetAnalyticsSchema = new Schema<ITweetAnalytics>({
   startDate: { type: Date, required: true },
   endDate: { type: Date, required: true },
   target: { type: Schema.Types.ObjectId, required: true, ref: "Tweet" },
-  // Views and engagement
-  numViews: { type: Number, min: 0 },
+  // Views
+  numViews: counter,
   viewedBy: [actorSchema],
-  numEngagements: { type: Number, min: 0 },
+  // Engagement
+  numEngagements: counter,
   engagedBy: [actorSchema],
   // Likes
-  numLikes: { type: Number, min: 0 },
-  numUnlikes: { type: Number, min: 0 },
+  numLikes: counter,
+  numUnlikes: counter,
   likedBy: [actorSchema],
   // Retweets
-  numRetweets: { type: Number, min: 0 },
-  numUnretweets: { type: Number, min: 0 },
+  numRetweets: counter,
+  numUnretweets: counter,
   retweetedBy: [actorSchema],
   // Quote tweets
-  numQuotes: { type: Number, min: 0 },
-  numUnquotes: { type: Number, min: 0 },
+  numQuotes: counter,
+  numUnquotes: counter,
   quotedBy: [actorSchema],
   // Replies
-  numReplies: { type: Number, min: 0 },
+  numReplies: counter,
   repliedBy: [actorSchema],
   // Bookmarks
-  numBookmarks: { type: Number, min: 0 },
-  numUnbookmarks: { type: Number, min: 0 },
+  numBookmarks: counter,
+  numUnbookmarks: counter,
   bookmarkedBy: [actorSchema],
 })
 

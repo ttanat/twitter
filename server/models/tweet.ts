@@ -86,10 +86,10 @@ const tweetSchema = new Schema<ITweet>({
 
 tweetSchema.pre("save", function(next) {
   if (!this.content && !this.media?.length && !this.poll) {
-    return next(new Error("Can't be empty"))
+    next(new Error("Can't be empty"))
   }
   if (this.poll && this.media?.length) {
-    return next(new Error("Polls can't contain media"))
+    next(new Error("Polls can't contain media"))
   }
   next()
 })
