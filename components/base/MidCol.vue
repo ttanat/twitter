@@ -1,5 +1,5 @@
 <template>
-  <v-col sm="8" md="7" lg="6" class="ml-5">
+  <v-col sm="9" md="7" lg="6" class="ml-lg-5">
     <slot></slot>
   </v-col>
 </template>

@@ -1,7 +1,5 @@
 <template>
   <BaseLayout>
-    <template #middle>
-      <ProfileItem />
-    </template>
+    <ProfileItem />
   </BaseLayout>
 </template>

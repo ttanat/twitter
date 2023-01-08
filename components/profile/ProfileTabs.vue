@@ -16,11 +16,3 @@
 <script setup>
 const tab = ref(null)
 </script>
-
-<style>
-/* Global */
-.v-tab__slider {
-  height: 3px;
-  border-radius: 999px;
-}
-</style>

@@ -1,7 +1,5 @@
 <template>
   <BaseLayout>
-    <template #middle>
-      <TweetList />
-    </template>
+    <TweetList />
   </BaseLayout>
 </template>

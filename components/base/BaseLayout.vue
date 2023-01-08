@@ -3,7 +3,7 @@
     <slot name="left"></slot>
   </BaseLeftCol>
   <BaseMidCol>
-    <slot name="middle"></slot>
+    <slot></slot>
   </BaseMidCol>
   <BaseRightCol>
     <slot name="right"></slot>

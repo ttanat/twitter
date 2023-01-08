@@ -1,5 +1,5 @@
 <template>
-  <v-col lg="2" class="d-none d-lg-block mr-5">
+  <v-col sm="2" md="1" lg="2" class="d-none d-sm-block mr-lg-5">
     <slot>
       <BaseLeftSideBar />
     </slot>
