@@ -1,4 +1,5 @@
 import User from "@/server/models/user"
+import { getNextUrl } from "~~/server/utils/getNextUrl"
 
 export default defineEventHandler(async event => {
   if (!event.context.user) {
@@ -18,8 +19,7 @@ export default defineEventHandler(async event => {
 
   let next = null
   if (user!.bookmarks.length > 25) {
-    const params = new URLSearchParams({ page: (page + 1).toString() })
-    next = `${event.node.req.url}?${params.toString()}`
+    next = getNextUrl(event, { page: (page + 1).toString() })
   }
 
   return {

@@ -1,24 +1,27 @@
 import Tweet from "@/server/models/tweet"
+import { getNextUrl } from "~~/server/utils/getNextUrl"
 
 export default defineEventHandler(async event => {
-  const { username, before } = getQuery(event)
+  let { username, before } = getQuery(event)
+  // Get user's own tweets (API called from /profile)
+  username ||= event.context.user?.username
+  if (!username) {
+    return createError({ statusCode: 400 })
+  }
+
   const tweets = await Tweet.find({
     username,
     timestamp: { $lt: before },
-    $limit: 20,
+    $limit: 25,
     $sort: { timestamp: -1 }
   })
 
-  let next
-  if (tweets.length < 20) {
-    next = null
-  } else {
-    next = event.node.req.url
-    const params = new URLSearchParams({
+  let next = null
+  if (tweets.length > 25) {
+    next = getNextUrl(event, {
       username: username?.toString()!,
       before: tweets[tweets.length - 1].timestamp.toISOString()
     })
-    next = `${event.node.req.url}?${params.toString()}`
   }
 
   return {
