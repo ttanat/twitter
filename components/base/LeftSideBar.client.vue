@@ -26,7 +26,7 @@
     <!-- Buttons with icons -->
     <div class="mx-4 d-lg-none">
       <div v-for="(link, i) in links" :key="i" class="d-flex justify-end mb-1">
-        <v-btn variant="text" icon color="primary">
+        <v-btn variant="text" icon color="grey-lighten-2">
           <v-icon :icon="link.icon"></v-icon>
           <v-tooltip activator="parent" location="right">{{ link.title }}</v-tooltip>
         </v-btn>

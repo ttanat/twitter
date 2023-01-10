@@ -15,7 +15,12 @@
       >
         <template v-slot:icon>
           <NuxtLink :to="'/@'+tweet.user.username">
-            <v-avatar :image="tweet.user.image" icon="mdi-account" size="45"></v-avatar>
+            <v-avatar
+              :image="tweet.user.image"
+              icon="mdi-account"
+              size="45"
+              :style="[tweet.user.image ? 'margin-top: 6px' : '']"
+            ></v-avatar>
           </NuxtLink>
         </template>
 
