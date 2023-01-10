@@ -1,11 +1,15 @@
 import User from "@/server/models/user"
 
 export default defineEventHandler(async event => {
-  const username = event.context.user?.username
-  if (!username) return createError({ statusCode: 401 })
+  let { username } = getQuery(event)
+  // Check if user is viewing their own profile
+  const isSelfProfile = !!username
+  username ||= event.context.user?.username
+  if (!username) {
+    return createError({ statusCode: 401 })
+  }
 
   const profile = await User.findOne({ username }).select({
-    _id: 0,
     username: 1,
     name: 1,
     image: 1,
@@ -33,5 +37,16 @@ export default defineEventHandler(async event => {
   if (profile.isDeleted) {
     return { isDeleted: true }
   }
+
+  // Check if user is following user
+  if (!isSelfProfile && event.context.user) {
+    const isFollowing = !!(await User.countDocuments({
+      username: event.context.user.username,
+      following: profile._id,
+    }, { limit: 1 }).exec())
+
+    return { ...profile.toObject(), isFollowing }
+  }
+
   return profile
 })

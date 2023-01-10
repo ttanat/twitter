@@ -6,7 +6,7 @@ export default defineEventHandler(async event => {
   // Get user's own tweets (API called from /profile)
   username ||= event.context.user?.username
   if (!username) {
-    return createError({ statusCode: 400 })
+    return createError({ statusCode: 401 })
   }
 
   const tweets = await Tweet.find({
