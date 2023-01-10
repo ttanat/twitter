@@ -1,5 +1,6 @@
 import jwt, { JwtPayload } from "jsonwebtoken"
 import User from "@/server/models/user"
+import { ci } from "~~/server/utils/collations"
 
 const config = useRuntimeConfig()
 
@@ -13,11 +14,12 @@ export default defineEventHandler(async event => {
     return createError({ statusCode: 401, statusMessage: "Verification error" })
   }
   // Check if refresh token is valid
-  const count = await User.countDocuments(
-    { username, validRefreshTokens: refreshToken },
-    { limit: 1 },
-  ).exec()
-  if (count < 1) {
+  const isValid = await User.findOne(
+    { username },
+    { _id: 0, validRefreshTokens: { $elemMatch: { $eq: refreshToken }}},
+  ).collation(ci).exec()
+  // Check if returned array has refresh token
+  if (isValid?.validRefreshTokens.length === 1) {
     return createError({ statusCode: 401, statusMessage: "Verification error" })
   }
   // Generate new access token

@@ -1,6 +1,7 @@
 import User from "@/server/models/user"
 import bcrypt from "bcrypt"
 import { createTokens } from "@/server/utils/createTokens"
+import { ci } from "~~/server/utils/collations"
 
 export default eventHandler(async event => {
   const { username, password } = await readBody(event)
@@ -17,7 +18,7 @@ export default eventHandler(async event => {
   await User.updateOne({ username }, {
     lastActive: new Date(),
     $push: { validRefreshTokens: refreshToken },
-  }).exec()
+  }).collation(ci).exec()
 
   return { accessToken, refreshToken }
 })

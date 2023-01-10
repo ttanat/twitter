@@ -1,4 +1,5 @@
 import User from "@/server/models/user"
+import { ci } from "~~/server/utils/collations"
 import { getNextUrl } from "~~/server/utils/getNextUrl"
 
 export default defineEventHandler(async event => {
@@ -11,11 +12,14 @@ export default defineEventHandler(async event => {
   // Get slice for bookmarks array
   const slice = [page * -25, 25]
 
-  const user = await User.findOne({ username }).select({
+  const user = await User.findOne({ username }, {
     _id: 0,
     username: 1, // Select random field to prevent mongoose from selecting every field
     bookmarks: { $slice: ["$bookmarks", ...slice] },
-  }).populate("bookmarks").exec()
+  })
+    .collation(ci)
+    .populate("bookmarks")
+    .exec()
 
   let next = null
   if (user!.bookmarks.length > 25) {

@@ -1,4 +1,5 @@
 import Tweet from "@/server/models/tweet"
+import User from "@/server/models/user"
 
 /*
   Routes:
@@ -14,6 +15,6 @@ import Tweet from "@/server/models/tweet"
       - Profile should have same logic
 */
 
-export default defineEventHandler(event => {
+export default defineEventHandler(async event => {
   return Tweet.find()
 })

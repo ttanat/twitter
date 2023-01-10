@@ -27,6 +27,7 @@ interface IUser {
   isSuspended?: boolean
   isDeactivated?: boolean
   isDeleted?: boolean
+  test?: Types.Array<string>
 }
 
 const userSchema = new Schema<IUser>({
@@ -75,6 +76,7 @@ const userSchema = new Schema<IUser>({
   isSuspended: Boolean,
   isDeactivated: Boolean,
   isDeleted: Boolean,
+  test: [String],
 })
 
 export default model<IUser>("User", userSchema)

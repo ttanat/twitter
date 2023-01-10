@@ -14,7 +14,7 @@ export default defineEventHandler(async event => {
     // Create new access and refresh tokens
     const { accessToken, refreshToken } = createTokens(user.username)
     // Save new refresh token
-    await User.updateOne({ username }, { $push: { validRefreshTokens: refreshToken }}).exec()
+    await User.updateOne({ _id: user._id }, { $push: { validRefreshTokens: refreshToken }}).exec()
 
     return { accessToken, refreshToken }
   } catch (err: any) {

@@ -1,4 +1,5 @@
 import User from "@/server/models/user"
+import { ci } from "~~/server/utils/collations"
 
 export default defineEventHandler(async event => {
   let { username } = getQuery(event)
@@ -40,10 +41,11 @@ export default defineEventHandler(async event => {
 
   // Check if user is following user
   if (!isSelfProfile && event.context.user) {
-    const isFollowing = !!(await User.countDocuments({
-      username: event.context.user.username,
-      following: profile._id,
-    }, { limit: 1 }).exec())
+    const isFollowing = (
+      await User.findOne({ username }, { _id: 0, following: { $elemMatch: { $eq: profile._id }}})
+        .collation(ci)
+        .exec()
+    )?.following.length === 1
 
     return { ...profile.toObject(), isFollowing }
   }
