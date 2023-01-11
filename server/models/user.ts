@@ -48,11 +48,17 @@ const userSchema = new Schema<IUser>({
   numTweets: { type: Number, default: 0, min: 0 },
   dateJoined: { type: Date, default: Date.now, immutable: true },
 
+  // following is important
   following: {
     type: [{ type: Schema.Types.ObjectId, ref: "User" }],
     validate: [(val: Types.Array<Types.ObjectId>): boolean => val.length <= 5000, "Follow limit reached"]
   },
-  followers: [{ type: Schema.Types.ObjectId, ref: "User" }],
+  // followers not important
+  // Only used for showing followers so length is limited to 5000 in application (~/server/utils/follow)
+  followers: {
+    type: [{ type: Schema.Types.ObjectId, ref: "User" }],
+    validate: [(val: Types.Array<Types.ObjectId>): boolean => val.length <= 5000, "Maximum 5000"]
+  },
   numFollowing: { type: Number, default: 0, min: 0, max: 5000 },
   numFollowers: { type: Number, default: 0, min: 0 },
 
