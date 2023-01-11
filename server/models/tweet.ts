@@ -52,12 +52,7 @@ interface ITweet {
 }
 
 const tweetSchema = new Schema<ITweet>({
-  user: {
-    _id: { type: Schema.Types.ObjectId, required: true },
-    name: String,
-    username: { type: String, required: true },
-    image: String,
-  },
+  user: { type: Schema.Types.ObjectId, required: true, ref: "User" },
 
   content: { type: String, maxlength: 300, trim: true },
   quotedTweet: { type: Schema.Types.ObjectId, ref: "Tweet" },
