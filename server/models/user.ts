@@ -14,6 +14,8 @@ interface IUser {
   followers: Types.Array<Types.ObjectId>
   numFollowing: number
   numFollowers: number
+  followRequestsSent: Types.Array<Types.ObjectId>
+  followRequestsReceived: Types.Array<Types.ObjectId>
   likes: Types.Array<Types.ObjectId>
   bookmarks: Types.Array<Types.ObjectId>
   pollsVoted: Types.Array<{
@@ -61,6 +63,8 @@ const userSchema = new Schema<IUser>({
   },
   numFollowing: { type: Number, default: 0, min: 0, max: 5000 },
   numFollowers: { type: Number, default: 0, min: 0 },
+  followRequestsSent: [{ type: Schema.Types.ObjectId }],
+  followRequestsReceived: [{ type: Schema.Types.ObjectId }],
 
   likes: [{ type: Schema.Types.ObjectId, ref: "Tweet" }],
   bookmarks: [{ type: Schema.Types.ObjectId, ref: "Tweet" }],
