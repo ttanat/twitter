@@ -74,7 +74,7 @@ const tweetSchema = new Schema<ITweet>({
   ancestors: [{ type: Schema.Types.ObjectId, ref: "Tweet" }],
   parent: { type: Schema.Types.ObjectId, ref: "Tweet" },
 
-  isPrivate: Boolean,
+  isPrivate: { type: Boolean, required: true, default: false },
   isRemoved: Boolean,
   isDeleted: Boolean,
 })
