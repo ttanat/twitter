@@ -1,6 +1,7 @@
 import User from "@/server/models/user"
 import { ci } from "~~/server/utils/collations"
 import { getNextUrl } from "~~/server/utils/getNextUrl"
+import { checkPageNumber } from "~~/server/utils/query"
 
 export default defineEventHandler(async event => {
   if (!event.context.user) {
@@ -8,7 +9,10 @@ export default defineEventHandler(async event => {
   }
   const { username } = event.context.user
   // Get page number
-  const page = parseInt(getQuery(event).page as string) || 1
+  const page = parseInt(getQuery(event).page as string)
+  if (!checkPageNumber(page)) {
+    return createError({ statusCode: 400 })
+  }
   // Get slice for bookmarks array
   const slice = [page * -25, 25]
 

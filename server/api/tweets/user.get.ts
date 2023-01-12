@@ -2,14 +2,15 @@ import Tweet from "~~/server/models/tweet"
 import User from "~~/server/models/user"
 import { ci } from "~~/server/utils/collations"
 import { getNextUrl } from "~~/server/utils/getNextUrl"
+import { checkDateString, checkUsername } from "~~/server/utils/query"
 
 export default defineEventHandler(async event => {
   const { username, before } = getQuery(event)
-  if (!username?.toString().match(/^\w{3,32}$/) || !Date.parse(before?.toString() ?? "")) {
+  if (!checkUsername(username) || !checkDateString(before)) {
     return createError({ statusCode: 400 })
   }
   // Check if user is getting their own tweets
-  const isSelfTweets = username.toString() === event.context.user?.username
+  const isSelfTweets = username === event.context.user?.username
 
   // Get user whose tweets are being viewed
   const user = await User.findOne({ username }, { _id: 1, isPrivate: 1 }).collation(ci).exec()

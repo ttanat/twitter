@@ -1,6 +1,7 @@
 import User from "@/server/models/user"
 import { Types } from "mongoose"
 import { ci } from "~~/server/utils/collations"
+import { checkUsername } from "~~/server/utils/query"
 
 interface IProfile {
   _id?: Types.ObjectId
@@ -24,11 +25,11 @@ interface IProfile {
 
 export default defineEventHandler(async event => {
   const { username } = getQuery(event)
-  if (!username) {
+  if (!checkUsername(username)) {
     return createError({ statusCode: 400 })
   }
   // Check if user is viewing their own profile
-  const isSelfProfile = username.toString() === event.context.user?.username
+  const isSelfProfile = username === event.context.user?.username
 
   const profile: IProfile | undefined = (await User.findOne({ username }, {
     _id: 1,

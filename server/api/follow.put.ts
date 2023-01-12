@@ -1,6 +1,7 @@
 import User from "@/server/models/user"
 import { ci } from "~~/server/utils/collations"
 import { handleFollow, handleUnfollow } from "~/server/utils/follow"
+import { checkUsername } from "~~/server/utils/query"
 
 export default defineEventHandler(async event => {
   if (!event.context.user) {
@@ -9,9 +10,9 @@ export default defineEventHandler(async event => {
   const follow: boolean = getQuery(event).follow === "true"
   // Get usernames
   const currentUser: string = event.context.user.username
-  const userToFollow: string = getQuery(event).username?.toString() || ""
+  const userToFollow: string = getQuery(event).username?.toString() ?? ""
   // Check valid username and not following self
-  if (!userToFollow.match(/^\w{3,32}$/) || currentUser.toLowerCase() === userToFollow.toLowerCase()) {
+  if (!checkUsername(userToFollow) || currentUser.toLowerCase() === userToFollow.toLowerCase()) {
     return createError({ statusCode: 400 })
   }
 
@@ -50,5 +51,5 @@ export default defineEventHandler(async event => {
     res = await handleUnfollow(currentUserObj._id, userToFollowObj._id)
   }
 
-  return res.ok ? {} : createError({ statusCode: 400, statusMessage: "Oops, something went wrong." })
+  return res.ok ? null : createError({ statusCode: 400, statusMessage: "Oops, something went wrong." })
 })

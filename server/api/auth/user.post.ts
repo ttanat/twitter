@@ -1,16 +1,20 @@
 import User from "@/server/models/user"
 import bcrypt from "bcrypt"
 import { createTokens } from "@/server/utils/createTokens"
+import { checkUsername } from "~~/server/utils/query"
 
 const saltRounds = 10
 
 export default defineEventHandler(async event => {
   const { name, username, password } = await readBody(event)
+  if (!checkUsername(username)) {
+    return createError({ statusCode: 400 })
+  }
   // Hash password
   const hash = await bcrypt.hash(password, saltRounds)
   try {
     // Create new user
-    const user = await User.create({ name, username, password: hash })
+    const user = await User.create({ name: name.slice(0, 32).trim(), username, password: hash })
     // Create new access and refresh tokens
     const { accessToken, refreshToken } = createTokens(user.username)
     // Save new refresh token
