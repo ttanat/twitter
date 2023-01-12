@@ -5,42 +5,31 @@ import { getNextUrl } from "~~/server/utils/getNextUrl"
 
 export default defineEventHandler(async event => {
   const { username, before } = getQuery(event)
-  if (!username) {
-    return createError({ statusCode: 401 })
-  }
-  if (!before) {
+  if (!username?.toString().match(/^\w{3,32}$/) || !Date.parse(before?.toString() ?? "")) {
     return createError({ statusCode: 400 })
   }
   // Check if user is getting their own tweets
-  const isSelfTweets = username === event.context.user?.username
+  const isSelfTweets = username.toString() === event.context.user?.username
 
   // Get user whose tweets are being viewed
-  const user = await User.findOne({ username }, { _id: 1 }).collation(ci).exec()
+  const user = await User.findOne({ username }, { _id: 1, isPrivate: 1 }).collation(ci).exec()
   if (!user) {
     return createError({ statusCode: 404 })
   }
 
-  const extraArgs: { isPrivate?: boolean } = {}
-
-  // Check if user can view private tweets
-  if (!isSelfTweets) {
-    let tmp
-    if (event.context.user) {
-      // Check current user is following user
-      tmp = await User.findOne(
-        { username: event.context.user.username },
-        { _id: 0, following: { $elemMatch: { $eq: user._id }}},
-      ).collation(ci).exec()
-    }
-    // If not following, then user cannot see private tweets
-    if (!tmp?.following) {
-      extraArgs.isPrivate = false
-    }
+  // Check if user can view tweets from private account
+  if (!isSelfTweets && user.isPrivate) {
+    // Current user must be logged in and following private user
+    const tmp = event.context.user && await User.findOne(
+      { username: event.context.user.username },
+      { _id: 0, following: { $elemMatch: { $eq: user._id }}},
+    ).collation(ci).exec()
+    // Check if user is following private user
+    if (tmp?.following.length !== 1) return createError({ statusCode: 403 })
   }
 
   const tweets = await Tweet.find({
     user: user._id,
-    ...extraArgs,
     timestamp: { $lt: before },
     $limit: 20,
     $sort: { timestamp: -1 },
