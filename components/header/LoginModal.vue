@@ -43,11 +43,11 @@ const loading = ref(false)
 const message = ref("")
 
 async function onSubmit() {
-  loading.value = true
-  if (!username.value.match(/\w{3,32}/) || password.value.length === 0) {
+  if (!username.value.match(/^\w{3,32}$/) || !password.value) {
     message.value = "Username or password incorrect"
     return false
   }
+  loading.value = true
   const { data, error } = await useAuthFetch("/api/auth/token", {
     method: "POST",
     body: { username: username.value, password: password.value }
