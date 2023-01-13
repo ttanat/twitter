@@ -26,12 +26,7 @@ const pollSchema = new Schema<IPoll>({
 })
 
 interface ITweet {
-  user: {
-    _id: Types.ObjectId
-    name?: string
-    username: string
-    image?: string
-  }
+  user: Types.ObjectId
   content?: string
   quotedTweet?: Types.ObjectId
   timestamp: Date
