@@ -12,10 +12,10 @@
       <!-- Avatar -->
       <v-avatar
         color="grey-darken-4"
-        size="130"
+        size="90"
         rounded="circle"
         class="ml-5"
-        style="outline: black solid 4px;margin-top: -65px"
+        style="outline: black solid 4px;margin-top: -45px"
       >
         <!-- Image -->
         <v-img v-if="profile.image" :src="profile.image" cover aspect-ratio="1"></v-img>
@@ -23,20 +23,10 @@
       </v-avatar>
       <!-- Follow button -->
       <ProfileFollowButton
-        v-if="$auth.getUsername() !== profile.username"
         :isFollowing="profile.isFollowing"
         :username="profile.username"
         @handle-follow="(n) => {profile.isFollowing = n;profile.numFollowers += n ? 1 : -1}"
       />
-      <v-btn
-        v-else
-        color="primary"
-        rounded="pill"
-        variant="outlined"
-        style="margin-left: calc(100% - 233px)"
-      >
-        Edit
-      </v-btn>
     </div>
     <div class="mx-5 mt-3" style="font-size: 15px">
       <!-- Name -->

@@ -1,15 +1,26 @@
 <template>
   <!-- Don't know how calc() works but it does -->
   <v-btn
+    v-if="$auth.getUsername() !== username"
     :color="isFollowing? 'grey' : 'white'"
     rounded="pill"
     :variant="isFollowing ? 'outlined' : 'elevated'"
     class="font-weight-bold"
-    :style="[isFollowing ? 'margin-left: calc(100% - 290px)' : 'margin-left: calc(100% - 260px)']"
+    style="margin-bottom: -14px"
+    :style="[isFollowing ? 'margin-left: calc(100% - 250px)' : 'margin-left: calc(100% - 220px)']"
     @click="follow"
     :loading="loading"
   >
     {{ btnText }}
+  </v-btn>
+  <v-btn
+    v-else
+    color="primary"
+    rounded="pill"
+    variant="outlined"
+    style="margin-bottom: -14px;margin-left: calc(100% - 193px)"
+  >
+    Edit
   </v-btn>
 </template>
 
