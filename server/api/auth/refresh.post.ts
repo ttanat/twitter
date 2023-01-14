@@ -19,7 +19,7 @@ export default defineEventHandler(async event => {
     { _id: 0, validRefreshTokens: { $elemMatch: { $eq: refreshToken }}},
   ).collation(ci).exec()
   // Check if returned array has refresh token
-  if (isValid?.validRefreshTokens.length === 1) {
+  if (isValid?.validRefreshTokens.length !== 1) {
     return createError({ statusCode: 401, statusMessage: "Verification error" })
   }
   // Generate new access token
