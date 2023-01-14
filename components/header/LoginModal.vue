@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="dialog" width="500" transition="scale-transition">
+  <v-dialog v-model="dialog" width="500" transition="scale-transition" scrim="black">
     <template v-slot:activator="{ props }">
       <v-btn rounded="pill" class="mr-3" variant="outlined" color="light" v-bind="props">Login</v-btn>
     </template>
@@ -21,10 +21,12 @@
             variant="outlined"
             v-model="password"
             label="Password"
-            type="password"
+            :type="show ? 'text' : 'password'"
             @input="message=''"
             density="compact"
             class="mb-2"
+            :append-inner-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
+            @click:append-inner="show = !show"
           ></v-text-field>
           <div v-show="message.length" class="mb-5 text-error">{{ message }}</div>
           <v-btn color="primary" rounded="pill" block :loading="loading" type="submit">Login</v-btn>
@@ -39,6 +41,7 @@ const dialog = ref(false)
 const form = ref(null)
 const username = ref("")
 const password = ref("")
+const show = ref(false)
 const loading = ref(false)
 const message = ref("")
 

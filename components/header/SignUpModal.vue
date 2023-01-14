@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="dialog" width="500" transition="scale-transition">
+  <v-dialog v-model="dialog" width="500" transition="scale-transition" scrim="black">
     <template v-slot:activator="{ props }">
       <v-btn color="primary" rounded="pill" variant="outlined" v-bind="props">Sign Up</v-btn>
     </template>
@@ -16,7 +16,7 @@
           <v-text-field
             variant="outlined"
             v-model="name"
-            label="Name (Optional)"
+            label="Name"
             :rules="nameRules"
             :counter="32"
             maxlength="32"
@@ -51,21 +51,13 @@
             variant="outlined"
             v-model="password"
             label="Password"
-            type="password"
+            :type="show ? 'text': 'password'"
             :rules="passwordRules"
             density="compact"
             class="mb-2"
             @input="message=''"
-          ></v-text-field>
-          <v-text-field
-            variant="outlined"
-            v-model="confirmPassword"
-            label="Confirm Password"
-            type="password"
-            :rules="[v => v === password || 'Password does not match']"
-            density="compact"
-            class="mb-2"
-            @input="message=''"
+            :append-inner-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
+            @click:append-inner="show = !show"
           ></v-text-field>
           <div v-show="message.length" class="mb-5 text-error">{{ message }}</div>
           <v-btn color="primary" rounded="pill" block :loading="loading" type="submit">Sign Up</v-btn>
@@ -103,7 +95,7 @@ const passwordRules = [
   () => !!password.value.length || "Password cannot be blank",
   // v => (v || "").length >= 8 || "Password must be at least 8 characters long",
 ]
-const confirmPassword = ref("")
+const show = ref(false)
 
 const loading = ref(false)
 const message = ref("")
