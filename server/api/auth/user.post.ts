@@ -10,11 +10,13 @@ export default defineEventHandler(async event => {
   if (!checkUsername(username)) {
     return createError({ statusCode: 400 })
   }
+  // Process name (set to username if no name)
+  const newName = (name || username).slice(0, 32).trim()
   // Hash password
   const hash = await bcrypt.hash(password, saltRounds)
   try {
     // Create new user
-    const user = await User.create({ name: name.slice(0, 32).trim(), username, password: hash })
+    const user = await User.create({ name: newName, username, password: hash })
     // Create new access and refresh tokens
     const { accessToken, refreshToken } = createTokens(user.username)
     // Save new refresh token

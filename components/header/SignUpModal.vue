@@ -107,7 +107,7 @@ async function onSubmit() {
   const { data, error } = await useAuthFetch("/api/auth/user", {
     server: false,
     method: "POST",
-    body: { username: username.value, password: password.value }
+    body: { name: name.value, username: username.value, password: password.value }
   })
   loading.value = false
   if (error.value) {
