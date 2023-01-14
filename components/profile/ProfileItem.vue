@@ -22,14 +22,20 @@
         <v-icon v-else icon="mdi-account" size="100"></v-icon>
       </v-avatar>
       <!-- Follow button -->
-      <!-- Don't know how calc() works but it does -->
+      <ProfileFollowButton
+        v-if="$auth.getUsername() !== profile.username"
+        :isFollowing="profile.isFollowing"
+        :username="profile.username"
+        @handle-follow="(n) => {profile.isFollowing = n;profile.numFollowers += n ? 1 : -1}"
+      />
       <v-btn
-        color="white"
+        v-else
+        color="primary"
         rounded="pill"
-        class="font-weight-bold"
-        style="margin-left: calc(100% - 260px)"
+        variant="outlined"
+        style="margin-left: calc(100% - 233px)"
       >
-        Follow
+        Edit
       </v-btn>
     </div>
     <div class="mx-5 mt-3" style="font-size: 15px">
@@ -43,11 +49,11 @@
       <div class="mt-2">{{ profile.bio }}</div>
       <!-- Link and date joined -->
       <div class="mt-2">
-        <NuxtLink :to="profile.link" target="_blank" class="profile-link">
+        <NuxtLink v-if="profile.link" :to="profile.link" target="_blank" class="profile-link">
           <v-icon icon="mdi-link-variant" color="grey-darken-1"></v-icon>
           <span>{{ profile.link }}</span>
+          &ensp;
         </NuxtLink>
-        &ensp;
         <v-icon icon="mdi-calendar-month" color="grey-darken-1" style="top: -1.5px"></v-icon>
         <span class="text-grey-darken-1">&nbsp;Joined {{ useDate(profile.dateJoined) }}</span>
       </div>
@@ -67,21 +73,9 @@
 
 <script setup>
 const route = useRoute()
-// const { data: profile, error } = await useApiFetch("/api/profile", {
-//   server: true, query: { username: useRoute().params.username }
-// })
-const profile = {
-  name: "John Smith",
-  username: "john",
-  isVerified: true,
-  image: "https://cdn.vuetifyjs.com/images/profiles/marcus.jpg",
-  banner: "https://cdn.vuetifyjs.com/images/cards/server-room.jpg",
-  bio: "@skims @skkn @skkypartners",
-  link: "skkn.social/tw-shop-skkn",
-  dateJoined: "2023-01-04T13:09:30.826Z",
-  numFollowing: 123,
-  numFollowers: 74589203,
-}
+const { data: profile, error } = await useApiFetch("/api/profile", {
+  server: true, query: { username: useRoute().params.username }
+})
 </script>
 
 <style scoped>
