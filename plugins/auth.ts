@@ -17,12 +17,10 @@ export default defineNuxtPlugin(_ => {
   const accessToken = useCookie("accessToken", {
     sameSite: true,
     maxAge: 60 * 60, // 1 hour
-    httpOnly: true,
   })
   const refreshToken = useCookie("refreshToken", {
     sameSite: true,
     maxAge: 60 * 60 * 24 * 365 * 10, // 10 years
-    httpOnly: true,
   })
   const user = useCookie("user", { sameSite: true })
 
