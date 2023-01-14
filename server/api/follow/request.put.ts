@@ -1,7 +1,7 @@
 import User from "@/server/models/user"
 import { ci } from "~~/server/utils/collations"
-import { handleFollow, handleUnfollow } from "~/server/utils/follow"
 import { checkUsername } from "~~/server/utils/query"
+import { checkFollowingOrRequesting } from "~~/server/utils/checkFollowing"
 
 export default defineEventHandler(async event => {
   const request: boolean = getQuery(event).request === "true"
@@ -36,19 +36,18 @@ export default defineEventHandler(async event => {
     return createError({ statusCode: 400 })
   }
 
-  // Follow or unfollow
+  // Request or delete request
   let res
   if (request) {
     // Check follow limit
     if (currentUserObj.numFollowing >= 5000) {
       return createError({ statusCode: 400, statusMessage: "Can't follow more than 5000 people" })
     }
-    // Check if already following
-    const check = await User.findOne(
-      { username: currentUser },
-      { _id: 0, following: { $elemMatch: { $eq: userToFollowObj._id }}}
-    ).collation(ci).exec()
-    if (check?.following.length === 1) return createError({ statusCode: 400 })
+    // Check if already following or requesting to follow
+    const check = await checkFollowingOrRequesting(currentUser, userToFollowObj._id)
+    if (check.isFollowing || check.isRequestingFollow) {
+      return createError({ statusCode: 400 })
+    }
     // Create request
     res = await User.bulkWrite([
       {

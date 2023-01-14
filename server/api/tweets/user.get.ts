@@ -1,5 +1,6 @@
 import Tweet from "~~/server/models/tweet"
 import User from "~~/server/models/user"
+import { checkFollowing } from "~~/server/utils/checkFollowing"
 import { ci } from "~~/server/utils/collations"
 import { getNextUrl } from "~~/server/utils/getNextUrl"
 import { checkDateString, checkUsername } from "~~/server/utils/query"
@@ -20,13 +21,9 @@ export default defineEventHandler(async event => {
 
   // Check if user can view tweets from private account
   if (!isSelfTweets && user.isPrivate) {
-    // Current user must be logged in and following private user
-    const tmp = event.context.user && await User.findOne(
-      { username: event.context.user.username },
-      { _id: 0, following: { $elemMatch: { $eq: user._id }}},
-    ).collation(ci).exec()
-    // Check if user is following private user
-    if (tmp?.following.length !== 1) return createError({ statusCode: 403 })
+    if (!(await checkFollowing(event.context.user?.username, user._id))) {
+      return createError({ statusCode: 403 })
+    }
   }
 
   const tweets = await Tweet.find({

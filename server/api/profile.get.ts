@@ -2,6 +2,7 @@ import User from "@/server/models/user"
 import { Types } from "mongoose"
 import { ci } from "~~/server/utils/collations"
 import { checkUsername } from "~~/server/utils/query"
+import { checkFollowing, checkFollowingOrRequesting } from "../utils/checkFollowing"
 
 interface IProfile {
   _id?: Types.ObjectId
@@ -54,29 +55,22 @@ export default defineEventHandler(async event => {
   if (profile.isDeactivated) return { isDeactivated: true }
   if (profile.isDeleted) return { isDeleted: true }
 
-  // Check if user is following user
   if (!isSelfProfile && event.context.user) {
-    // If profile is private, also check if requesting to follow
-    const extraArgs = profile.isPrivate ? { followRequestsSent: { $elemMatch: { $eq: profile._id }}} : {}
-    // Check in database
-    const tmp = await User.findOne({ username: event.context.user.username }, {
-      _id: 0,
-      following: { $elemMatch: { $eq: profile._id }},
-      ...extraArgs
-    })
-      .collation(ci)
-      .exec()
-    // Check current user exists (for type checking)
-    if (!tmp) return createError({ statusCode: 404 })
-    // Check if user is following user
-    profile.isFollowing = tmp.following.length === 1
-    // If profile is private, check if user is requesting to follow private user
-    if (profile.isPrivate && !profile.isFollowing && tmp.followRequestsSent.length === 1) {
-      profile.isRequestingFollow = true
+    if (profile.isPrivate) {
+      // Check if user is following or requesting to follow other user
+      const check = await checkFollowingOrRequesting(event.context.user.username, profile._id)
+      profile.isFollowing = check.isFollowing
+      if (!profile.isFollowing) profile.isRequestingFollow = check.isRequestingFollow
+    } else {
+      // Check if user is following other user
+      profile.isFollowing = await checkFollowing(event.context.user.username, profile._id)
     }
   }
 
-  // Don't send _id back
   delete profile._id
+  delete profile.isSuspended
+  delete profile.isDeactivated
+  delete profile.isDeleted
+
   return profile
 })

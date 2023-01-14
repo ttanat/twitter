@@ -1,7 +1,7 @@
 import { Types } from "mongoose"
 import Tweet from "~~/server/models/tweet"
 import User from "~~/server/models/user"
-import { ci } from "~~/server/utils/collations"
+import { checkFollowing } from "~~/server/utils/checkFollowing"
 
 interface UserInfo {
   _id?: Types.ObjectId
@@ -38,7 +38,7 @@ export default defineEventHandler(async event => {
   }
 
   const tweet = await Tweet.findOne({ _id }, {
-    _id: 1,
+    _id: 0,
     content: 1,
     quotedTweet: 1,
     timestamp: 1,
@@ -65,20 +65,15 @@ export default defineEventHandler(async event => {
   const isSelfTweet = username === response.user.username
 
   // Check if user is following user who tweeted
-  const tmp = username ? await User.findOne(
-    { username },
-    { _id: 0, following: { $elemMatch: { $eq: response.user._id }}},
-  ).collation(ci).exec() : null
-
-  // Add to response if following
-  if (tmp) response.isFollowing = tmp?.following.length === 1
+  if (await checkFollowing(username, response.user._id)) {
+    response.isFollowing = true
+  }
 
   // Protect private tweets
   if (!isSelfTweet && (response.isPrivate || response.user.isPrivate) && !response.isFollowing) {
-    return createError({ statusCode: 403 })
+    return createError({ statusCode: 403, statusMessage: "Tweet is private" })
   }
 
-  delete response._id
   delete response.user._id
   if (!response.content) delete response.content
   if (!response.media?.length) delete response.media
