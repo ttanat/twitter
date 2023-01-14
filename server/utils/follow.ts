@@ -20,17 +20,17 @@ type FollowUser = {
   isDeleted: boolean
 } | undefined
 
-export const getUsers = async (event: H3Event): Promise<{ currentUser?: FollowUser; userToFollow?: FollowUser }> => {
+export const getUsers = async (event: H3Event): Promise<{ currentUser?: FollowUser; targetUser?: FollowUser }> => {
   // Get usernames
   const currentUserUsername: string = event.context.user?.username
-  const userToFollowUsername: string = getQuery(event).username?.toString() ?? ""
+  const targetUserUsername: string = getQuery(event).username?.toString() ?? ""
   // Check valid username and not following self
-  if (!checkUsername(currentUserUsername) || !checkUsername(userToFollowUsername) || currentUserUsername.toLowerCase() === userToFollowUsername.toLowerCase()) {
+  if (!checkUsername(currentUserUsername) || !checkUsername(targetUserUsername) || currentUserUsername.toLowerCase() === targetUserUsername.toLowerCase()) {
     return {}
   }
 
   // Get both users from database
-  const users = await User.find({ username: { $in: [currentUserUsername, userToFollowUsername]} }, {
+  const users = await User.find({ username: { $in: [currentUserUsername, targetUserUsername]} }, {
     _id: 1,
     username: 1,
     numFollowing: 1,
@@ -42,16 +42,16 @@ export const getUsers = async (event: H3Event): Promise<{ currentUser?: FollowUs
 
   // Get user objects
   const currentUser: FollowUser = users.find(user => user.username === currentUserUsername)?.toObject()
-  const userToFollow: FollowUser = users.find(user => user.username === userToFollowUsername)?.toObject()
+  const targetUser: FollowUser = users.find(user => user.username === targetUserUsername)?.toObject()
 
   if (
     currentUser?.isSuspended || currentUser?.isDeactivated || currentUser?.isDeleted ||
-    userToFollow?.isSuspended || userToFollow?.isDeactivated || userToFollow?.isDeleted
+    targetUser?.isSuspended || targetUser?.isDeactivated || targetUser?.isDeleted
   ) {
     return {}
   }
 
-  return { currentUser, userToFollow }
+  return { currentUser, targetUser }
 }
 
 export const handleFollow = async (currentUserId: Types.ObjectId, userToFollowId: Types.ObjectId): Promise<{ ok: boolean }> => {
