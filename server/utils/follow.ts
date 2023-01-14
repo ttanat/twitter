@@ -1,5 +1,52 @@
 import User from "@/server/models/user"
+import { checkUsername } from "~~/server/utils/query"
 import { Types } from "mongoose"
+import { H3Event } from "h3"
+import { ci } from "~~/server/utils/collations"
+
+type FollowUser = {
+  _id: Types.ObjectId
+  username: string
+  numFollowing: number
+  isPrivate: boolean
+  isSuspended: boolean
+  isDeactivated: boolean
+  isDeleted: boolean
+} | undefined
+
+export const getUsers = async (event: H3Event): Promise<{ currentUser?: FollowUser; userToFollow?: FollowUser }> => {
+  // Get usernames
+  const currentUserUsername: string = event.context.user?.username
+  const userToFollowUsername: string = getQuery(event).username?.toString() ?? ""
+  // Check valid username and not following self
+  if (!checkUsername(currentUserUsername) || !checkUsername(userToFollowUsername) || currentUserUsername.toLowerCase() === userToFollowUsername.toLowerCase()) {
+    return {}
+  }
+
+  // Get both users from database
+  const users = await User.find({ username: { $in: [currentUserUsername, userToFollowUsername]} }, {
+    _id: 1,
+    username: 1,
+    numFollowing: 1,
+    isPrivate: 1,
+    isSuspended: 1,
+    isDeactivated: 1,
+    isDeleted: 1
+  }, { limit: 2 }).collation(ci).exec()
+
+  // Get user objects
+  const currentUser: FollowUser = users.find(user => user.username === currentUserUsername)?.toObject()
+  const userToFollow: FollowUser = users.find(user => user.username === userToFollowUsername)?.toObject()
+
+  if (
+    currentUser?.isSuspended || currentUser?.isDeactivated || currentUser?.isDeleted ||
+    userToFollow?.isSuspended || userToFollow?.isDeactivated || userToFollow?.isDeleted
+  ) {
+    return {}
+  }
+
+  return { currentUser, userToFollow }
+}
 
 export const handleFollow = async (currentUserId: Types.ObjectId, userToFollowId: Types.ObjectId): Promise<{ ok: boolean }> => {
   // Check not following self
@@ -66,4 +113,47 @@ export const handleUnfollow = async (currentUserId: Types.ObjectId, userToUnfoll
   } else {
     return { ok: false }
   }
+}
+
+export const handleRequest = async (currentUserId: Types.ObjectId, userToRequestId: Types.ObjectId): Promise<{ ok: boolean }> => {
+  if (currentUserId === userToRequestId) {
+    return { ok: false }
+  }
+  const res = await User.bulkWrite([
+    {
+      updateOne: {
+        filter: { _id: currentUserId },
+        update: { $addToSet: { followRequestsSent: userToRequestId }},
+      }
+    },
+    {
+      updateOne: {
+        filter: { _id: userToRequestId },
+        update: { $addToSet: { followRequestsReceived: currentUserId }},
+      }
+    },
+  ])
+  return { ok: res.modifiedCount === 2 }
+}
+
+// Same but pull instead of addToSet
+export const handleDeleteRequest = async (currentUserId: Types.ObjectId, userToDeleteRequestId: Types.ObjectId): Promise<{ ok: boolean }> => {
+  if (currentUserId === userToDeleteRequestId) {
+    return { ok: false }
+  }
+  const res = await User.bulkWrite([
+    {
+      updateOne: {
+        filter: { _id: currentUserId },
+        update: { $pull: { followRequestsSent: userToDeleteRequestId }},
+      }
+    },
+    {
+      updateOne: {
+        filter: { _id: userToDeleteRequestId },
+        update: { $pull: { followRequestsReceived: currentUserId }},
+      }
+    },
+  ])
+  return { ok: res.modifiedCount === 2 }
 }
