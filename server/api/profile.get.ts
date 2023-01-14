@@ -25,7 +25,7 @@ interface IProfile {
 }
 
 export default defineEventHandler(async event => {
-  const { username } = getQuery(event)
+  const username = getQuery(event).username ?? event.context.user?.username
   if (!checkUsername(username)) {
     return createError({ statusCode: 400 })
   }

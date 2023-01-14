@@ -6,7 +6,8 @@ import { getNextUrl } from "~~/server/utils/getNextUrl"
 import { checkDateString, checkUsername } from "~~/server/utils/query"
 
 export default defineEventHandler(async event => {
-  const { username, before } = getQuery(event)
+  const username = getQuery(event).username ?? event.context.user?.username
+  const { before } = getQuery(event)
   if (!checkUsername(username) || !checkDateString(before)) {
     return createError({ statusCode: 400 })
   }
