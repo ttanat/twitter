@@ -4,15 +4,12 @@ import { handleFollow, handleUnfollow } from "~/server/utils/follow"
 import { checkUsername } from "~~/server/utils/query"
 
 export default defineEventHandler(async event => {
-  if (!event.context.user) {
-    return createError({ statusCode: 401 })
-  }
   const follow: boolean = getQuery(event).follow === "true"
   // Get usernames
-  const currentUser: string = event.context.user.username
+  const currentUser: string = event.context.user?.username
   const userToFollow: string = getQuery(event).username?.toString() ?? ""
   // Check valid username and not following self
-  if (!checkUsername(userToFollow) || currentUser.toLowerCase() === userToFollow.toLowerCase()) {
+  if (!checkUsername(currentUser) || !checkUsername(userToFollow) || currentUser.toLowerCase() === userToFollow.toLowerCase()) {
     return createError({ statusCode: 400 })
   }
 
