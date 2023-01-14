@@ -1,7 +1,9 @@
-import { getUsers, handleFollow, handleUnfollow } from "~/server/utils/follow"
+import { checkFollowMethod, getUsers, handleFollow, handleUnfollow } from "~/server/utils/follow"
 
 export default defineEventHandler(async event => {
-  const follow: boolean = getQuery(event).follow === "true"
+  if (!checkFollowMethod(event)) {
+    return createError({ statusCode: 405 })
+  }
   const { currentUser, userToFollow } = await getUsers(event)
   // Check both users found
   if (!currentUser || !userToFollow) {
@@ -14,14 +16,16 @@ export default defineEventHandler(async event => {
 
   // Follow or unfollow
   let res
-  if (follow) {
+  if (getMethod(event) === "POST") {
     // Check follow limit
     if (currentUser.numFollowing >= 5000) {
       return createError({ statusCode: 400, statusMessage: "Can't follow more than 5000 people" })
     }
     res = await handleFollow(currentUser._id, userToFollow._id)
-  } else {
+  } else if (getMethod(event) === "DELETE") {
     res = await handleUnfollow(currentUser._id, userToFollow._id)
+  } else {
+    return createError({ statusCode: 405 })
   }
 
   return res.ok ? null : createError({ statusCode: 400, statusMessage: "Oops, something went wrong." })

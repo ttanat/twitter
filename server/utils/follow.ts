@@ -4,6 +4,12 @@ import { Types } from "mongoose"
 import { H3Event } from "h3"
 import { ci } from "~~/server/utils/collations"
 
+const allowedHttpMethods = new Set(["POST", "DELETE"])
+
+export const checkFollowMethod = (event: H3Event): boolean => {
+  return allowedHttpMethods.has(getMethod(event))
+}
+
 type FollowUser = {
   _id: Types.ObjectId
   username: string

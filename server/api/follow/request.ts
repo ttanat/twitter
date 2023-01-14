@@ -1,8 +1,10 @@
 import { checkFollowingOrRequesting } from "~~/server/utils/checkFollowing"
-import { getUsers, handleDeleteRequest, handleRequest } from "~~/server/utils/follow"
+import { checkFollowMethod, getUsers, handleDeleteRequest, handleRequest } from "~~/server/utils/follow"
 
 export default defineEventHandler(async event => {
-  const request: boolean = getQuery(event).request === "true"
+  if (!checkFollowMethod(event)) {
+    return createError({ statusCode: 405 })
+  }
   const { currentUser, userToFollow } = await getUsers(event)
   // Check both users found
   if (!currentUser || !userToFollow) {
@@ -15,7 +17,7 @@ export default defineEventHandler(async event => {
 
   // Request or delete request
   let res
-  if (request) {
+  if (getMethod(event) === "POST") {
     // Check follow limit
     if (currentUser.numFollowing >= 5000) {
       return createError({ statusCode: 400, statusMessage: "Can't follow more than 5000 people" })
@@ -27,9 +29,11 @@ export default defineEventHandler(async event => {
     }
     // Create request
     res = await handleRequest(currentUser._id, userToFollow._id)
-  } else {
+  } else if (getMethod(event) === "DELETE") {
     // Delete request
     res = await handleDeleteRequest(currentUser._id, userToFollow._id)
+  } else {
+    return createError({ statusCode: 405 })
   }
 
   return res.ok ? null : createError({ statusCode: 400, statusMessage: "Oops, something went wrong." })
