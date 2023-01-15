@@ -1,15 +1,24 @@
 <template>
   <v-tabs v-model="tab" align-tabs="center" grow color="primary" slider-color="primary">
-    <v-tab value="one">Tweets</v-tab>
-    <v-tab value="two">Replies</v-tab>
-    <v-tab value="three">Media</v-tab>
-    <v-tab value="four">Likes</v-tab>
+    <v-tab value="1">Tweets</v-tab>
+    <v-tab value="2">Replies</v-tab>
+    <v-tab value="3">Media</v-tab>
+    <v-tab value="4">Likes</v-tab>
   </v-tabs>
+  <div style="height: 1px;background: grey"></div>
   <v-window v-model="tab">
-    <v-window-item value="one"></v-window-item>
-    <v-window-item value="two"></v-window-item>
-    <v-window-item value="three"></v-window-item>
-    <v-window-item value="four"></v-window-item>
+    <v-window-item value="1">
+      <TweetList />
+    </v-window-item>
+    <v-window-item value="2">
+      <TweetList />
+    </v-window-item>
+    <v-window-item value="3">
+      <TweetList />
+    </v-window-item>
+    <v-window-item value="4">
+      <TweetList />
+    </v-window-item>
   </v-window>
 </template>
 

@@ -53,10 +53,10 @@
         &ensp;
         <span class="font-weight-bold text-grey-lighten-1">{{ useNumber(profile.numFollowers) }}</span>&nbsp;<span class="text-grey-darken-1">Followers</span>
       </div>
-      <!-- Tabs -->
-      <div class="mt-2">
-        <ProfileTabs />
-      </div>
+    </div>
+    <!-- Tabs -->
+    <div class="mt-2">
+      <ProfileTabs />
     </div>
   </div>
 </template>
