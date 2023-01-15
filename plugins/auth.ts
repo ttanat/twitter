@@ -28,17 +28,17 @@ export default defineNuxtPlugin(_ => {
     provide: {
       auth: {
         // Logged in or not
-        loggedIn: (): Boolean => !!(user.value as User)?.username && !!accessToken.value && !!refreshToken.value,
+        loggedIn: (): boolean => !!(user.value as User)?.username && !!accessToken.value && !!refreshToken.value,
         // Access token
-        getAccessToken: (): string|null => accessToken.value,
+        getAccessToken: (): string | null => accessToken.value,
         setAccessToken: (newToken: string): void => {accessToken.value = newToken},
         // Refresh token
-        getRefreshToken: (): string|null => refreshToken.value,
+        getRefreshToken: (): string | null => refreshToken.value,
         setRefreshToken: (newToken: string): void => {refreshToken.value = newToken},
         // User object properties
-        getUsername: (): string|null => (user.value as User)?.username ?? null,
-        getName: (): string|null => (user.value as User)?.name ?? null,
-        getImage: (): string|null => (user.value as User)?.image ?? null,
+        getUsername: (): string | null => (user.value as User)?.username || null,
+        getName: (): string | null => (user.value as User)?.name || (user.value as User)?.username || null,
+        getImage: (): string | null => (user.value as User)?.image || null,
         // User object
         getUser: (): User => (user.value as User),
         setUser: async (tokens: Tokens): Promise<void> => {
@@ -69,7 +69,7 @@ export default defineNuxtPlugin(_ => {
           window.location.href = "/"
         },
         // Check access token is expired (5s from expiring ≈ expired)
-        accessTokenExpired: (): Boolean => {
+        accessTokenExpired: (): boolean => {
           // Get access token expiration
           const { exp } = jwt.decode(accessToken.value!) as JwtPayload
           // Check if access token is 5s from expiring
