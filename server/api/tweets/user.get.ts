@@ -30,10 +30,11 @@ export default defineEventHandler(async event => {
   const tweets = await Tweet.find({
     user: user._id,
     timestamp: { $lt: before },
-    $limit: 20,
-    $sort: { timestamp: -1 },
+  }, { /* Select all fields */ }, {
+    limit: 20,
+    sort: { timestamp: -1 },
   })
-    .populate("user", "username name image")
+    .populate("user", "-_id username name image")
     .collation(ci)
     .exec()
 
