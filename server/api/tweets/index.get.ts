@@ -1,5 +1,6 @@
 import Tweet from "@/server/models/tweet"
 import User from "@/server/models/user"
+import { getNextUrl } from "~~/server/utils/getNextUrl"
 
 /*
   Routes:
@@ -16,5 +17,8 @@ import User from "@/server/models/user"
 */
 
 export default defineEventHandler(async event => {
-  return Tweet.find()
+  return {
+    results: await Tweet.find().populate("user", "-_id username name image").exec(),
+    // next: getNextUrl(event),
+  }
 })
