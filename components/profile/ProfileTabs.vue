@@ -8,7 +8,7 @@
   <div style="height: 1px;background: grey"></div>
   <v-window v-model="tab">
     <v-window-item value="1">
-      <TweetList />
+      <TweetList :url="`/api/tweets/user?username=${username}&before=${new Date().toISOString()}`" />
     </v-window-item>
     <v-window-item value="2">
       <TweetList />
@@ -24,4 +24,6 @@
 
 <script setup>
 const tab = ref(null)
+const route = useRoute()
+const username = computed(() => route.params.username || useNuxtApp().$auth.getUsername())
 </script>
