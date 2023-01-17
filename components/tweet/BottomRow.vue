@@ -1,7 +1,7 @@
 <template>
   <div class="d-flex text-grey-darken-1" style="margin-top: 2px">
     <div class="flex-grow-1">
-      <v-btn class="replies" prepend-icon="mdi-comment-outline" density="compact" variant="text" rounded="pill">
+      <v-btn class="replies" prepend-icon="mdi-chat-outline" density="compact" variant="text" rounded="pill">
         {{ useNumber(tweet.numReplies) }}
       </v-btn>
     </div>
