@@ -18,7 +18,9 @@ const props = defineProps({
 })
 const url = ref(props.url)
 const tweets = ref([])
-onMounted(() => {
+
+// First load
+nextTick(() => {
   getTweets()
 })
 
