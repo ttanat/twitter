@@ -1,10 +1,20 @@
 <template>
-  <v-dialog v-model="dialog" width="500" transition="scale-transition" scrim="black">
+  <v-dialog
+    v-model="dialog"
+    :width="mobile ? '' : '500'"
+    :fullscreen="mobile"
+    transition="scale-transition"
+    scrim="black"
+  >
     <template v-slot:activator="{ props }">
       <v-btn rounded="pill" class="mr-3" variant="outlined" color="light" v-bind="props">Login</v-btn>
     </template>
-    <v-card class="py-2" style="border-radius: 18px">
-      <v-card-text class="text-h6">Login</v-card-text>
+    <v-card class="py-2" :style="[mobile ? '' : 'border-radius: 18px']">
+      <v-card-text class="text-h6 d-flex">
+        Login
+        <v-spacer></v-spacer>
+        <v-btn v-show="mobile" icon="mdi-close" variant="text" @click="dialog = false" height="32" width="32"></v-btn>
+      </v-card-text>
       <v-card-text class="pt-2 pb-5">
         <v-form ref="form" @submit.prevent="onSubmit" :readonly="loading">
           <v-text-field
@@ -37,7 +47,10 @@
 </template>
 
 <script setup>
+import { useDisplay } from 'vuetify/lib/framework.mjs';
+
 const dialog = ref(false)
+const { mobile } = useDisplay()
 const form = ref(null)
 const username = ref("")
 const password = ref("")

@@ -1,10 +1,17 @@
 <template>
-  <v-dialog v-model="dialog" activator="parent" width="640" transition="scale-transition" scrim="black">
-    <v-card class="pb-2" style="border-radius: 18px">
-      <v-card-text class="text-h6 pb-0" style="display: flex">
+  <v-dialog
+    v-model="dialog"
+    activator="parent"
+    :width="mobile ? '' : '640'"
+    :fullscreen="mobile"
+    transition="scale-transition"
+    scrim="black"
+  >
+    <v-card class="pb-2" :style="[mobile ? '' : 'border-radius: 18px']">
+      <v-card-text class="text-h6 pb-0 d-flex" style="max-height: 60px">
         Tweet
         <v-spacer></v-spacer>
-        <v-btn icon="mdi-close" class="ml-2 icon-btn" variant="text" @click="dialog = false"></v-btn>
+        <v-btn icon="mdi-close" class="icon-btn" variant="text" @click="dialog = false"></v-btn>
       </v-card-text>
       <v-card-text class="pt-2">
         <v-timeline
@@ -14,7 +21,7 @@
           side="end"
         >
           <v-timeline-item
-            v-for="(tweet, i) in thread"
+            v-for="(_, i) in thread"
             :key="i"
             dot-color="#424242"
             class="pl-2"
@@ -117,7 +124,10 @@
 </template>
 
 <script setup>
+import { useDisplay } from 'vuetify/lib/framework.mjs';
+
 const dialog = ref(false)
+const { mobile } = useDisplay()
 const tweetStructure = {
   content: "",
   files: [],
