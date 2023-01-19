@@ -1,5 +1,5 @@
 export const useNumber = (x: number): string => {
-  if (x < 1e3) {
+  if (x < 1e4) {
     return x.toLocaleString()
   } else if (x < 1e6) {
     let n = (x / 1e3).toFixed(1)
