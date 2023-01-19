@@ -17,7 +17,7 @@
     </div>
     <!-- Tweet button -->
     <div class="mx-2 d-none d-lg-block">
-      <v-btn class="mt-3 ml-2 tweet-btn" size="large" color="primary" rounded="pill" block>
+      <v-btn class="mt-3 ml-2 left-link-tweet" size="large" color="primary" rounded="pill" block>
         <v-icon start icon="mdi-fountain-pen-tip" class="d-lg-none"></v-icon>
         <span class="d-none d-lg-block font-weight-bold">Tweet</span>
         <TweetModal />
@@ -45,7 +45,7 @@
 </template>
 
 <script setup>
-const links = ref([
+const links = reactive([
   { title: "Home",  url: "/", icon: "mdi-home" },
   { title: "Explore",  url: "/explore", icon: "mdi-pound" },
   { title: "Notifications", url: "/notifications", icon: "mdi-bell" },
@@ -59,8 +59,9 @@ const links = ref([
 <style scoped>
 .left-link {
   justify-content: start;
+  text-transform: unset;
 }
-.left-link, .tweet-btn {
+.left-link-tweet {
   text-transform: unset;
 }
 </style>
