@@ -39,9 +39,9 @@ export default defineEventHandler(async event => {
     .exec()
 
   let next = null
-  if (tweets.length > 20) {
+  if (tweets.length === 20) {
     next = getNextUrl(event, {
-      username: username?.toString()!,
+      username: username.toString(),
       before: tweets[tweets.length - 1].timestamp.toISOString()
     })
   }
