@@ -1,12 +1,14 @@
 <template>
   <BaseLayout>
-    <TweetStatus :tweet="data" />
+    <TweetStatus :tweet="tweet" />
+    <TweetList :url="`/api/tweets/replies?_id=${_id}&before=${new Date().toISOString()}`" />
   </BaseLayout>
 </template>
 
 <script setup>
 const route = useRoute()
-const { data } = await useApiFetch("/api/tweet", {
-  query: { _id: route.params._id }
+const { _id } = route.params
+const { data: tweet } = await useApiFetch("/api/tweet", {
+  query: { _id }
 })
 </script>

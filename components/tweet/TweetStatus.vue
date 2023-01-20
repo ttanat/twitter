@@ -1,5 +1,5 @@
 <template>
-  <div class="pa-3">
+  <div class="pt-3 pl-3 pr-3" style="border-bottom: solid 1px grey">
     <div class="d-flex mb-3">
       <NuxtLink :to="'/@'+tweet.user.username" class="user-link mr-3">
         <v-avatar
@@ -61,7 +61,6 @@
       </v-btn>
       <v-spacer></v-spacer>
     </div>
-    <div class="divider bg-grey-darken-3"></div>
   </div>
 </template>
 
