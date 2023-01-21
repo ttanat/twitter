@@ -1,6 +1,6 @@
 import User from "@/server/models/user"
 import { checkUsername } from "~~/server/utils/query"
-import { Types } from "mongoose"
+import mongoose, { Types } from "mongoose"
 import { H3Event } from "h3"
 import { ci } from "~~/server/utils/collations"
 
@@ -59,6 +59,48 @@ export const handleFollow = async (currentUserId: Types.ObjectId, userToFollowId
   if (currentUserId === userToFollowId) {
     return { ok: false }
   }
+
+  // console.log('start')
+  // const session = await mongoose.startSession()
+  // try {
+  //   // Use transaction
+  //   /* session.startTransaction() */
+  //   const transactionResults = await session.withTransaction(async () => {
+  //     console.log('-----')
+  //     // Update user likes array and numLikes on tweet
+  //     const [res, res2, res3] = await Promise.all([
+  //       User.updateOne({ _id: currentUserId }, { $addToSet: { following: userToFollowId }}, { session }).exec(),
+  //       User.updateOne({ _id: currentUserId }, { $inc: { numFollowing: 1 }}, { session }).exec(),
+  //       User.updateOne({ _id: userToFollowId }, {
+  //         $push: { followers: { $each: [currentUserId], $slice: 5000 }},
+  //         $inc: { numFollowers: 1 },
+  //       }, { session }).exec(),
+  //     ])
+  //     console.log(res.modifiedCount, res2.modifiedCount, res3.modifiedCount)
+  //     // If all not updated, abort transaction
+  //     if (res.modifiedCount !== 1 || res2.modifiedCount !== 1 || res3.modifiedCount !== 1) {
+  //       console.log('abort')
+  //       await session.abortTransaction()
+  //       /* return */
+  //     }/* else {
+  //       console.log('commit')
+  //       await session.commitTransaction()
+  //     }*/
+  //   })
+  //   /*console.log(transactionResults)
+  //   // Make sure transaction succeeded
+  //   if (!transactionResults) {
+  //     // throw new Error()
+  //   }*/
+  // } catch (err) {
+  //   console.log(err)
+  //   return { ok: false }
+  // } finally {
+  //   await session.endSession()
+  // }
+  // console.log('end')
+  // return { ok: true }
+
   // Add userToFollow to currentUser's following list
   const res = await User.updateOne({ _id: currentUserId }, { $addToSet: { following: userToFollowId }}).exec()
   // Proceed if document was modified (no duplicates detected from $addToSet)
