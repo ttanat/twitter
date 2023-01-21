@@ -39,6 +39,7 @@ interface ITweet {
   numRetweets: number
   numQuotes: number
   numLikes: number
+  numBookmarks: number
   ancestors?: Types.Array<Types.ObjectId>
   parent?: Types.ObjectId
   isPrivate?: boolean
@@ -65,6 +66,7 @@ const tweetSchema = new Schema<ITweet>({
   numRetweets: { type: Number, default: 0, min: 0 },
   numQuotes: { type: Number, default: 0, min: 0 },
   numLikes: { type: Number, default: 0, min: 0 },
+  numBookmarks: { type: Number, default: 0, min: 0 },
 
   ancestors: [{ type: Schema.Types.ObjectId, ref: "Tweet" }],
   parent: { type: Schema.Types.ObjectId, ref: "Tweet" },
