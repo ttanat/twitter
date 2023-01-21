@@ -17,7 +17,7 @@
       <TweetList />
     </v-window-item>
     <v-window-item value="4">
-      <TweetList />
+      <TweetList :url="`/api/tweets/likes?username=${username}&page=1`" />
     </v-window-item>
   </v-window>
 </template>
