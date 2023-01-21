@@ -8,4 +8,5 @@
 definePageMeta({
   middleware: ["profile-redirect"]
 })
+useState("navBarRoute").value = `@${useRoute().params.username}`
 </script>

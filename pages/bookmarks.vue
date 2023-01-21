@@ -8,4 +8,5 @@
 definePageMeta({
   middleware: ["auth"]
 })
+useState("navBarRoute").value = "Bookmarks"
 </script>

@@ -6,6 +6,7 @@
 </template>
 
 <script setup>
+useState("navBarRoute").value = "Tweet"
 const route = useRoute()
 const { _id } = route.params
 const { data: tweet } = await useApiFetch("/api/tweet", {
