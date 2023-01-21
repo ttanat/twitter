@@ -1,5 +1,5 @@
 <template>
-  <div class="d-flex text-grey-darken-1" style="margin-top: 2px">
+  <div class="d-flex mt-1 text-grey-darken-1">
     <div class="flex-grow-1">
       <v-btn class="replies" prepend-icon="mdi-chat-outline" density="compact" variant="text" rounded="pill">
         {{ useNumber(tweet.numReplies) }}
@@ -12,7 +12,16 @@
       </v-btn>
     </div>
     <div class="flex-grow-1">
-      <v-btn class="likes" prepend-icon="mdi-heart-outline" density="compact" variant="text" rounded="pill">
+      <v-btn
+        @click="like"
+        :loading="liking"
+        class="likes"
+        :prepend-icon="tweet.isLiked ? 'mdi-heart' : 'mdi-heart-outline'"
+        :color="tweet.isLiked ? '#dc3065' : ''"
+        density="compact"
+        variant="text"
+        rounded="pill"
+      >
         {{ useNumber(tweet.numLikes) }}
       </v-btn>
     </div>
@@ -25,9 +34,25 @@
 </template>
 
 <script setup>
-defineProps({
+const props = defineProps({
   tweet: Object
 })
+const emit = defineEmits(["handleLike"])
+
+const liking = ref(false)
+function like() {
+  liking.value = true
+  const { error } = useApiFetch("/api/tweet/like", {
+    method: props.tweet.isLiked ? "DELETE" : "POST",
+    query: { _id: props.tweet._id },
+  })
+  if (error) {
+    console.log(error)
+  } else {
+    emit("handleLike")
+  }
+  liking.value = false
+}
 </script>
 
 <style scoped>

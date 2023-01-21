@@ -10,7 +10,7 @@
         dot-color="#424242"
         class="pl-2"
         width="100%"
-        @click="navigateTo('/status/'+tweet._id)"
+        @click="openTweet"
         style="cursor: pointer"
       >
         <template v-slot:icon>
@@ -27,16 +27,23 @@
         <TweetTopRow :tweet="tweet" />
         <div>{{ tweet.content }}</div>
         <div v-if="tweet.media.length"><img :src="tweet.media[0]"></div>
-        <TweetBottomRow :tweet="tweet" />
+        <TweetBottomRow :tweet="tweet" @handle-like="$emit('handleLike', tweet._id, !tweet.isLiked)" />
       </v-timeline-item>
     </v-timeline>
   </div>
 </template>
 
 <script setup>
-defineProps({
+const props = defineProps({
   tweet: Object
 })
+const emit = defineEmits(["handleLike"])
+
+function openTweet(e) {
+  if (e.target.nodeName === "DIV") {
+    navigateTo(`/status/${props.tweet._id}`)
+  }
+}
 </script>
 
 <style scoped>

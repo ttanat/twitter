@@ -5,6 +5,7 @@
     :tweet="tweet"
     class="px-3"
     style="border-bottom: solid 1px grey"
+    @handle-like="handleLike"
   />
 </template>
 
@@ -29,5 +30,11 @@ async function getTweets() {
   const { data } = await useApiFetch(url.value)
   tweets.value.push(...data.value.results)
   url.value = data.value.next
+}
+
+function handleLike(_id, newValue) {
+  const tweet = tweets.value.find(tweet => tweet._id === _id)
+  tweet.isLiked = newValue
+  tweet.numLikes += newValue ? 1 : -1
 }
 </script>
