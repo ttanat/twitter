@@ -1,9 +1,8 @@
 import { Types } from "mongoose"
 import Tweet from "~~/server/models/tweet"
-import User from "~~/server/models/user"
-import { checkFollowing } from "~~/server/utils/checkFollowing"
+import { checkIsFollowing } from "~~/server/utils/following"
 
-interface UserInfo {
+interface IUserInfo {
   _id?: Types.ObjectId
   username: string
   name?: string
@@ -15,7 +14,7 @@ interface UserInfo {
 
 interface IResponse {
   _id?: Types.ObjectId
-  user: UserInfo
+  user: IUserInfo
   content?: string
   quotedTweet?: Types.ObjectId
   timestamp?: Date
@@ -51,7 +50,7 @@ export default defineEventHandler(async event => {
     isPrivate: 1,
     isRemoved: 1,
     isDeleted: 1,
-  }).populate<{ user: UserInfo }>("user", "username name image bio isPrivate").exec()
+  }).populate<{ user: IUserInfo }>("user", "username name image bio isPrivate").exec()
 
   if (!tweet) return createError({ statusCode: 404 })
   if (tweet.isRemoved) return { isRemoved: true }
@@ -65,7 +64,7 @@ export default defineEventHandler(async event => {
   const isSelfTweet = username === response.user.username
 
   // Check if user is following user who tweeted
-  if (await checkFollowing(username, response.user._id)) {
+  if (await checkIsFollowing(username, response.user._id)) {
     response.isFollowing = true
   }
 

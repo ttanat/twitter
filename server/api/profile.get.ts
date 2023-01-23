@@ -2,7 +2,7 @@ import User from "@/server/models/user"
 import { Types } from "mongoose"
 import { ci } from "~~/server/utils/collations"
 import { checkUsername } from "~~/server/utils/query"
-import { checkFollowing, checkFollowingOrRequesting } from "../utils/checkFollowing"
+import { checkIsFollowing, checkIsFollowingOrRequesting } from "~~/server/utils/following"
 
 interface IProfile {
   _id?: Types.ObjectId
@@ -58,12 +58,12 @@ export default defineEventHandler(async event => {
   if (!isSelfProfile && event.context.user) {
     if (profile.isPrivate) {
       // Check if user is following or requesting to follow other user
-      const check = await checkFollowingOrRequesting(event.context.user.username, profile._id)
+      const check = await checkIsFollowingOrRequesting(event.context.user.username, profile._id)
       profile.isFollowing = check.isFollowing
       if (!profile.isFollowing) profile.isRequestingFollow = check.isRequestingFollow
     } else {
       // Check if user is following other user
-      profile.isFollowing = await checkFollowing(event.context.user.username, profile._id)
+      profile.isFollowing = await checkIsFollowing(event.context.user.username, profile._id)
     }
   }
 

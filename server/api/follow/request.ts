@@ -1,4 +1,4 @@
-import { checkFollowingOrRequesting } from "~~/server/utils/checkFollowing"
+import { checkIsFollowingOrRequesting } from "~~/server/utils/following"
 import { checkFollowMethod, getUsers, handleDeleteRequest, handleRequest } from "~~/server/utils/follow"
 
 export default defineEventHandler(async event => {
@@ -23,7 +23,7 @@ export default defineEventHandler(async event => {
       return createError({ statusCode: 400, statusMessage: "Can't follow more than 5000 people" })
     }
     // Check if already following or requesting to follow
-    const check = await checkFollowingOrRequesting(currentUser.username, targetUser._id)
+    const check = await checkIsFollowingOrRequesting(currentUser.username, targetUser._id)
     if (check.isFollowing || check.isRequestingFollow) {
       return createError({ statusCode: 400 })
     }

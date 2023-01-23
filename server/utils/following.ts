@@ -6,7 +6,7 @@ import { Types } from "mongoose"
 type Username = string | undefined
 type Id = Types.ObjectId | string | undefined
 
-export const checkFollowing = async (user1Username: Username, user2Id: Id): Promise<boolean> => {
+export const checkIsFollowing = async (user1Username: Username, user2Id: Id): Promise<boolean> => {
   /*
     Check if user 1 is following user 2
   */
@@ -22,7 +22,7 @@ export const checkFollowing = async (user1Username: Username, user2Id: Id): Prom
   return check?.following.length === 1
 }
 
-export const checkFollowingOrRequesting = async (user1Username: Username, user2Id: Id): Promise<{ isFollowing: boolean; isRequestingFollow: boolean }> => {
+export const checkIsFollowingOrRequesting = async (user1Username: Username, user2Id: Id): Promise<{ isFollowing: boolean; isRequestingFollow: boolean }> => {
   /*
     Check if user 1 is following or requesting to follow user 2
   */

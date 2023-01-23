@@ -1,6 +1,6 @@
 import Tweet from "~~/server/models/tweet"
 import User from "~~/server/models/user"
-import { checkFollowing } from "~~/server/utils/checkFollowing"
+import { checkIsFollowing } from "~~/server/utils/following"
 import { ci } from "~~/server/utils/collations"
 import { getNextUrl } from "~~/server/utils/getNextUrl"
 import { checkIsLiked } from "~~/server/utils/likes"
@@ -23,7 +23,7 @@ export default defineEventHandler(async event => {
 
   // Check if user can view tweets from private account
   if (!isSelfTweets && user.isPrivate) {
-    if (!(await checkFollowing(event.context.user?.username, user._id))) {
+    if (!(await checkIsFollowing(event.context.user?.username, user._id))) {
       return createError({ statusCode: 403 })
     }
   }
