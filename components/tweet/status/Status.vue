@@ -1,6 +1,7 @@
 <template>
   <div class="pt-3 pl-3 pr-3" style="border-bottom: solid 1px grey">
     <div class="d-flex mb-3">
+      <!-- Image -->
       <NuxtLink :to="'/@'+tweet.user.username" class="user-link mr-3">
         <v-avatar
           :image="tweet.user.image"
@@ -9,20 +10,24 @@
           size="48"
         ></v-avatar>
       </NuxtLink>
+      <!-- Name and username -->
       <NuxtLink :to="'/@'+tweet.user.username" class="user-link">
         <div style="height: 4px"></div>
         <div class="header font-weight-bold underline">{{ tweet.user.name }}</div>
         <div class="header fs-15 text-grey-darken-1">@{{ tweet.user.username }}</div>
       </NuxtLink>
       <v-spacer></v-spacer>
+      <!-- Menu -->
       <v-btn icon density="compact" variant="text" rounded="circle" color="grey" style="margin-top: 4px">
         <v-icon size="24" icon="mdi-dots-horizontal"></v-icon>
       </v-btn>
     </div>
     <div class="content mb-2">{{ tweet.content }}</div>
+    <!-- Media -->
     <div v-if="tweet.media?.length"><img :src="tweet.media[0]"></div>
+    <!-- Timestamp -->
     <div class="text-grey-darken-1 my-2 fs-15">{{ useFullTimestamp(tweet.timestamp) }}</div>
-    <!-- <div class="divider bg-grey-darken-3"></div> -->
+    <!-- Tweet stats -->
     <div class="my-2 d-flex">
       <div class="mr-2" :title="getNumberTitle(tweet.numRetweets)">
         <span class="font-weight-bold">{{ useNumber(tweet.numRetweets) }}</span>&nbsp;<span class="text-grey-darken-1">Retweets</span>
@@ -35,37 +40,13 @@
       </div>
     </div>
     <div class="divider bg-grey-darken-3"></div>
-    <div class="d-flex my-1 text-grey">
-      <v-spacer></v-spacer>
-      <v-btn icon variant="text" class="icon-btn reply" style="font-size: 14px">
-        <v-icon icon="mdi-chat-outline"></v-icon>
-        <v-tooltip activator="parent" location="bottom">Reply</v-tooltip>
-      </v-btn>
-      <v-spacer></v-spacer>
-      <v-spacer></v-spacer>
-      <v-btn icon variant="text" class="icon-btn retweet" style="font-size: 18px">
-        <v-icon icon="mdi-repeat-variant"></v-icon>
-        <v-tooltip activator="parent" location="bottom">Retweet</v-tooltip>
-      </v-btn>
-      <v-spacer></v-spacer>
-      <v-spacer></v-spacer>
-      <v-btn icon variant="text" class="icon-btn like" style="font-size: 14px">
-        <v-icon icon="mdi-heart-outline"></v-icon>
-        <v-tooltip activator="parent" location="bottom">Like</v-tooltip>
-      </v-btn>
-      <v-spacer></v-spacer>
-      <v-spacer></v-spacer>
-      <v-btn icon variant="text" class="icon-btn reply" style="font-size: 14px">
-        <v-icon icon="mdi-export-variant"></v-icon>
-        <v-tooltip activator="parent" location="bottom">Share</v-tooltip>
-      </v-btn>
-      <v-spacer></v-spacer>
-    </div>
+    <!-- Buttons -->
+    <TweetStatusBottomRow :tweet="tweet" @handle-like="$emit('handleLike')" />
   </div>
 </template>
 
 <script setup>
-const props = defineProps({
+defineProps({
   tweet: Object
 })
 
@@ -92,18 +73,5 @@ function getNumberTitle(number) {
 }
 .divider {
   height: 1px;
-}
-.icon-btn {
-  height: 36px;
-  width: 36px;
-}
-.reply:hover {
-  color: #299ded;
-}
-.retweet:hover {
-  color: #40a440;
-}
-.like:hover {
-  color: #dc3065;
 }
 </style>
