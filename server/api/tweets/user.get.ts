@@ -3,6 +3,7 @@ import User from "~~/server/models/user"
 import { checkFollowing } from "~~/server/utils/checkFollowing"
 import { ci } from "~~/server/utils/collations"
 import { getNextUrl } from "~~/server/utils/getNextUrl"
+import { checkIsLiked } from "~~/server/utils/likes"
 import { checkDateString, checkUsername } from "~~/server/utils/query"
 
 export default defineEventHandler(async event => {
@@ -47,7 +48,7 @@ export default defineEventHandler(async event => {
   }
 
   return {
-    results: tweets,
+    results: checkIsLiked(event, tweets),
     next,
   }
 })

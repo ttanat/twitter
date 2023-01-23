@@ -3,6 +3,7 @@ import Tweet from "@/server/models/tweet"
 import { ci } from "~~/server/utils/collations"
 import { getNextUrl } from "~~/server/utils/getNextUrl"
 import { checkPageNumber, checkUsername } from "~~/server/utils/query"
+import { checkIsLiked } from "~~/server/utils/likes"
 
 export default defineEventHandler(async event => {
   const { username } = getQuery(event)
@@ -37,8 +38,12 @@ export default defineEventHandler(async event => {
     next = getNextUrl(event, { page: (page + 1).toString() })
   }
 
+  const tweetsWithIsLiked = event.context.user?.username === username
+    ? tweets.map(tweet => ({ ...tweet.toObject(), isLiked: true }))
+    : checkIsLiked(event, tweets)
+
   return {
-    results: tweets,
+    results: tweetsWithIsLiked,
     next,
   }
 })

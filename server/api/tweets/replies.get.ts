@@ -1,5 +1,6 @@
 import Tweet from "~~/server/models/tweet"
 import { getNextUrl } from "~~/server/utils/getNextUrl"
+import { checkIsLiked } from "~~/server/utils/likes"
 import { checkDateString } from "~~/server/utils/query"
 
 export default defineEventHandler(async event => {
@@ -22,7 +23,7 @@ export default defineEventHandler(async event => {
   }
 
   return {
-    results: replies,
+    results: checkIsLiked(event, replies),
     next,
   }
 })
