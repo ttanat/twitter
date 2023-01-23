@@ -36,14 +36,14 @@ const props = defineProps({
 })
 const emit = defineEmits(["handleLike"])
 
-const { params: { _id } } = useRoute()
+const route = useRoute()
 const liking = ref(false)
 
 function like() {
   liking.value = true
   const { error } = useApiFetch("/api/tweet/like", {
     method: props.tweet.isLiked ? "DELETE" : "POST",
-    query: { _id: _id },
+    query: { _id: route.params._id },
   })
   if (error) {
     console.log(error)
