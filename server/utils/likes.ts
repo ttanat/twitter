@@ -1,6 +1,7 @@
 import User from "~~/server/models/user"
 import { H3Event } from "h3"
 import { ci } from "./collations"
+import { Types } from "mongoose"
 
 export const checkIsLiked = async (event: H3Event, tweets: any[]): Promise<any[]> => {
   if (!event.context.user?.username || tweets.length === 0) {
@@ -35,4 +36,18 @@ export const checkIsLiked = async (event: H3Event, tweets: any[]): Promise<any[]
   }
 
   return tweets
+}
+
+export const checkTweetIsLiked = async (event: H3Event, _id: Types.ObjectId | string): Promise<boolean> => {
+  if (!event.context.user?.username) {
+    return false
+  }
+
+  const isLiked = (
+    await User.findOne({ username: event.context.user.username }, {
+      _id: 0, likes: { $elemMatch: { $eq: _id }}
+    }).exec()
+  )?.likes.length === 1
+
+  return isLiked
 }
