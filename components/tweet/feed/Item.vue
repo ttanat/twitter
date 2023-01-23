@@ -24,10 +24,10 @@
           </NuxtLink>
         </template>
 
-        <TweetTopRow :tweet="tweet" />
+        <TweetFeedItemTopRow :tweet="tweet" />
         <div>{{ tweet.content }}</div>
         <div v-if="tweet.media.length"><img :src="tweet.media[0]"></div>
-        <TweetBottomRow :tweet="tweet" @handle-like="$emit('handleLike', tweet._id, !tweet.isLiked)" />
+        <TweetFeedItemBottomRow :tweet="tweet" @handle-like="$emit('handleLike', tweet._id, !tweet.isLiked)" />
       </v-timeline-item>
     </v-timeline>
   </div>

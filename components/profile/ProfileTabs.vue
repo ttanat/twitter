@@ -8,16 +8,16 @@
   <div style="height: 1px;background: grey"></div>
   <v-window v-model="tab">
     <v-window-item value="1">
-      <TweetList :url="`/api/tweets/user?username=${username}&before=${new Date().toISOString()}`" />
+      <TweetFeedList :url="`/api/tweets/user?username=${username}&before=${new Date().toISOString()}`" />
     </v-window-item>
     <v-window-item value="2">
-      <TweetList />
+      <TweetFeedList />
     </v-window-item>
     <v-window-item value="3">
-      <TweetList />
+      <TweetFeedList />
     </v-window-item>
     <v-window-item value="4">
-      <TweetList :url="`/api/tweets/likes?username=${username}&page=1`" />
+      <TweetFeedList :url="`/api/tweets/likes?username=${username}&page=1`" />
     </v-window-item>
   </v-window>
 </template>

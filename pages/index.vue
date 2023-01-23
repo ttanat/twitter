@@ -1,6 +1,6 @@
 <template>
   <BaseLayout>
-    <TweetList />
+    <TweetFeedList />
   </BaseLayout>
 </template>
 

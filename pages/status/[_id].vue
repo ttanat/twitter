@@ -1,7 +1,7 @@
 <template>
   <BaseLayout>
-    <TweetStatus :tweet="tweet" @handle-like="handleLike" />
-    <TweetList :url="`/api/tweets/replies?_id=${route.params._id}&before=${new Date().toISOString()}`" />
+    <TweetStatusItem :tweet="tweet" @handle-like="handleLike" />
+    <TweetFeedList :url="`/api/tweets/replies?_id=${route.params._id}&before=${new Date().toISOString()}`" />
   </BaseLayout>
 </template>
 

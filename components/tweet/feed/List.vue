@@ -1,5 +1,5 @@
 <template>
-  <TweetItem
+  <TweetFeedItem
     v-for="tweet in tweets"
     :key="tweet._id"
     :tweet="tweet"
