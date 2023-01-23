@@ -17,7 +17,8 @@ export default defineEventHandler(async event => {
   }
 
   // Get tweet
-  const { content, files, poll }: {
+  const { replyTo, content, files, poll }: {
+    replyTo: string
     content: Content
     files: Files
     poll: Poll
@@ -28,17 +29,26 @@ export default defineEventHandler(async event => {
   // Validate choices and add expiry if none
   const parsedPoll = parsePoll(poll)
 
+  // Check form data
   if (!validateTweetFormData(parsedContent, files, parsedPoll)) {
     return createError({ statusCode: 400 })
   }
 
-  const tweet = await Tweet.create({
+  // Get tweet/reply that user is replying to
+  const parent = await Tweet.findOne({ _id: replyTo }, { _id: 1, ancestors: 1 }).exec()
+  if (!parent) {
+    return createError({ statusCode: 400 })
+  }
+
+  const reply = await Tweet.create({
     user: user._id,
     content: parsedContent,
     // media: files,
     poll: parsedPoll,
     hashtags: getHashtags(parsedContent),
     mentions: getMentions(parsedContent),
+    ancestors: parent.ancestors?.length ? [...parent.ancestors, parent._id] : [parent._id],
+    parent: parent._id,
   })
 
   return null
