@@ -4,7 +4,7 @@ import { checkIsLiked } from "~~/server/utils/likes"
 
 export default defineEventHandler(async event => {
   return {
-    results: checkIsLiked(event, await Tweet.find().exec()),
+    results: await checkIsLiked(event, await Tweet.find().exec()),
     // next: getNextUrl(event),
   }
 })

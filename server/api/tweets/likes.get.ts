@@ -40,7 +40,7 @@ export default defineEventHandler(async event => {
 
   const tweetsWithIsLiked = event.context.user?.username === username
     ? tweets.map(tweet => ({ ...tweet.toObject(), isLiked: true }))
-    : checkIsLiked(event, tweets)
+    : await checkIsLiked(event, tweets)
 
   return {
     results: tweetsWithIsLiked,

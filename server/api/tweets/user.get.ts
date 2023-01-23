@@ -48,7 +48,7 @@ export default defineEventHandler(async event => {
   }
 
   return {
-    results: checkIsLiked(event, tweets),
+    results: await checkIsLiked(event, tweets),
     next,
   }
 })

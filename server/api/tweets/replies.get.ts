@@ -23,7 +23,7 @@ export default defineEventHandler(async event => {
   }
 
   return {
-    results: checkIsLiked(event, replies),
+    results: await checkIsLiked(event, replies),
     next,
   }
 })
