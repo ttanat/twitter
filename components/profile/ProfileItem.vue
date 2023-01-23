@@ -64,8 +64,11 @@
 <script setup>
 const route = useRoute()
 const { data: profile, error } = await useApiFetch("/api/profile", {
-  server: true, query: { username: useRoute().params.username }
+  server: true, query: { username: route.params.username }
 })
+if (route.path !== "/profile") {
+  useHead({ title: `${profile.value.name} (@${profile.value.username})` })
+}
 </script>
 
 <style scoped>

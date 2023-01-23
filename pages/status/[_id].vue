@@ -9,6 +9,10 @@
 useState("navBarRoute").value = "Tweet"
 const route = useRoute()
 const { data: tweet } = await useApiFetch("/api/tweet", { query: { _id: route.params._id }, server: true })
+useHead({
+  // Content ~ Name (@username)
+  title: `${`${tweet.value.content} ~ ` || "~ "}${tweet.value.user.name} (@${tweet.value.user.username})`
+})
 
 function handleLike() {
   tweet.value.isLiked = !tweet.value.isLiked

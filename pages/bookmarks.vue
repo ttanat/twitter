@@ -5,8 +5,7 @@
 </template>
 
 <script setup>
-definePageMeta({
-  middleware: ["auth"]
-})
+definePageMeta({ middleware: ["auth"] })
+useHead({ title: "Bookmarks" })
 useState("navBarRoute").value = "Bookmarks"
 </script>

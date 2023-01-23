@@ -5,8 +5,10 @@
 </template>
 
 <script setup>
+const route = useRoute()
+useHead({ title: `@${route.params.username}`})
 definePageMeta({
   middleware: ["profile-redirect"]
 })
-useState("navBarRoute").value = `@${useRoute().params.username}`
+useState("navBarRoute").value = `@${route.params.username}`
 </script>

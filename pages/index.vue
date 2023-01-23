@@ -5,5 +5,6 @@
 </template>
 
 <script setup>
+useHead({ title: "Home" })
 useState("navBarRoute").value = "Home"
 </script>
