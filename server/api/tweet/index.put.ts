@@ -2,7 +2,7 @@ import { Types } from "mongoose"
 import Tweet from "~~/server/models/tweet"
 import { checkUsername } from "~~/server/utils/query"
 
-interface ITweet {
+interface ITweetToEdit {
   user: { username: string }
   content?: string
   media?: Types.Array<string>
@@ -26,7 +26,7 @@ export default defineEventHandler(async event => {
     return createError({ statusCode: 400 })
   }
 
-  const tweet: ITweet | null = await Tweet.findOne({ _id }, {
+  const tweet: ITweetToEdit | null = await Tweet.findOne({ _id }, {
     _id: 0,
     content: 1,
     media: 1,
@@ -40,8 +40,8 @@ export default defineEventHandler(async event => {
   if (!tweet || tweet.isRemoved || tweet.isDeleted) return createError({ statusCode: 400 })
   // Check user is editing their own tweet
   if (username !== tweet.user.username) return createError({ statusCode: 400 })
-  // Only allow users to edit within 3 minutes of posting and with <= 3 replies
-  if (Date.now() - tweet.timestamp.valueOf() > 1000 * 60 * 3 || tweet.numReplies > 3) {
+  // Only allow users to edit within 5 minutes of posting and if no one has replied
+  if (Date.now() - tweet.timestamp.valueOf() > 1000 * 60 * 5 || tweet.numReplies > 0) {
     return createError({ statusCode: 400, statusMessage: "Cannot edit anymore" })
   }
 
