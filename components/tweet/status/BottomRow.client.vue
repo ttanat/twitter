@@ -43,7 +43,7 @@ function like() {
   liking.value = true
   const { error } = useApiFetch("/api/tweet/like", {
     method: props.tweet.isLiked ? "DELETE" : "POST",
-    query: { _id },
+    query: { _id: _id },
   })
   if (error) {
     console.log(error)
