@@ -13,7 +13,7 @@
     </v-btn>
     <v-spacer></v-spacer>
     <v-spacer></v-spacer>
-    <v-btn @click="like" icon variant="text" class="icon-btn like" style="font-size: 14px">
+    <v-btn @click="like" :loading="liking" icon variant="text" class="icon-btn like" style="font-size: 14px">
       <v-icon
         :icon="tweet.isLiked? 'mdi-heart' : 'mdi-heart-outline'"
         :color="tweet.isLiked ? '#dc3065' : ''"
@@ -37,10 +37,14 @@ const props = defineProps({
 })
 const emit = defineEmits(["handleReply", "handleLike"])
 
+const { $auth } = useNuxtApp()
 const route = useRoute()
-const liking = ref(false)
 
+const liking = ref(false)
 function like() {
+  if (!$auth.loggedIn()) {
+    return false
+  }
   liking.value = true
   const { error } = useApiFetch("/api/tweet/like", {
     method: props.tweet.isLiked ? "DELETE" : "POST",

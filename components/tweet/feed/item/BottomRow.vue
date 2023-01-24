@@ -39,8 +39,13 @@ const props = defineProps({
 })
 const emit = defineEmits(["handleLike"])
 
+const { $auth } = useNuxtApp()
+
 const liking = ref(false)
 function like() {
+  if (!$auth.loggedIn()) {
+    return false
+  }
   liking.value = true
   const { error } = useApiFetch("/api/tweet/like", {
     method: props.tweet.isLiked ? "DELETE" : "POST",
