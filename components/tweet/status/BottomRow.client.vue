@@ -1,8 +1,8 @@
 <template>
   <div class="d-flex my-1 text-grey">
     <v-spacer></v-spacer>
-    <v-btn icon variant="text" class="icon-btn reply" style="font-size: 14px">
-      <v-icon icon="mdi-chat-outline"></v-icon>
+    <v-btn @click="$emit('handleReply')" icon variant="text" class="icon-btn reply" style="font-size: 14px">
+      <v-icon :icon="replyFormShowing ? 'mdi-chat' : 'mdi-chat-outline'"></v-icon>
       <v-tooltip activator="parent" location="bottom">Reply</v-tooltip>
     </v-btn>
     <v-spacer></v-spacer>
@@ -32,9 +32,10 @@
 
 <script setup>
 const props = defineProps({
-  tweet: Object
+  replyFormShowing: Boolean,
+  tweet: Object,
 })
-const emit = defineEmits(["handleLike"])
+const emit = defineEmits(["handleReply", "handleLike"])
 
 const route = useRoute()
 const liking = ref(false)

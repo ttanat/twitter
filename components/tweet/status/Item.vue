@@ -41,17 +41,34 @@
     </div>
     <div class="divider bg-grey-darken-3"></div>
     <!-- Buttons -->
-    <TweetStatusBottomRow :tweet="tweet" @handle-like="$emit('handleLike')" />
+    <TweetStatusBottomRow
+      :replyFormShowing="replyFormShowing"
+      :tweet="tweet"
+      @handle-reply="showReplyForm"
+      @handle-like="$emit('handleLike')"
+    />
   </div>
+  <TweetStatusReplyForm
+    v-if="replyFormShowing"
+    :replyToName="tweet.user.name"
+  />
 </template>
 
 <script setup>
 defineProps({
   tweet: Object
 })
+defineEmits(["handleLike"])
+
+const { $auth } = useNuxtApp()
 
 function getNumberTitle(number) {
   return number < 1e4 ? "" : number.toLocaleString()
+}
+
+const replyFormShowing = ref(false)
+function showReplyForm() {
+  replyFormShowing.value = $auth.loggedIn() ? !replyFormShowing.value : false
 }
 </script>
 

@@ -41,7 +41,7 @@
                 {{ $auth.getName() }}
               </span>
               <span class="top-row-link text-grey-darken-1">
-                <span><template v-if="$auth.getName()">&ensp;</template>@{{ $auth.getUsername() }}</span>
+                <span>&ensp;@{{ $auth.getUsername() }}</span>
               </span>
               <template v-if="isThread">
                 <v-spacer></v-spacer>
@@ -190,7 +190,7 @@ function tweet() {
   }
   loading.value = false
   // Handle response from server
-  if (error?.value) {
+  if (error) {
     message.value = "Oops, something went wrong. Please try again."
   } else {
     resetForm()
