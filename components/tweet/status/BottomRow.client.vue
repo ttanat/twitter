@@ -37,12 +37,11 @@ const props = defineProps({
 })
 const emit = defineEmits(["handleReply", "handleLike"])
 
-const { $auth } = useNuxtApp()
 const route = useRoute()
 
 const liking = ref(false)
 function like() {
-  if (!$auth.loggedIn()) {
+  if (!useNuxtApp().$auth.loggedIn()) {
     return false
   }
   liking.value = true

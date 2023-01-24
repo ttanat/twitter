@@ -19,7 +19,6 @@ export default defineEventHandler(async event => {
     return createError({ statusCode: 400 })
   }
 
-  // await Tweet.deleteOne({ _id }).exec()
   await Tweet.updateOne({ _id }, { isDeleted: true }).exec()
 
   return null

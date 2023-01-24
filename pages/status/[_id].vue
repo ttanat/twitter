@@ -1,6 +1,16 @@
 <template>
   <BaseLayout>
-    <TweetStatusItem :tweet="tweet" @handle-like="handleLike" @reply-created="replyCreated" />
+    <div v-if="tweet.isDeleted" class="pa-3" style="border-bottom: solid 1px grey">
+      <div class="rounded-lg pa-3" style="background: #0f0f0f;border: solid 1px grey">
+        Tweet has been deleted
+      </div>
+    </div>
+    <TweetStatusItem
+      v-else
+      :tweet="tweet"
+      @handle-like="handleLike"
+      @reply-created="replyCreated"
+    />
     <TweetFeedList ref="replyFeed" :url="`/api/tweets/replies?_id=${route.params._id}&before=${new Date().toISOString()}`" />
   </BaseLayout>
 </template>
@@ -9,9 +19,10 @@
 useState("navBarRoute").value = "Tweet"
 const route = useRoute()
 const { data: tweet } = await useApiFetch("/api/tweet", { query: { _id: route.params._id }, server: true })
+
 useHead({
   // Content ~ Name (@username)
-  title: `${`${tweet.value.content} ~ ` || "~ "}${tweet.value.user.name} (@${tweet.value.user.username})`
+  title: tweet.value.isDeleted ? "Deleted tweet" : `${`${tweet.value.content} ~ ` || "~ "}${tweet.value.user.name} (@${tweet.value.user.username})`
 })
 
 function handleLike() {
