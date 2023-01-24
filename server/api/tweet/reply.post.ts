@@ -37,7 +37,7 @@ export default defineEventHandler(async event => {
   // Get tweet/reply that user is replying to
   const parent = await Tweet.findOne({ _id: replyTo }, { _id: 1, ancestors: 1 }).exec()
   if (!parent) {
-    return createError({ statusCode: 400 })
+    return createError({ statusCode: 404 })
   }
 
   const reply = await Tweet.create({
@@ -51,5 +51,7 @@ export default defineEventHandler(async event => {
     parent: parent._id,
   })
 
-  return null
+  const response = await reply.populate("user", "-_id username name image")
+
+  return response
 })

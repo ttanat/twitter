@@ -51,14 +51,23 @@
   <TweetStatusReplyForm
     v-if="replyFormShowing"
     :replyToName="tweet.user.name"
+    @reply-created="replyCreated"
   />
+  <v-snackbar
+    v-model="replySnackbar"
+    :timeout="2000"
+    color="success"
+    rounded="pill"
+  >
+    Reply sent
+  </v-snackbar>
 </template>
 
 <script setup>
 defineProps({
   tweet: Object
 })
-defineEmits(["handleLike"])
+const emit = defineEmits(["handleLike", "replyCreated"])
 
 const { $auth } = useNuxtApp()
 
@@ -69,6 +78,12 @@ function getNumberTitle(number) {
 const replyFormShowing = ref(false)
 function showReplyForm() {
   replyFormShowing.value = $auth.loggedIn() ? !replyFormShowing.value : false
+}
+const replySnackbar = ref(false)
+function replyCreated(reply) {
+  replyFormShowing.value = false
+  replySnackbar.value = true
+  emit("replyCreated", reply)
 }
 </script>
 

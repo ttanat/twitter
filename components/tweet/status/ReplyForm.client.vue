@@ -1,5 +1,5 @@
 <template>
-  <div class="pt-2 pb-1 px-3 tweet-item" style="border-bottom: solid 1px grey">
+  <div class="py-2 px-3 tweet-item" style="border-bottom: solid 1px grey">
     <v-timeline
       truncate-line="both"
       align="start"
@@ -41,38 +41,30 @@
           class="mt-1"
         ></v-textarea>
         <!-- <div v-if="tweet.media.length"><img :src="tweet.media[0]"></div> -->
-        <div v-show="message.length" class="text-error">{{ message }}</div>
       </v-timeline-item>
     </v-timeline>
-    <v-container ref="bottomRow">
-      <v-row>
-        <v-btn icon class="icon-btn" variant="text" color="primary">
-          <v-icon icon="mdi-image-outline"></v-icon>
-          <v-tooltip activator="parent" location="top">Add media</v-tooltip>
-        </v-btn>
-        <v-btn icon class="ml-2 icon-btn" variant="text" color="primary">
-          <v-icon icon="mdi-poll"></v-icon>
-          <v-tooltip activator="parent" location="top">Add poll</v-tooltip>
-        </v-btn>
-        <v-spacer></v-spacer>
-        <v-btn @click="reply" color="primary" class="mr-2" rounded="pill" :loading="loading">Reply</v-btn>
-      </v-row>
-    </v-container>
+    <div v-show="message.length" class="text-error pl-2">{{ message }}</div>
+    <div class="d-flex">
+      <v-btn icon class="icon-btn" variant="text" color="primary">
+        <v-icon icon="mdi-image-outline"></v-icon>
+        <v-tooltip activator="parent" location="top">Add media</v-tooltip>
+      </v-btn>
+      <v-btn icon class="ml-2 icon-btn" variant="text" color="primary">
+        <v-icon icon="mdi-poll"></v-icon>
+        <v-tooltip activator="parent" location="top">Add poll</v-tooltip>
+      </v-btn>
+      <v-spacer></v-spacer>
+      <v-btn @click="reply" color="primary" rounded="pill" class="align-self-center" :loading="loading">Reply</v-btn>
+    </div>
   </div>
-  <v-snackbar
-    v-model="snackbar"
-    :timeout="2000"
-    color="success"
-    rounded="pill"
-  >
-    Reply sent
-  </v-snackbar>
 </template>
 
 <script setup>
 defineProps({
   replyToName: String
 })
+const emit = defineEmits(["replyCreated"])
+
 const route = useRoute()
 
 const content = ref("")
@@ -81,26 +73,26 @@ const message = ref("")
 function clearMessage() {
   message.value = ""
 }
-const snackbar = ref(false)
 
-function reply() {
+async function reply() {
   content.value = content.value.slice(0, 300).trim()
   if (!content.value) {
+    message.value = "Reply can't be empty"
     return false
   }
   // Send to server
   loading.value = true
-  const { data, error } = useApiFetch("/api/tweet/reply", {
+  const { data } = await useApiFetch("/api/tweet/reply", {
     method: "POST",
     body: { replyTo: route.params._id, content: content.value },
   })
   loading.value = false
   // Handle response from server
-  if (error) {
-    message.value = "Oops, something went wrong. Please try again."
-  } else {
+  if (data) {
+    emit("replyCreated", data.value)
     resetForm()
-    snackbar.value = true
+  } else {
+    message.value = "Oops, something went wrong. Please try again."
   }
 }
 

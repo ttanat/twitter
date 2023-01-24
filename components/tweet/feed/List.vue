@@ -37,4 +37,9 @@ function handleLike(_id, newValue) {
   tweet.isLiked = newValue
   tweet.numLikes += newValue ? 1 : -1
 }
+
+function prependFeed(tweet) {
+  tweets.value.unshift(tweet)
+}
+defineExpose({ prependFeed })
 </script>
