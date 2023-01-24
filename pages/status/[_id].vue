@@ -10,6 +10,7 @@
       :tweet="tweet"
       @handle-like="handleLike"
       @reply-created="replyCreated"
+      @handle-edit="handleEdit"
     />
     <TweetFeedList ref="replyFeed" :url="`/api/tweets/replies?_id=${route.params._id}&before=${new Date().toISOString()}`" />
   </BaseLayout>
@@ -33,5 +34,9 @@ function handleLike() {
 const replyFeed = ref(null)
 function replyCreated(reply) {
   replyFeed.value.prependFeed(reply)
+}
+
+function handleEdit(newContent) {
+  tweet.value.content = newContent
 }
 </script>
