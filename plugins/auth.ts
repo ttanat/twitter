@@ -16,7 +16,7 @@ interface Tokens {
 export default defineNuxtPlugin(_ => {
   const accessToken = useCookie("accessToken", {
     sameSite: true,
-    maxAge: 60 * 60, // 1 hour
+    // No max age because it will change loggedIn to false if inactive after maxAge elapses
   })
   const refreshToken = useCookie("refreshToken", {
     sameSite: true,
