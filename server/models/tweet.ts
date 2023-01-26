@@ -28,7 +28,8 @@ const pollSchema = new Schema<IPoll>({
 interface ITweet {
   user: Types.ObjectId
   content?: string
-  quotedTweet?: Types.ObjectId
+  retweet?: Types.ObjectId
+  quoteTweet?: Types.ObjectId
   timestamp: Date
   effectiveTimestamp: Date
   media?: Types.Array<string>
@@ -51,7 +52,8 @@ const tweetSchema = new Schema<ITweet>({
   user: { type: Schema.Types.ObjectId, required: true, ref: "User" },
 
   content: { type: String, maxlength: 300, trim: true },
-  quotedTweet: { type: Schema.Types.ObjectId, ref: "Tweet" },
+  retweet: { type: Schema.Types.ObjectId, ref: "Tweet" },
+  quoteTweet: { type: Schema.Types.ObjectId, ref: "Tweet" },
   timestamp: { type: Date, default: Date.now, immutable: true },
   effectiveTimestamp: { type: Date, default: Date.now },
   media: {
@@ -77,11 +79,30 @@ const tweetSchema = new Schema<ITweet>({
 })
 
 tweetSchema.pre("save", function(next) {
-  if (!this.content && !this.media?.length && !this.poll) {
-    next(new Error("Can't be empty"))
-  }
-  if (this.poll && this.media?.length) {
-    next(new Error("Polls can't contain media"))
+  // Retweet
+  if (this.retweet) {
+    if (this.content || this.media?.length || this.poll) {
+      next(new Error("Retweet can't have content, media, or poll"))
+    }
+    if (this.quoteTweet) {
+      next(new Error("Pick one: retweet or quote tweet"))
+    }
+  // Quote tweet
+  } else if (this.quoteTweet) {
+    if (!this.content) {
+      next(new Error("Quote tweet must have content"))
+    }
+    if (this.media?.length || this.poll) {
+      next(new Error("Quote tweet can't have media or poll"))
+    }
+  // Normal tweet
+  } else {
+    if (!this.content && !this.media?.length && !this.poll) {
+      next(new Error("Tweet can't be empty"))
+    }
+    if (this.poll && this.media?.length) {
+      next(new Error("Polls can't contain media"))
+    }
   }
   next()
 })
