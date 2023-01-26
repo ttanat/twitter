@@ -45,6 +45,7 @@
       :replyFormShowing="replyFormShowing"
       :tweet="tweet"
       @handle-reply="showReplyForm"
+      @handle-retweet="$emit('handleRetweet')"
       @handle-like="$emit('handleLike')"
     />
   </div>
@@ -60,7 +61,7 @@
 const props = defineProps({
   tweet: Object
 })
-const emit = defineEmits(["handleLike", "replyCreated", "handleEdit"])
+const emit = defineEmits(["handleRetweet", "handleLike", "replyCreated", "handleEdit"])
 
 const route = useRoute()
 

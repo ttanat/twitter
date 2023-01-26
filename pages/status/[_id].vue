@@ -8,6 +8,7 @@
     <TweetStatusItem
       v-else
       :tweet="tweet"
+      @handle-retweet="handleRetweet"
       @handle-like="handleLike"
       @reply-created="replyCreated"
       @handle-edit="handleEdit"
@@ -25,6 +26,11 @@ useHead({
   // Content ~ Name (@username)
   title: tweet.value.isDeleted ? "Deleted tweet" : `${`${tweet.value.content} ~ ` || "~ "}${tweet.value.user.name} (@${tweet.value.user.username})`
 })
+
+function handleRetweet() {
+  tweet.value.isRetweeted = !tweet.value.isRetweeted
+  tweet.value.numRetweets += tweet.value.isRetweeted ? 1 : -1
+}
 
 function handleLike() {
   tweet.value.isLiked = !tweet.value.isLiked

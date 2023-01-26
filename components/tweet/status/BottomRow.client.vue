@@ -7,8 +7,8 @@
     </v-btn>
     <v-spacer></v-spacer>
     <v-spacer></v-spacer>
-    <v-btn icon variant="text" class="icon-btn retweet" style="font-size: 18px">
-      <v-icon icon="mdi-repeat-variant"></v-icon>
+    <v-btn @click="retweet" :loading="retweeting" icon variant="text" class="icon-btn retweet" style="font-size: 18px">
+      <v-icon icon="mdi-repeat-variant" :color="tweet.isRetweeted ? '#40a440' : ''"></v-icon>
       <v-tooltip activator="parent" location="bottom">Retweet</v-tooltip>
     </v-btn>
     <v-spacer></v-spacer>
@@ -35,13 +35,31 @@ const props = defineProps({
   replyFormShowing: Boolean,
   tweet: Object,
 })
-const emit = defineEmits(["handleReply", "handleLike"])
+const emit = defineEmits(["handleReply", "handleRetweet", "handleLike"])
 
 const route = useRoute()
+const { $auth: auth } = useNuxtApp()
+
+const retweeting = ref(false)
+async function retweet() {
+  if (!auth.loggedIn()) {
+    return false
+  }
+  retweeting.value = true
+  const options = props.tweet.isRetweeted ? { method: "DELETE", query: { _id: route.params._id }}
+                                          : { method: "POST", body: { _id: route.params._id }}
+  const { error } = await useApiFetch("/api/tweet/retweet", options)
+  retweeting.value = false
+  if (error?.value) {
+    console.log(error.value)
+  } else {
+    emit("handleRetweet")
+  }
+}
 
 const liking = ref(false)
 function like() {
-  if (!useNuxtApp().$auth.loggedIn()) {
+  if (!auth.loggedIn()) {
     return false
   }
   liking.value = true
@@ -65,9 +83,6 @@ function like() {
 }
 .reply:hover {
   color: #299ded;
-}
-.retweet:hover {
-  color: #40a440;
 }
 .like:hover {
   color: #dc3065;
