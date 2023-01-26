@@ -121,7 +121,7 @@ async function handleEdit() {
     body: { _id: route.params._id, content: editTextarea.value },
   })
   savingEdit.value = false
-  if (error?.value) {
+  if (error.value) {
     console.log(error.value)
     return false
   }

@@ -42,17 +42,17 @@ const emit = defineEmits(["handleLike"])
 const { $auth } = useNuxtApp()
 
 const liking = ref(false)
-function like() {
+async function like() {
   if (!$auth.loggedIn()) {
     return false
   }
   liking.value = true
-  const { error } = useApiFetch("/api/tweet/like", {
+  const { error } = await useApiFetch("/api/tweet/like", {
     method: props.tweet.isLiked ? "DELETE" : "POST",
     query: { _id: props.tweet._id },
   })
-  if (error) {
-    console.log(error)
+  if (error.value) {
+    console.log(error.value)
   } else {
     emit("handleLike")
   }

@@ -157,7 +157,7 @@ function clearMessage() {
 }
 const snackbar = ref(false)
 
-function tweet() {
+async function tweet() {
   // Ensure less than 10 tweets
   thread.value = thread.value.slice(0, 10)
   // Validate tweet(s)
@@ -183,14 +183,14 @@ function tweet() {
   if (isThread.value) {
     // TODO
   } else {
-    ({ data, error } = useApiFetch("/api/tweet", {
+    ({ data, error } = await useApiFetch("/api/tweet", {
       method: "POST",
       body: { content: thread.value[0].content },
     }))
   }
   loading.value = false
   // Handle response from server
-  if (error) {
+  if (error.value) {
     message.value = "Oops, something went wrong. Please try again."
   } else {
     resetForm()

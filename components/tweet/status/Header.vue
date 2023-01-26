@@ -94,7 +94,7 @@ async function deleteTweet() {
     query: { _id: route.params._id },
   })
   deleting.value = false
-  if (error?.value) {
+  if (error.value) {
     console.log(error.value)
   } else {
     // Reload page because error occurs when rerendering tweet as deleted tweet

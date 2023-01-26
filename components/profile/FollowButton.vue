@@ -41,17 +41,17 @@ const emit = defineEmits(["handleFollow"])
 const btnText = computed(() => props.isFollowing ? "Following" : "Follow")
 const loading = ref(false)
 
-function follow() {
+async function follow() {
   if (!$auth.loggedIn()) {
     return false
   }
   loading.value = true
-  const { error } = useApiFetch("/api/follow", {
-    method: props.isFollowing ? "DELETE" : "POST",
+  const { error } = await useApiFetch("/api/follow", {
+    method: props.isFollowing ? "POST" : "POST",
     query: { username: props.username }
   })
-  if (error) {
-    console.log(error.message)
+  if (error.value) {
+    console.log(error.value)
   } else {
     emit("handleFollow", !props.isFollowing)
   }
