@@ -46,9 +46,10 @@ async function retweet() {
     return false
   }
   retweeting.value = true
-  const options = props.tweet.isRetweeted ? { method: "DELETE", query: { _id: route.params._id }}
-                                          : { method: "POST", body: { _id: route.params._id }}
-  const { error } = await useApiFetch("/api/tweet/retweet", options)
+  const { error } = await useApiFetch("/api/tweet/retweet", {
+    method: props.tweet.isRetweeted ? "DELETE" : "POST",
+    query: { _id: route.params._id },
+  })
   retweeting.value = false
   if (error?.value) {
     console.log(error.value)

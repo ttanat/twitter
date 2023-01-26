@@ -4,7 +4,7 @@ import { ci } from "~~/server/utils/collations"
 import { checkUsername } from "~~/server/utils/query"
 
 export default defineEventHandler(async event => {
-  const { _id } = await readBody(event)
+  const { _id } = getQuery(event)
   const username = event.context.user?.username
   if (!_id || !checkUsername(username)) {
     return createError({ statusCode: 400 })
