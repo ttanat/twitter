@@ -47,7 +47,7 @@ async function follow() {
   }
   loading.value = true
   const { error } = await useApiFetch("/api/follow", {
-    method: props.isFollowing ? "POST" : "POST",
+    method: props.isFollowing ? "DELETE" : "POST",
     query: { username: props.username }
   })
   if (error.value) {
