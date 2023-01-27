@@ -19,22 +19,24 @@
     <!-- Menu -->
     <v-btn icon density="compact" variant="text" rounded="circle" color="grey" style="margin-top: 4px">
       <v-icon size="24" icon="mdi-dots-horizontal"></v-icon>
-      <v-menu activator="parent" :disabled="!$auth.loggedIn()" location="bottom right">
-        <v-list v-if="editing">
-          <v-list-item disabled>Editing tweet...</v-list-item>
-        </v-list>
-        <v-list v-else>
-          <v-list-item
-            v-for="(action, i) in actions"
-            :key="i"
-            :value="action.action"
-            @click="handleAction(action.action)"
-          >
-            <v-list-item-title v-if="editing && action.action === 'edit'">Editing</v-list-item-title>
-            <v-list-item-title v-else>{{ action.title }}</v-list-item-title>
-          </v-list-item>
-        </v-list>
-      </v-menu>
+      <ClientOnly>
+        <v-menu activator="parent" :disabled="!$auth.loggedIn()" location="bottom right">
+          <v-list v-if="editing">
+            <v-list-item disabled>Editing tweet...</v-list-item>
+          </v-list>
+          <v-list v-else>
+            <v-list-item
+              v-for="(action, i) in actions"
+              :key="i"
+              :value="action.action"
+              @click="handleAction(action.action)"
+            >
+              <v-list-item-title v-if="editing && action.action === 'edit'">Editing</v-list-item-title>
+              <v-list-item-title v-else>{{ action.title }}</v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-menu>
+      </ClientOnly>
     </v-btn>
   </div>
   <!-- Delete alert -->

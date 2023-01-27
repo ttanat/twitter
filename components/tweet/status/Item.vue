@@ -54,7 +54,9 @@
     :replyToName="tweet.user.name"
     @reply-created="replyCreated"
   />
-  <v-snackbar v-model="snackbar" :timeout="snackbarTimeout" :color="snackbarColor" rounded="pill">{{ snackbarMessage }}</v-snackbar>
+  <ClientOnly>
+    <v-snackbar v-model="snackbar" :timeout="snackbarTimeout" :color="snackbarColor" rounded="pill">{{ snackbarMessage }}</v-snackbar>
+  </ClientOnly>
 </template>
 
 <script setup>

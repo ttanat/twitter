@@ -74,7 +74,7 @@ async function onSubmit() {
   } else {
     dialog.value = false
     await useNuxtApp().$auth.setUser(data.value)
-    window.location.href = "/profile"
+    navigateTo("/profile")
   }
 }
 </script>
