@@ -3,7 +3,7 @@ import User from "~~/server/models/user"
 import { checkIsFollowing } from "~~/server/utils/following"
 import { ci } from "~~/server/utils/collations"
 import { getNextUrl } from "~~/server/utils/getNextUrl"
-import { checkIsLiked } from "~~/server/utils/likes"
+import { checkLikesAndRetweets } from "~~/server/utils/likesAndRetweets"
 import { checkDateString, checkUsername } from "~~/server/utils/query"
 
 export default defineEventHandler(async event => {
@@ -36,7 +36,6 @@ export default defineEventHandler(async event => {
     sort: { timestamp: -1 },
   })
     .populate("user", "-_id username name image")
-    .collation(ci)
     .exec()
 
   let next = null
@@ -48,7 +47,7 @@ export default defineEventHandler(async event => {
   }
 
   return {
-    results: await checkIsLiked(event, tweets),
+    results: await checkLikesAndRetweets(event, tweets),
     next,
   }
 })

@@ -3,7 +3,7 @@ import Tweet from "@/server/models/tweet"
 import { ci } from "~~/server/utils/collations"
 import { getNextUrl } from "~~/server/utils/getNextUrl"
 import { checkPageNumber, checkUsername } from "~~/server/utils/query"
-import { checkIsLiked } from "~~/server/utils/likes"
+import { checkLikesAndRetweets } from "~~/server/utils/likesAndRetweets"
 
 export default defineEventHandler(async event => {
   const username = event.context.user?.username
@@ -39,7 +39,7 @@ export default defineEventHandler(async event => {
   }
 
   return {
-    results: await checkIsLiked(event, tweets),
+    results: await checkLikesAndRetweets(event, tweets),
     next,
   }
 })
