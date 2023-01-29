@@ -7,6 +7,13 @@ import { checkUsername } from "~~/server/utils/query"
 type TweetIds = string[] | Types.ObjectId[]
 
 export const checkLikesAndRetweets = async (event: H3Event, tweets: any[]): Promise<any[]> => {
+  /*
+    Tweets: array of documents or array of objects
+    Depends on the route this function is called from
+
+    Returns array of objects
+  */
+
   const username = event.context.user?.username
   if (!checkUsername(username) || tweets.length === 0) {
     return tweets
