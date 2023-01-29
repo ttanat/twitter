@@ -1,7 +1,7 @@
 <template>
   <div class="pt-2 pb-1 tweet-item">
-    <span v-if="retweetedBy" class="d-flex pointer retweeted-by font-weight-bold mb-1" @click="openTweet">
-      <v-icon icon="mdi-repeat-variant" class="mr-1"></v-icon>Retweeted by {{ retweetedBy }}
+    <span v-if="tweet.retweetedBy" class="d-flex pointer retweeted-by font-weight-bold mb-1" @click="openTweet">
+      <v-icon icon="mdi-repeat-variant" class="mr-1"></v-icon>Retweeted by {{ tweet.retweetedBy }}
     </span>
     <v-timeline
       truncate-line="both"
@@ -37,8 +37,7 @@
 
 <script setup>
 const props = defineProps({
-  tweet: Object,
-  retweetedBy: String || null,
+  tweet: Object
 })
 const emit = defineEmits(["handleLike"])
 
