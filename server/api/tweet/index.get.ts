@@ -1,7 +1,7 @@
 import { Types } from "mongoose"
 import Tweet from "~~/server/models/tweet"
 import { checkIsFollowing } from "~~/server/utils/following"
-import { checkTweetIsLiked } from "~~/server/utils/likes"
+import { checkLikeAndRetweet } from "~~/server/utils/likesAndRetweets"
 
 interface IUserInfo {
   _id?: Types.ObjectId
@@ -29,7 +29,8 @@ interface IResponse {
   isRemoved?: boolean
   isDeleted?: boolean
   isFollowing?: boolean
-  isLiked?: boolean
+  isLiked: boolean
+  isRetweeted: boolean
 }
 
 export default defineEventHandler(async event => {
@@ -75,10 +76,10 @@ export default defineEventHandler(async event => {
     return createError({ statusCode: 403, statusMessage: "Tweet is private" })
   }
 
-  // Check if user is liking tweet
-  if (await checkTweetIsLiked(event, _id.toString())) {
-    response.isLiked = true
-  }
+  // Check if user liked or retweeted tweet
+  const { isLiked, isRetweeted } = await checkLikeAndRetweet(event, _id.toString())
+  response.isLiked = isLiked
+  response.isRetweeted = isRetweeted
 
   delete response.user._id
   if (!response.content) delete response.content
