@@ -1,5 +1,4 @@
-import User from "@/server/models/user"
-import { ci } from "~~/server/utils/collations"
+import User, { ci } from "~~/server/models/user"
 import { checkUsername } from "~~/server/utils/query"
 
 export default defineEventHandler(async event => {

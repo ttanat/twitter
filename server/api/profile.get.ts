@@ -1,6 +1,5 @@
-import User from "@/server/models/user"
+import User, { ci } from "~~/server/models/user"
 import { Types } from "mongoose"
-import { ci } from "~~/server/utils/collations"
 import { checkUsername } from "~~/server/utils/query"
 import { checkIsFollowing, checkIsFollowingOrRequesting } from "~~/server/utils/following"
 

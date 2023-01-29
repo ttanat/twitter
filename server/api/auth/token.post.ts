@@ -1,7 +1,6 @@
-import User from "@/server/models/user"
+import User, { ci } from "~~/server/models/user"
 import bcrypt from "bcrypt"
-import { createTokens } from "@/server/utils/createTokens"
-import { ci } from "~~/server/utils/collations"
+import { createTokens } from "~~/server/utils/createTokens"
 import { checkUsername } from "~~/server/utils/query"
 
 export default eventHandler(async event => {

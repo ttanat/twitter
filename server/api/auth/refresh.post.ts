@@ -1,6 +1,5 @@
 import jwt, { JwtPayload } from "jsonwebtoken"
-import User from "@/server/models/user"
-import { ci } from "~~/server/utils/collations"
+import User, { ci } from "~~/server/models/user"
 
 const config = useRuntimeConfig()
 

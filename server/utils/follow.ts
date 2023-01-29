@@ -1,8 +1,7 @@
-import User from "@/server/models/user"
+import User, { ci } from "~~/server/models/user"
 import { checkUsername } from "~~/server/utils/query"
-import mongoose, { Types } from "mongoose"
+import { Types } from "mongoose"
 import { H3Event } from "h3"
-import { ci } from "~~/server/utils/collations"
 
 const allowedHttpMethods = new Set(["POST", "DELETE"])
 

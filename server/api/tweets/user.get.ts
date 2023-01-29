@@ -1,9 +1,8 @@
 import Tweet from "~~/server/models/tweet"
-import User from "~~/server/models/user"
+import User, { ci } from "~~/server/models/user"
 import { checkIsFollowing } from "~~/server/utils/following"
-import { ci } from "~~/server/utils/collations"
-import { parseRetweets, checkLikesAndRetweets, getNextUrl } from "~~/server/utils/feed"
 import { checkDateString, checkUsername } from "~~/server/utils/query"
+import { parseRetweets, checkLikesAndRetweets, getNextUrl } from "~~/server/utils/feed"
 
 export default defineEventHandler(async event => {
   const username = getQuery(event).username ?? event.context.user?.username

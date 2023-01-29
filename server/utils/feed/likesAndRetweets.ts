@@ -1,7 +1,6 @@
 import Tweet from "~~/server/models/tweet"
-import User from "~~/server/models/user"
+import User, { ci } from "~~/server/models/user"
 import { H3Event } from "h3"
-import { ci } from "~~/server/utils/collations"
 import { Types } from "mongoose"
 import { checkUsername } from "~~/server/utils/query"
 

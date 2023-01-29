@@ -1,6 +1,5 @@
-import User from "@/server/models/user"
-import Tweet from "@/server/models/tweet"
-import { ci } from "~~/server/utils/collations"
+import Tweet from "~~/server/models/tweet"
+import User, { ci } from "~~/server/models/user"
 import { checkPageNumber, checkUsername } from "~~/server/utils/query"
 import { checkLikesAndRetweets, getNextUrl } from "~~/server/utils/feed"
 

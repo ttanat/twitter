@@ -1,6 +1,5 @@
-import User from "~~/server/models/user"
+import User, { ci } from "~~/server/models/user"
 import { checkUsername } from "~~/server/utils/query"
-import { ci } from "~~/server/utils/collations"
 import { Types } from "mongoose"
 
 type Username = string | undefined

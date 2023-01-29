@@ -1,7 +1,5 @@
-import mongoose from "mongoose"
 import Tweet from "~~/server/models/tweet"
-import User from "~~/server/models/user"
-import { ci } from "~~/server/utils/collations"
+import User, { ci } from "~~/server/models/user"
 import { checkId, checkUsername } from "~~/server/utils/query"
 
 const methods = new Set(["POST", "DELETE"])

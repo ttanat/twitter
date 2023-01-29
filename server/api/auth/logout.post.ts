@@ -1,6 +1,5 @@
-import User from "@/server/models/user"
 import jwt, { JwtPayload } from "jsonwebtoken"
-import { ci } from "~~/server/utils/collations"
+import User, { ci } from "~~/server/models/user"
 
 export default defineEventHandler(async event => {
   const { refreshToken } = await readBody(event)
