@@ -1,7 +1,6 @@
 import Tweet from "@/server/models/tweet"
 import User from "@/server/models/user"
-import { checkLikesAndRetweets } from "~~/server/utils/likesAndRetweets"
-import { getNextUrl } from "~~/server/utils/getNextUrl"
+import { parseRetweets, checkLikesAndRetweets, getNextUrl } from "~~/server/utils/feed"
 
 /*
   Routes:
@@ -29,7 +28,8 @@ export default defineEventHandler(async event => {
     })
     .exec()
 
-  const results = await checkLikesAndRetweets(event, tweets)
+  let results = parseRetweets(tweets)
+  results = await checkLikesAndRetweets(event, results)
 
   return {
     results,

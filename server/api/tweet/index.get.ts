@@ -1,7 +1,7 @@
 import { Types } from "mongoose"
 import Tweet from "~~/server/models/tweet"
 import { checkIsFollowing } from "~~/server/utils/following"
-import { checkLikeAndRetweet } from "~~/server/utils/likesAndRetweets"
+import { checkLikeAndRetweet } from "~~/server/utils/feed"
 import { checkId } from "~~/server/utils/query"
 
 interface IUserInfo {

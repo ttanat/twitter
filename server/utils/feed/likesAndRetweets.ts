@@ -1,9 +1,9 @@
 import Tweet from "~~/server/models/tweet"
 import User from "~~/server/models/user"
 import { H3Event } from "h3"
-import { ci } from "./collations"
+import { ci } from "~~/server/utils/collations"
 import { Types } from "mongoose"
-import { checkUsername } from "./query"
+import { checkUsername } from "~~/server/utils/query"
 
 type TweetIds = string[] | Types.ObjectId[]
 
@@ -14,7 +14,7 @@ export const checkLikesAndRetweets = async (event: H3Event, tweets: any[]): Prom
   }
 
   // Get _id's of tweets
-  const tweet_ids = tweets.map(tweet => tweet.retweet ? tweet.retweet._id : tweet._id)
+  const tweet_ids = tweets.map(tweet => tweet._id)
 
   // Get likes and retweets
   const [likes, retweets] = await Promise.all([
@@ -24,23 +24,17 @@ export const checkLikesAndRetweets = async (event: H3Event, tweets: any[]): Prom
 
   // Add user likes and retweets to tweets
   tweets = tweets.map(tweet => {
-    // Get _id of tweet or retweeted tweet
-    const _id = tweet.retweet ? tweet.retweet._id.toString() : tweet._id.toString()
+    // Get _id
+    const _id = tweet._id.toString()
     // Check if user liked tweet
     const isLiked = likes.has(_id)
     // Check if user retweeted tweet
     const isRetweeted = retweets.has(_id)
 
-    const obj = tweet.toObject()
-    if (tweet.retweet) {
-      obj.retweet.isLiked = isLiked
-      obj.retweet.isRetweeted = isRetweeted
-    } else {
-      obj.isLiked = isLiked
-      obj.isRetweeted = isRetweeted
-    }
+    tweet.isLiked = isLiked
+    tweet.isRetweeted = isRetweeted
 
-    return obj
+    return tweet
   })
 
   return tweets

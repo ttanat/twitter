@@ -2,8 +2,7 @@ import Tweet from "~~/server/models/tweet"
 import User from "~~/server/models/user"
 import { checkIsFollowing } from "~~/server/utils/following"
 import { ci } from "~~/server/utils/collations"
-import { getNextUrl } from "~~/server/utils/getNextUrl"
-import { checkLikesAndRetweets } from "~~/server/utils/likesAndRetweets"
+import { parseRetweets, checkLikesAndRetweets, getNextUrl } from "~~/server/utils/feed"
 import { checkDateString, checkUsername } from "~~/server/utils/query"
 
 export default defineEventHandler(async event => {
@@ -53,8 +52,11 @@ export default defineEventHandler(async event => {
     })
   }
 
+  let results = parseRetweets(tweets)
+  results = await checkLikesAndRetweets(event, results)
+
   return {
-    results: await checkLikesAndRetweets(event, tweets),
+    results,
     next,
   }
 })

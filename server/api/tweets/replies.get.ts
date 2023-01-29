@@ -1,7 +1,6 @@
 import Tweet from "~~/server/models/tweet"
-import { getNextUrl } from "~~/server/utils/getNextUrl"
-import { checkLikesAndRetweets } from "~~/server/utils/likesAndRetweets"
 import { checkDateString, checkId } from "~~/server/utils/query"
+import { checkLikesAndRetweets, getNextUrl } from "~~/server/utils/feed"
 
 export default defineEventHandler(async event => {
   const { _id, before } = getQuery(event)

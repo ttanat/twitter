@@ -1,6 +1,5 @@
 import Tweet from "@/server/models/tweet"
-import { getNextUrl } from "~~/server/utils/getNextUrl"
-import { checkLikesAndRetweets } from "~~/server/utils/likesAndRetweets"
+import { checkLikesAndRetweets, getNextUrl } from "~~/server/utils/feed"
 
 export default defineEventHandler(async event => {
   return {
