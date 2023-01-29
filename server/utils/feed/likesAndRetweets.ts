@@ -31,7 +31,7 @@ export const checkLikesAndRetweets = async (event: H3Event, tweets: any[]): Prom
   // Add user likes and retweets to tweets
   tweets = tweets.map(tweet => {
     // Get _id
-    const _id = tweet._id.toString()
+    const _id: string = tweet._id.toString()
     // Check if user liked tweet
     const isLiked = likes.has(_id)
     // Check if user retweeted tweet
@@ -77,12 +77,12 @@ const checkRetweets = async (tweet_ids: TweetIds, username: string): Promise<Rea
   // Check if user retweeted those tweets
   const retweetObjs = await Tweet.find(
     { user: user._id, retweet: { $in: tweet_ids }},
-    { _id: 1 },
+    { _id: 0, retweet: 1 },
     { limit: 20 },
   ).exec()
 
   // Flatten array
-  const retweets = retweetObjs.map(obj => obj._id.toString())
+  const retweets = retweetObjs.map(obj => obj.retweet!.toString())
 
   // Add _id's to set
   return new Set(retweets)
