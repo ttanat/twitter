@@ -14,25 +14,33 @@ export const checkLikesAndRetweets = async (event: H3Event, tweets: any[]): Prom
   }
 
   // Get _id's of tweets
-  const tweet_ids = tweets.map(tweet => tweet._id)
+  const tweet_ids = tweets.map(tweet => tweet.retweet ? tweet.retweet._id : tweet._id)
 
   // Get likes and retweets
   const [likes, retweets] = await Promise.all([
     checkLikes(tweet_ids, username),
     checkRetweets(tweet_ids, username),
   ])
-  console.log(retweets)
 
   // Add user likes and retweets to tweets
   tweets = tweets.map(tweet => {
-    const _id = tweet._id.toString()
+    // Get _id of tweet or retweeted tweet
+    const _id = tweet.retweet ? tweet.retweet._id.toString() : tweet._id.toString()
     // Check if user liked tweet
     const isLiked = likes.has(_id)
     // Check if user retweeted tweet
     const isRetweeted = retweets.has(_id)
-    if (isRetweeted) console.log(isRetweeted)
-    
-    return { ...tweet.toObject(), isLiked, isRetweeted }
+
+    const obj = tweet.toObject()
+    if (tweet.retweet) {
+      obj.retweet.isLiked = isLiked
+      obj.retweet.isRetweeted = isRetweeted
+    } else {
+      obj.isLiked = isLiked
+      obj.isRetweeted = isRetweeted
+    }
+
+    return obj
   })
 
   return tweets

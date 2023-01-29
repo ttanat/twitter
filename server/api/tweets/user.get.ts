@@ -36,6 +36,13 @@ export default defineEventHandler(async event => {
     sort: { timestamp: -1 },
   })
     .populate("user", "-_id username name image")
+    .populate({
+      path: "retweet",
+      populate: {
+        path: "user",
+        select: "-_id username name image",
+      },
+    })
     .exec()
 
   let next = null
