@@ -2,7 +2,8 @@
   <TweetFeedItem
     v-for="tweet in tweets"
     :key="tweet._id"
-    :tweet="tweet"
+    :tweet="tweet.retweet || tweet"
+    :retweetedBy="tweet.retweet ? tweet.user.name : null"
     class="px-3"
     style="border-bottom: solid 1px grey"
     @handle-like="handleLike"

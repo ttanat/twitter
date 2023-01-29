@@ -1,5 +1,8 @@
 <template>
   <div class="pt-2 pb-1 tweet-item">
+    <span v-if="retweetedBy" class="d-flex pointer retweeted-by font-weight-bold mb-1" @click="openTweet">
+      <v-icon icon="mdi-repeat-variant" class="mr-1"></v-icon>Retweeted by {{ retweetedBy }}
+    </span>
     <v-timeline
       truncate-line="both"
       align="start"
@@ -8,10 +11,9 @@
     >
       <v-timeline-item
         dot-color="#424242"
-        class="pl-2"
+        class="pl-2 pointer"
         width="100%"
         @click="openTweet"
-        style="cursor: pointer"
       >
         <template v-slot:icon>
           <NuxtLink :to="'/@'+tweet.user.username">
@@ -35,7 +37,8 @@
 
 <script setup>
 const props = defineProps({
-  tweet: Object
+  tweet: Object,
+  retweetedBy: String || null,
 })
 const emit = defineEmits(["handleLike"])
 
@@ -47,6 +50,14 @@ function openTweet(e) {
 </script>
 
 <style scoped>
+.pointer {
+  cursor: pointer;
+}
+.retweeted-by {
+  padding-left: 24px;
+  font-size: 14px;
+  color: #2c842c;
+}
 .tweet-item {
   font-size: 15px;
 }
