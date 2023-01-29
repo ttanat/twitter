@@ -6,7 +6,16 @@
       </v-btn>
     </div>
     <div class="flex-grow-1">
-      <v-btn class="retweets" density="compact" variant="text" rounded="pill" width="30px">
+      <v-btn
+        @click="retweet"
+        :loading="retweeting"
+        :color="tweet.isRetweeted ? '#40a440' : ''"
+        class="retweets"
+        density="compact"
+        variant="text"
+        rounded="pill"
+        width="30px"
+      >
         <v-icon size="24" icon="mdi-repeat-variant" style="padding-bottom: 2px"></v-icon>
         <span style="font-size: 12px">&ensp;</span>{{ useNumber(tweet.numRetweets) }}
       </v-btn>
@@ -37,13 +46,31 @@
 const props = defineProps({
   tweet: Object
 })
-const emit = defineEmits(["handleLike"])
+const emit = defineEmits(["handleRetweet", "handleLike"])
 
-const { $auth } = useNuxtApp()
+const { $auth: auth } = useNuxtApp()
+
+const retweeting = ref(false)
+async function retweet() {
+  if (!auth.loggedIn()) {
+    return false
+  }
+  retweeting.value = true
+  const { error } = await useApiFetch("/api/tweet/retweet", {
+    method: props.tweet.isRetweeted ? "DELETE" : "POST",
+    query: { _id: props.tweet._id },
+  })
+  retweeting.value = false
+  if (error.value) {
+    console.log(error.value)
+  } else {
+    emit("handleRetweet")
+  }
+}
 
 const liking = ref(false)
 async function like() {
-  if (!$auth.loggedIn()) {
+  if (!auth.loggedIn()) {
     return false
   }
   liking.value = true

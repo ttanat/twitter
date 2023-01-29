@@ -29,7 +29,11 @@
         <TweetFeedItemTopRow :tweet="tweet" />
         <div>{{ tweet.content }}</div>
         <div v-if="tweet.media.length"><img :src="tweet.media[0]"></div>
-        <TweetFeedItemBottomRow :tweet="tweet" @handle-like="$emit('handleLike', tweet._id, !tweet.isLiked)" />
+        <TweetFeedItemBottomRow
+          :tweet="tweet"
+          @handle-retweet="$emit('handleRetweet', tweet._id)"
+          @handle-like="$emit('handleLike', tweet._id)"
+        />
       </v-timeline-item>
     </v-timeline>
   </div>
@@ -39,7 +43,7 @@
 const props = defineProps({
   tweet: Object
 })
-const emit = defineEmits(["handleLike"])
+const emit = defineEmits(["handleRetweet", "handleLike"])
 
 function openTweet(e) {
   if (e.target.nodeName === "DIV") {
