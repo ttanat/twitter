@@ -1,6 +1,11 @@
 import { QueryValue } from "ufo"
+import { Types } from "mongoose"
 
 const usernameRegExp = /^\w{3,32}$/
+
+export const checkId = (_id: QueryValue | QueryValue[]): boolean => {
+  return Types.ObjectId.isValid(_id?.toString() ?? "")
+}
 
 export const checkUsername = (username: QueryValue | QueryValue[]): boolean => {
   const str = username?.toString() ?? ""

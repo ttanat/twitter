@@ -2,6 +2,7 @@ import { Types } from "mongoose"
 import Tweet from "~~/server/models/tweet"
 import { checkIsFollowing } from "~~/server/utils/following"
 import { checkLikeAndRetweet } from "~~/server/utils/likesAndRetweets"
+import { checkId } from "~~/server/utils/query"
 
 interface IUserInfo {
   _id?: Types.ObjectId
@@ -35,7 +36,7 @@ interface IResponse {
 
 export default defineEventHandler(async event => {
   const { _id } = getQuery(event)
-  if (!_id) {
+  if (!checkId(_id)) {
     return createError({ statusCode: 400 })
   }
 
@@ -77,7 +78,7 @@ export default defineEventHandler(async event => {
   }
 
   // Check if user liked or retweeted tweet
-  const { isLiked, isRetweeted } = await checkLikeAndRetweet(event, _id.toString())
+  const { isLiked, isRetweeted } = await checkLikeAndRetweet(event, _id!.toString())
   response.isLiked = isLiked
   response.isRetweeted = isRetweeted
 

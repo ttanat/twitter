@@ -1,11 +1,11 @@
 import Tweet from "~~/server/models/tweet"
 import { getNextUrl } from "~~/server/utils/getNextUrl"
 import { checkLikesAndRetweets } from "~~/server/utils/likesAndRetweets"
-import { checkDateString } from "~~/server/utils/query"
+import { checkDateString, checkId } from "~~/server/utils/query"
 
 export default defineEventHandler(async event => {
   const { _id, before } = getQuery(event)
-  if (!_id || !checkDateString(before)) {
+  if (!checkId(_id) || !checkDateString(before)) {
     return createError({ statusCode: 400 })
   }
 
@@ -17,7 +17,7 @@ export default defineEventHandler(async event => {
   let next = null
   if (replies.length === 20) {
     next = getNextUrl(event, {
-      _id: _id.toString(),
+      _id: _id!.toString(),
       before: replies[replies.length - 1].timestamp.toISOString()
     })
   }

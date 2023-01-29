@@ -2,14 +2,14 @@ import mongoose from "mongoose"
 import Tweet from "~~/server/models/tweet"
 import User from "~~/server/models/user"
 import { ci } from "~~/server/utils/collations"
-import { checkUsername } from "~~/server/utils/query"
+import { checkId, checkUsername } from "~~/server/utils/query"
 
 const methods = new Set(["POST", "DELETE"])
 
 export default defineEventHandler(async event => {
   const username = event.context.user?.username
   const { _id } = getQuery(event)
-  if (!_id || !checkUsername(username)) {
+  if (!checkId(_id) || !checkUsername(username)) {
     return createError({ statusCode: 400 })
   }
   // Check request method

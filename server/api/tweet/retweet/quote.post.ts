@@ -1,12 +1,12 @@
 import Tweet from "~~/server/models/tweet"
 import User from "~~/server/models/user"
 import { ci } from "~~/server/utils/collations"
-import { checkUsername } from "~~/server/utils/query"
+import { checkId, checkUsername } from "~~/server/utils/query"
 
 export default defineEventHandler(async event => {
   const { _id, content } = await readBody(event)
   const username = event.context.user?.username
-  if (!_id || !checkUsername(username)) {
+  if (!checkId(_id) || !checkUsername(username)) {
     return createError({ statusCode: 400 })
   }
 

@@ -1,6 +1,6 @@
 import { Types } from "mongoose"
 import Tweet from "~~/server/models/tweet"
-import { checkUsername } from "~~/server/utils/query"
+import { checkId, checkUsername } from "~~/server/utils/query"
 
 interface ITweetToEdit {
   user: { username: string }
@@ -22,7 +22,7 @@ export default defineEventHandler(async event => {
     return createError({ statusCode: 400 })
   }
   let { _id, content } = await readBody(event)
-  if (!_id) {
+  if (!checkId(_id)) {
     return createError({ statusCode: 400 })
   }
 

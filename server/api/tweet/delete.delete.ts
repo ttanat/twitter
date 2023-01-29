@@ -1,5 +1,5 @@
 import Tweet from "~~/server/models/tweet"
-import { checkUsername } from "~~/server/utils/query"
+import { checkId, checkUsername } from "~~/server/utils/query"
 
 export default defineEventHandler(async event => {
   const username = event.context.user?.username
@@ -7,7 +7,7 @@ export default defineEventHandler(async event => {
     return createError({ statusCode: 400 })
   }
   const { _id } = getQuery(event)
-  if (!_id) {
+  if (!checkId(_id)) {
     return createError({ statusCode: 400 })
   }
 
