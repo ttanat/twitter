@@ -29,6 +29,14 @@ export default defineEventHandler(async event => {
   const tweets = await Tweet
     .find({ _id: { $in: user.likes }}, {}, { limit: 20 })
     .populate("user", "-_id username name image")
+    .populate({
+      path: "quote",
+      select: "_id timestamp content media poll",
+      populate: {
+        path: "user",
+        select: "-_id username name image",
+      },
+    })
     .exec()
 
   let next = null

@@ -4,16 +4,23 @@ import { parseRetweets, checkLikesAndRetweets, getNextUrl } from "~~/server/util
 
 /*
   Routes:
-    Home (Index) (Has retweets)
-      - Auth => show feed
-      - No auth => show explore
+    Home (Index)
+      - Feed has both retweets and quote tweets
+      - Auth -> show feed, No auth -> show explore
     Explore
+      - No retweets and no quote tweets
       - Same for auth and no auth
     Bookmarks
+      - Has quote tweets, no retweets
       - Auth only
-    User (Has retweets)
+    User
+      - Has both retweets and quote tweets
       - Same for auth and no auth
-      - Profile should have same logic
+      - Also used on profile page (auth only)
+    Likes
+      - Has quote tweets, no retweets
+    Replies
+      - No retweets and no quote tweets
 */
 
 export default defineEventHandler(async event => {
