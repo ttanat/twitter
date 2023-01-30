@@ -29,7 +29,7 @@ interface ITweet {
   user: Types.ObjectId
   content?: string
   retweet?: Types.ObjectId
-  quoteTweet?: Types.ObjectId
+  quote?: Types.ObjectId
   timestamp: Date
   effectiveTimestamp: Date
   media?: Types.Array<string>
@@ -53,7 +53,7 @@ const tweetSchema = new Schema<ITweet>({
 
   content: { type: String, maxlength: 300, trim: true },
   retweet: { type: Schema.Types.ObjectId, ref: "Tweet" },
-  quoteTweet: { type: Schema.Types.ObjectId, ref: "Tweet" },
+  quote: { type: Schema.Types.ObjectId, ref: "Tweet" },
   timestamp: { type: Date, default: Date.now, immutable: true },
   effectiveTimestamp: { type: Date, default: Date.now },
   media: {
@@ -84,11 +84,11 @@ tweetSchema.pre("save", function(next) {
     if (this.content || this.media?.length || this.poll) {
       next(new Error("Retweet can't have content, media, or poll"))
     }
-    if (this.quoteTweet) {
+    if (this.quote) {
       next(new Error("Pick one: retweet or quote tweet"))
     }
   // Quote tweet
-  } else if (this.quoteTweet) {
+  } else if (this.quote) {
     if (!this.content) {
       next(new Error("Quote tweet must have content"))
     }

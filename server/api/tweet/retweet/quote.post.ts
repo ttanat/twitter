@@ -25,10 +25,10 @@ export default defineEventHandler(async event => {
   }
 
   // Create quote tweet
-  const quoteTweet = await Tweet.create({
+  const quote = await Tweet.create({
     user: user._id,
     content: parsedContent,
-    quoteTweet: tweet._id,
+    quote: tweet._id,
   })
 
   return null
