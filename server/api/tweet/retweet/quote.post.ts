@@ -3,9 +3,9 @@ import User, { ci } from "~~/server/models/user"
 import { checkId, checkUsername } from "~~/server/utils/query"
 
 export default defineEventHandler(async event => {
-  const { _id, content } = await readBody(event)
+  const { quote, content } = await readBody(event)
   const username = event.context.user?.username
-  if (!checkId(_id) || !checkUsername(username)) {
+  if (!checkId(quote) || !checkUsername(username)) {
     return createError({ statusCode: 400 })
   }
 
@@ -18,14 +18,14 @@ export default defineEventHandler(async event => {
   // Find user and check if tweet exists
   const [user, tweet] = await Promise.all([
     User.findOne({ username }, { _id: 1 }).collation(ci).exec(),
-    Tweet.findOne({ _id }, { _id: 1 }).exec(),
+    Tweet.findOne({ _id: quote }, { _id: 1 }).exec(),
   ])
   if (!user || !tweet) {
     return createError({ statusCode: 404 })
   }
 
   // Create quote tweet
-  const quote = await Tweet.create({
+  await Tweet.create({
     user: user._id,
     content: parsedContent,
     quote: tweet._id,
