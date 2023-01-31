@@ -17,25 +17,11 @@
       >
         <v-icon size="24" icon="mdi-repeat-variant" style="padding-bottom: 2px"></v-icon>
         <span style="font-size: 12px">&ensp;</span>{{ useNumber(tweet.numRetweets) }}
-        <ClientOnly>
-          <v-menu v-model="menu" activator="parent" :disabled="!$auth.loggedIn()" location="center" scroll-strategy="close">
-            <v-list>
-              <v-list-item @click="retweet">
-                <v-list-item-title>
-                  <v-icon icon="mdi-repeat-variant"></v-icon>
-                  {{ tweet.isRetweeted ? "Undo retweet" : "Retweet" }}
-                </v-list-item-title>
-              </v-list-item>
-              <v-list-item link>
-                <v-list-item-title>
-                  <v-icon icon="mdi-format-quote-close"></v-icon>
-                  Quote tweet
-                </v-list-item-title>
-                <TweetQuoteModal :quote="tweet._id" @close="menu = false" />
-              </v-list-item>
-            </v-list>
-          </v-menu>
-        </ClientOnly>
+        <TweetRetweetMenu
+          :is-retweeted="tweet.isRetweeted"
+          :quote="tweet._id"
+          @handle-retweet="retweet"
+        />
       </v-btn>
     </div>
     <div class="flex-grow-1">
@@ -68,7 +54,6 @@ const emit = defineEmits(["handleRetweet", "handleLike"])
 
 const { $auth: auth } = useNuxtApp()
 
-const menu = ref(false)
 const retweeting = ref(false)
 async function retweet() {
   if (!auth.loggedIn()) {

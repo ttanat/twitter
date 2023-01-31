@@ -7,8 +7,13 @@
     </v-btn>
     <v-spacer></v-spacer>
     <v-spacer></v-spacer>
-    <v-btn @click="retweet" :loading="retweeting" icon variant="text" class="icon-btn retweet" style="font-size: 18px">
+    <v-btn :loading="retweeting" icon variant="text" class="icon-btn retweet" style="font-size: 18px">
       <v-icon icon="mdi-repeat-variant" :color="tweet.isRetweeted ? '#40a440' : ''"></v-icon>
+      <TweetRetweetMenu
+        :is-retweeted="tweet.isRetweeted"
+        :quote="route.params._id"
+        @handle-retweet="retweet"
+      />
       <v-tooltip activator="parent" location="bottom">Retweet</v-tooltip>
     </v-btn>
     <v-spacer></v-spacer>
@@ -84,6 +89,9 @@ async function like() {
 }
 .reply:hover {
   color: #299ded;
+}
+.retweet:hover {
+  color: #40a440;
 }
 .like:hover {
   color: #dc3065;
