@@ -141,7 +141,7 @@ async function tweet() {
   loading.value = true
   const { error } = await useApiFetch("/api/tweet/retweet/quote", {
     method: "POST",
-    body: { quote: props.quote, content },
+    body: { quote: props.quote, content: content.value },
   })
   loading.value = false
   // Handle response from server
