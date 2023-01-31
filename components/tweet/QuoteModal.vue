@@ -93,13 +93,12 @@
 </template>
 
 <script setup>
-import { emit } from 'process';
 import { useDisplay } from 'vuetify/lib/framework.mjs';
 
 const props = defineProps({
   quote: String,
 })
-defineEmits(["close"])
+const emit = defineEmits(["close"])
 
 const { data: tweetToQuote, pending } = await useApiFetch("/api/tweet/quote", { query: { _id: props.quote }})
 
