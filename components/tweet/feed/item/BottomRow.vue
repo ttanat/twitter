@@ -26,12 +26,12 @@
                   {{ tweet.isRetweeted ? "Undo retweet" : "Retweet" }}
                 </v-list-item-title>
               </v-list-item>
-              <v-list-item @click="false">
+              <v-list-item link>
                 <v-list-item-title>
                   <v-icon icon="mdi-format-quote-close"></v-icon>
                   Quote tweet
-                  <TweetQuoteModal :quote="tweet._id" @close="menu = false" />
                 </v-list-item-title>
+                <TweetQuoteModal :quote="tweet._id" @close="menu = false" />
               </v-list-item>
             </v-list>
           </v-menu>
