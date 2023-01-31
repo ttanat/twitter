@@ -21,7 +21,7 @@
           side="end"
           class="mb-2"
         >
-          <v-timeline-item dot-color="#424242" class="pl-2 w-100">
+          <v-timeline-item dot-color="#424242" width="100%">
             <template v-slot:icon>
               <v-avatar
                 :image="$auth.getImage()"
