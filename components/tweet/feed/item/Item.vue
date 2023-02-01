@@ -27,7 +27,7 @@
         </template>
 
         <TweetFeedItemTopRow :tweet="tweet" />
-        <div>{{ tweet.content }}</div>
+        <TweetContent :content="tweet.content" />
         <div v-if="tweet.media.length"><img :src="tweet.media[0]"></div>
         <TweetFeedItemBottomRow
           :tweet="tweet"
@@ -46,6 +46,7 @@ const props = defineProps({
 const emit = defineEmits(["handleRetweet", "handleLike"])
 
 function openTweet(e) {
+  console.log(e.target)
   if (e.target.nodeName === "DIV") {
     navigateTo(`/status/${props.tweet._id}`)
   }

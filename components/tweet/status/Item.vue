@@ -22,7 +22,7 @@
       </div>
     </div>
     <!-- Content -->
-    <div v-else class="content mb-2">{{ tweet.content }}</div>
+    <TweetContent :content="tweet.content" class="content mb-2" />
     <!-- Media -->
     <div v-if="tweet.media?.length"><img :src="tweet.media[0]"></div>
     <!-- Timestamp -->
