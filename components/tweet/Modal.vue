@@ -75,7 +75,7 @@
             ></v-textarea>
             <div>
               <v-chip
-                v-for="h in thread[i].content.match(highlightRegex)"
+                v-for="h in useContentHighlight(thread[i].content)"
                 :color="h[0] === '#' ? 'primary' : 'success'"
                 class="mr-2 mb-2"
               >
@@ -202,10 +202,6 @@ async function tweet() {
 function resetForm() {
   thread.value = [{ ...tweetStructure }]
 }
-
-// (start of string or whitespace -> one hashtag -> end of string or whitespace) OR
-// (start of string or whitespace -> one username -> end of string or whitespace)
-const highlightRegex = ref(/(?:(?<=^|\s)(?:#[a-zA-Z]\w{0,31})(?=$|\s))|(?:(?<=^|\s)(?:@\w{1,32})(?=$|\s))/g)
 </script>
 
 <style scoped>
