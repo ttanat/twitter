@@ -1,7 +1,7 @@
 <template>
   <div class="d-flex mt-1 text-grey-darken-1">
     <div class="flex-grow-1">
-      <v-btn class="replies" prepend-icon="mdi-chat-outline" density="compact" variant="text" rounded="pill">
+      <v-btn class="replies no-navigate" prepend-icon="mdi-chat-outline" density="compact" variant="text" rounded="pill">
         {{ useNumber(tweet.numReplies) }}
       </v-btn>
     </div>
@@ -9,14 +9,14 @@
       <v-btn
         :loading="retweeting"
         :color="tweet.isRetweeted ? '#40a440' : ''"
-        class="retweets"
+        class="retweets no-navigate"
         density="compact"
         variant="text"
         rounded="pill"
         width="30px"
       >
-        <v-icon size="24" icon="mdi-repeat-variant" style="padding-bottom: 2px"></v-icon>
-        <span style="font-size: 12px">&ensp;</span>{{ useNumber(tweet.numRetweets) }}
+        <v-icon size="24" icon="mdi-repeat-variant" class="no-navigate" style="padding-bottom: 2px"></v-icon>
+        <span class="no-navigate" style="font-size: 12px">&ensp;</span>{{ useNumber(tweet.numRetweets) }}
         <TweetRetweetMenu
           :is-retweeted="tweet.isRetweeted"
           :quote="tweet._id"
@@ -28,7 +28,7 @@
       <v-btn
         @click="like"
         :loading="liking"
-        class="likes"
+        class="likes no-navigate"
         :prepend-icon="tweet.isLiked ? 'mdi-heart' : 'mdi-heart-outline'"
         :color="tweet.isLiked ? '#dc3065' : ''"
         density="compact"
@@ -39,8 +39,8 @@
       </v-btn>
     </div>
     <div class="flex-grow-1">
-      <v-btn class="hamburger replies" icon density="compact" variant="text" rounded="circle">
-        <v-icon size="24" icon="mdi-dots-horizontal"></v-icon>
+      <v-btn class="hamburger replies no-navigate" icon density="compact" variant="text" rounded="circle">
+        <v-icon size="24" icon="mdi-dots-horizontal" class="no-navigate"></v-icon>
       </v-btn>
     </div>
   </div>

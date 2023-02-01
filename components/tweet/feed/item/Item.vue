@@ -46,10 +46,15 @@ const props = defineProps({
 const emit = defineEmits(["handleRetweet", "handleLike"])
 
 function openTweet(e) {
-  console.log(e.target)
-  if (e.target.nodeName === "DIV") {
-    navigateTo(`/status/${props.tweet._id}`)
+  /* Don't navigate to status page if element clicked has .no-navigate class */
+  let el = e.target
+  while (el.nodeName !== "DIV" && el) {
+    if (el.classList.contains("no-navigate")) {
+      return
+    }
+    el = el.parentNode
   }
+  navigateTo(`/status/${props.tweet._id}`)
 }
 </script>
 
