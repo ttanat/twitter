@@ -13,7 +13,7 @@ interface IUserInfo {
 }
 
 interface IResponse {
-  _id?: Types.ObjectId
+  _id: Types.ObjectId
   user: IUserInfo
   content?: string
   timestamp?: Date
@@ -32,7 +32,7 @@ export default defineEventHandler(async event => {
   }
 
   const tweet = await Tweet.findOne({ _id }, {
-    _id: 0,
+    _id: 1,
     content: 1,
     timestamp: 1,
     media: 1,
@@ -53,7 +53,6 @@ export default defineEventHandler(async event => {
   // Check if user is getting their own tweets
   const isSelfTweet = username === response.user.username
 
-  
   // Protect private tweets
   if (!isSelfTweet && (response.isPrivate || response.user.isPrivate)) {
     // Check if user is following user who tweeted

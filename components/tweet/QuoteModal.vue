@@ -65,7 +65,7 @@
             <!-- <div v-if="tweet.media.length"><img :src="tweet.media[0]"></div> -->
             <div v-if="pending"><v-progress-circular indeterminate></v-progress-circular></div>
             <!-- Show tweet that user is going to quote -->
-            <TweetQuoted v-else :tweet="tweetToQuote" />
+            <TweetQuoted v-else :tweet="tweetToQuote" :link="false" />
           </v-timeline-item>
         </v-timeline>
         <div v-show="message.length" class="text-error">{{ message }}</div>
