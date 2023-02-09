@@ -2,7 +2,7 @@
   <div>
     <template v-for="part in useContentSplit(content)">
       <NuxtLink v-if="part.type" :to="getLink(part)">{{ part.content }}</NuxtLink>
-      <span v-else>{{ part.content }}</span>
+      <template v-else>{{ part.content }}</template>
     </template>
   </div>
 </template>
