@@ -2,12 +2,12 @@
   <v-dialog
     v-model="dialog"
     activator="parent"
-    :width="mobile ? '' : '640'"
-    :fullscreen="mobile"
+    :width="smAndDown ? '' : '640'"
+    :fullscreen="smAndDown"
     transition="scale-transition"
     scrim="black"
   >
-    <v-card class="pb-2" :style="[mobile ? '' : 'border-radius: 18px']">
+    <v-card class="pb-2" :style="[smAndDown ? '' : 'border-radius: 18px']">
       <v-card-text class="text-h6 pb-0 d-flex" style="max-height: 60px">
         Tweet
         <v-spacer></v-spacer>
@@ -127,7 +127,7 @@
 import { useDisplay } from 'vuetify/lib/framework.mjs';
 
 const dialog = ref(false)
-const { mobile } = useDisplay()
+const { smAndDown } = useDisplay()
 const tweetStructure = {
   content: "",
   files: [],
