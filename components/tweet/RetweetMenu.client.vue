@@ -12,7 +12,7 @@
           <v-icon icon="mdi-format-quote-close"></v-icon>
           Quote tweet
         </v-list-item-title>
-        <TweetQuoteModal :quote="quote" @close="menu = false" />
+        <CreateQuoteModal :quote="quote" @close="menu = false" />
       </v-list-item>
     </v-list>
   </v-menu>
