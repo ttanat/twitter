@@ -1,6 +1,6 @@
 <template>
   <div class="mt-1 mb-4">
-    <v-form ref="pollForm">
+    <v-form>
       <!-- Choices -->
       <v-text-field
         v-for="(_, i) in choices"
