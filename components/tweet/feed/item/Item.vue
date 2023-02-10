@@ -29,6 +29,7 @@
         <TweetFeedItemTopRow :tweet="tweet" />
         <TweetContent :content="tweet.content" />
         <div v-if="tweet.media.length"><img :src="tweet.media[0]"></div>
+        <TweetPoll v-if="tweet.poll" :poll="tweet.poll" />
         <TweetFeedItemBottomRow
           :tweet="tweet"
           @handle-retweet="$emit('handleRetweet', tweet._id)"
@@ -48,8 +49,8 @@ const emit = defineEmits(["handleRetweet", "handleLike"])
 function openTweet(e) {
   /* Don't navigate to status page if element clicked has .no-navigate class */
   let el = e.target
-  while (el.nodeName !== "DIV" && el) {
-    if (el.classList.contains("no-navigate")) {
+  while (el) {
+    if (el?.classList?.contains("no-navigate")) {
       return
     }
     el = el.parentNode

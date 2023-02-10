@@ -25,6 +25,8 @@
     <TweetContent :content="tweet.content" class="content mb-2" />
     <!-- Media -->
     <div v-if="tweet.media?.length"><img :src="tweet.media[0]"></div>
+    <!-- Poll -->
+    <TweetPoll v-if="tweet.poll" :poll="tweet.poll" />
     <!-- Timestamp -->
     <div class="text-grey-darken-1 my-2 fs-15">{{ useFullTimestamp(tweet.timestamp) }}</div>
     <!-- Tweet stats -->
