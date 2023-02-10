@@ -127,6 +127,14 @@
   >
     Tweet sent
   </v-snackbar>
+  <v-snackbar
+    v-model="pollSnackbar"
+    :timeout="5000"
+    color="primary"
+    rounded="pill"
+  >
+    Poll(s) expires in 1 day
+  </v-snackbar>
 </template>
 
 <script setup>
@@ -202,6 +210,7 @@ function clearMessage() {
   message.value = ""
 }
 const snackbar = ref(false)
+const pollSnackbar = ref(false)
 
 async function tweet() {
   // Ensure less than 10 tweets
@@ -262,9 +271,17 @@ async function tweet() {
   loading.value = false
   const { data, error } = response
   // Handle response from server
-  if (error.value) {
+  if (!error.value) {
     message.value = "Oops, something went wrong. Please try again."
   } else {
+    // Show poll snackbar if expiration not manually set on any polls
+    for (const tweet of thread.value) {
+      const expiry = tweet.poll?.expiry
+      if (expiry && !expiry.days && !expiry.hours && !expiry.minutes) {
+        setTimeout(() => { pollSnackbar.value = true }, 2000)
+        break
+      }
+    }
     resetForm()
     snackbar.value = true
     dialog.value = false
