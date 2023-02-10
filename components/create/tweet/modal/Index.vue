@@ -36,53 +36,15 @@
               ></v-avatar>
             </template>
 
-            <div class="d-flex">
-              <span class="top-row-link text-grey-lighten-1 font-weight-bold">
-                {{ $auth.getName() }}
-              </span>
-              <span class="top-row-link text-grey-darken-1">
-                <span>&ensp;@{{ $auth.getUsername() }}</span>
-              </span>
-              <template v-if="isThread">
-                <v-spacer></v-spacer>
-                <div class="text-grey">
-                  {{ i + 1 }}/10
-                </div>
-                <div v-if="i !== 0" class="ml-1">
-                  <v-icon
-                    icon="mdi-close"
-                    size="20"
-                    color="grey"
-                    title="Remove"
-                    style="cursor: pointer;margin-bottom: 3px"
-                    @click="removeFromThread(i);clearMessage()"
-                  ></v-icon>
-                </div>
-              </template>
-            </div>
-            <v-textarea
-              v-model="thread[i].content"
-              @update:model-value="clearMessage"
-              variant="outlined"
-              label="What's happening?"
-              single-line
-              density="compact"
-              counter="300"
-              maxlength="300"
-              no-resize
-              auto-grow
-              rows="4"
-            ></v-textarea>
-            <div>
-              <v-chip
-                v-for="h in useContentHighlight(thread[i].content)"
-                :color="h[0] === '#' ? 'primary' : 'success'"
-                class="mr-2 mb-2"
-              >
-                  <v-icon start :icon="h[0] === '#' ? 'mdi-pound' : 'mdi-at'"></v-icon>
-                  {{ h.slice(1) }}
-              </v-chip>
-            </div>
+            <CreateTweetModalNameRow
+              :is-thread="isThread"
+              :tweet-number="i"
+              @remove-from-thread="removeFromThread"
+            />
+            <CreateTweetModalContent
+              :tweet="thread[i]"
+              @clear-message="clearMessage"
+            />
             <CreateTweetModalPoll
               v-if="thread[i].poll"
               :choices="thread[i].poll.choices"
@@ -156,10 +118,12 @@ const isThread = computed(() => thread.value.length > 1)
 function addToThread() {
   if (thread.value.length < 10) {
     thread.value.push(getNewTweet())
+    clearMessage()
   }
 }
 function removeFromThread(i) {
   thread.value.splice(i, 1)
+  clearMessage()
 }
 
 function addPoll(tweetNumber) {
