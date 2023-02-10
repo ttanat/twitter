@@ -234,7 +234,7 @@ async function tweet() {
   loading.value = false
   const { data, error } = response
   // Handle response from server
-  if (!error.value) {
+  if (error.value) {
     message.value = "Oops, something went wrong. Please try again."
   } else {
     // Show poll snackbar if expiration not manually set on any polls
