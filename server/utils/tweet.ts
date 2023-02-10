@@ -4,8 +4,13 @@ export type Content = string | undefined
 
 export type Files = string[] | undefined
 
+type ParsedChoice = {
+  choice: string
+  numVotes: number
+}
+
 export type Poll = {
-  choices: string[]
+  choices: Array<string | ParsedChoice>
   expiry?: string // Date string
 } | undefined
 
@@ -16,9 +21,10 @@ export function parsePoll(poll: Poll): Poll {
       return undefined
     }
     // Convert to string, slice and trim poll content
-    poll.choices = poll.choices.map(choice => {
-      return String(choice).slice(0, 25).trim()
-    })
+    poll.choices = poll.choices.map(choice => ({
+      choice: String(choice).slice(0, 25).trim(),
+      numVotes: 0,
+    }))
     // Add expiry (1 day from now) if none
     if (!poll.expiry) {
       const [now, expiry] = [new Date(), new Date()]
@@ -34,8 +40,12 @@ export function validateTweetFormData(content: Content, files: Files, poll: Poll
   // Check poll if exists
   if (poll) {
     // Check poll choices are not empty
-    for (const choice of poll.choices) {
-      if (!choice) return false
+    for (const c of (poll.choices as ParsedChoice[])) {
+      if (!c.choice) return false
+    }
+    // Check between 2 and 6 choices
+    if (poll.choices.length < 2 || poll.choices.length > 6) {
+      return false
     }
     // Check expiry date
     if (!checkDateString(poll.expiry)) {
@@ -44,7 +54,7 @@ export function validateTweetFormData(content: Content, files: Files, poll: Poll
     // Check expiry is between now and 7 days in the future
     const [now, expiry, maxExpiry] = [new Date(), new Date(poll.expiry!), new Date()]
     maxExpiry.setDate(now.getDate() + 7)
-    if (expiry < now || expiry > new Date()) {
+    if (expiry < now || expiry > maxExpiry) {
       return false
     }
   }
