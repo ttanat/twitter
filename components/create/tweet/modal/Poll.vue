@@ -21,7 +21,7 @@
         <v-row align="center">
           <span class="mr-2">Expires in:</span>
           <v-text-field
-            v-model="expiry.days"
+            v-model="pollLength.days"
             @update:model-value="handleExpiryChange"
             type="number"
             :max="maxDays"
@@ -36,7 +36,7 @@
             :rules="notNegative"
           ></v-text-field>
           <v-text-field
-            v-model="expiry.hours"
+            v-model="pollLength.hours"
             @update:model-value="handleExpiryChange"
             type="number"
             :max="maxHours"
@@ -51,7 +51,7 @@
             :rules="notNegative"
           ></v-text-field>
           <v-text-field
-            v-model="expiry.minutes"
+            v-model="pollLength.minutes"
             @update:model-value="handleExpiryChange"
             type="number"
             :max="maxMinutes"
@@ -74,10 +74,8 @@
 <script setup>
 const props = defineProps({
   choices: Array,
-  expiry: Object,
+  pollLength: Object,
   tweetNumber: Number,
-  getTotalMinutes: Function,
-  totalAllowedMinutes: Number,
 })
 const emit = defineEmits(["removeChoice", "expiryChange", "clearMessage"])
 
@@ -85,23 +83,28 @@ function removeChoice(i) {
   emit("removeChoice", i, props.tweetNumber)
 }
 
+function getTotalMinutes(days, hours, minutes) {
+  return parseInt(days || 0) * 24 * 60 + parseInt(hours || 0) * 60 + parseInt(minutes || 0)
+}
+const totalAllowedMinutes = 7 * 24 * 60
+
 /* Compute total minutes used in expiry so user cannot go over */
 const totalMinutes = computed(() => {
-  return props.getTotalMinutes(props.expiry.days, props.expiry.hours, props.expiry.minutes)
+  return getTotalMinutes(props.pollLength.days, props.pollLength.hours, props.pollLength.minutes)
 })
-const minutesLeft = computed(() => props.totalAllowedMinutes - totalMinutes.value)
-const maxMinutes = computed(() => minutesLeft.value + props.expiry.minutes)
-const maxHours = computed(() => Math.floor(minutesLeft.value / 60) + props.expiry.hours)
-const maxDays = computed(() => Math.floor(minutesLeft.value / 60 / 24) + props.expiry.days)
+const minutesLeft = computed(() => totalAllowedMinutes - totalMinutes.value)
+const maxMinutes = computed(() => minutesLeft.value + props.pollLength.minutes)
+const maxHours = computed(() => Math.floor(minutesLeft.value / 60) + props.pollLength.hours)
+const maxDays = computed(() => Math.floor(minutesLeft.value / 60 / 24) + props.pollLength.days)
 
 function handleExpiryChange() {
   emit("expiryChange", props.tweetNumber)
   emit("clearMessage")
 }
 
-const disableDays = computed(() => props.expiry.hours == 7 * 24 || props.expiry.minutes == 7 * 24 * 60)
-const disableHours = computed(() => props.expiry.days == 7 || props.expiry.minutes == 7 * 24 * 60)
-const disableMinutes = computed(() => props.expiry.days == 7 || props.expiry.hours == 7 * 24)
+const disableDays = computed(() => props.pollLength.hours == 7 * 24 || props.pollLength.minutes == 7 * 24 * 60)
+const disableHours = computed(() => props.pollLength.days == 7 || props.pollLength.minutes == 7 * 24 * 60)
+const disableMinutes = computed(() => props.pollLength.days == 7 || props.pollLength.hours == 7 * 24)
 
 const choiceRules = [
   v => (v || "").length >= 1 || "Choice must have at least 1 character",

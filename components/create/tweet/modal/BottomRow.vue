@@ -34,8 +34,8 @@ const emit = defineEmits(["addToThread", "addPoll", "removePoll", "tweet"])
 const firstTweetHasPoll = computed(() => {
   const { poll } = props.thread[0]
   if (!poll) return false
-  const { choices, expiry = {} } = poll
-  return choices?.length > 1 && "days" in expiry && "hours" in expiry && "minutes" in expiry
+  const { choices, length } = poll
+  return choices?.length > 1 && !!length
 })
 
 const bottomRow = ref(null)

@@ -48,10 +48,8 @@
             <CreateTweetModalPoll
               v-if="thread[i].poll"
               :choices="thread[i].poll.choices"
-              :expiry="thread[i].poll.expiry"
+              :pollLength="thread[i].poll.length"
               :tweet-number="i"
-              :get-total-minutes="getTotalPollMinutes"
-              :total-allowed-minutes="totalAllowedPollMinutes"
               @remove-choice="removePollChoice"
               @expiry-change="handlePollExpiryChange"
               @clear-message="clearMessage"
@@ -95,7 +93,7 @@
     color="primary"
     rounded="pill"
   >
-    Poll(s) expires in 1 day
+    Polls expire in 1 day
   </v-snackbar>
 </template>
 
@@ -129,7 +127,7 @@ function removeFromThread(i) {
 function addPoll(tweetNumber) {
   thread.value[tweetNumber].poll = {
     choices: ["", ""],
-    expiry: { days: null, hours: null, minutes: null },
+    length: { days: null, hours: null, minutes: null },
   }
 }
 function removePoll(tweetNumber) {
@@ -150,23 +148,12 @@ function removePollChoice(choiceNumber, tweetNumber) {
   }
 }
 function handlePollExpiryChange(tweetNumber) {
-  const { expiry } = thread.value[tweetNumber].poll
+  const { length } = thread.value[tweetNumber].poll
   // Remove zeros
-  if (expiry.days == 0) expiry.days = null
-  if (expiry.hours == 0) expiry.hours = null
-  if (expiry.minutes == 0) expiry.minutes = null
-  // Check that expiry is within 7 days
-  const totalMinutes = getTotalPollMinutes(expiry.days, expiry.hours, expiry.minutes)
-  if (totalMinutes > totalAllowedPollMinutes) {
-    handleTweetError("Poll must expire within 7 days", tweetNumber)
-  } else {
-    clearMessage()
-  }
+  if (length.days == 0) length.days = null
+  if (length.hours == 0) length.hours = null
+  if (length.minutes == 0) length.minutes = null
 }
-function getTotalPollMinutes(days, hours, minutes) {
-  return parseInt(days || 0) * 24 * 60 + parseInt(hours || 0) * 60 + parseInt(minutes || 0)
-}
-const totalAllowedPollMinutes = 7 * 24 * 60
 
 const loading = ref(false)
 const message = ref("")
@@ -196,7 +183,7 @@ async function tweet() {
     }
     // Check valid poll
     if (tmp.poll) {
-      const { choices, expiry } = tmp.poll
+      const { choices, length } = tmp.poll
       if (choices?.length < 2 ||  choices?.length > 6) {
         handleTweetError("Poll must have between 2 and 6 choices", i)
         return
@@ -207,16 +194,28 @@ async function tweet() {
           return
         }
       }
-      const [days, hours, minutes] = [parseInt(expiry.days || 0), parseInt(expiry.hours || 0), parseInt(expiry.minutes || 0)]
+      const [days, hours, minutes] = [parseInt(length.days || 0), parseInt(length.hours || 0), parseInt(length.minutes || 0)]
       if (days < 0 || hours < 0 || minutes < 0) {
         handleTweetError("Invalid number", i)
         return
       }
-      const totalMinutes = getTotalPollMinutes(days, hours, minutes)
-      if (totalMinutes > totalAllowedPollMinutes) {
-        handleTweetError("Poll must expire within 7 days", i)
-        return
+      const [now, expiry, maxExpiry] = [new Date(), new Date(), new Date()]
+      if (days || hours || minutes) {
+        // Check that expiration is <= 7 days
+        maxExpiry.setDate(now.getDate() + 7)
+        expiry.setDate(now.getDate() + days)
+        expiry.setHours(now.getHours() + hours)
+        expiry.setMinutes(now.getMinutes() + minutes)
+        if (expiry > maxExpiry) {
+          handleTweetError("Poll must expire within 7 days", i)
+          return
+        }
+      } else {
+        // Set default value to 1 day
+        expiry.setDate(now.getDate() + 1)
       }
+      // Set expiry to date string
+      tmp.poll.expiry = expiry.toISOString()
     }
   }
   // Send to server
@@ -240,8 +239,8 @@ async function tweet() {
   } else {
     // Show poll snackbar if expiration not manually set on any polls
     for (const tweet of thread.value) {
-      const expiry = tweet.poll?.expiry
-      if (expiry && !expiry.days && !expiry.hours && !expiry.minutes) {
+      const length = tweet.poll?.length
+      if (length && !length.days && !length.hours && !length.minutes) {
         setTimeout(() => { pollSnackbar.value = true }, 2000)
         break
       }
