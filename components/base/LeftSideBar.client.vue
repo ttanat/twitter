@@ -20,7 +20,7 @@
       <v-btn class="mt-3 ml-2 left-link-tweet" size="large" color="primary" rounded="pill" block>
         <v-icon start icon="mdi-fountain-pen-tip" class="d-lg-none"></v-icon>
         <span class="d-none d-lg-block font-weight-bold">Tweet</span>
-        <TweetModal />
+        <CreateTweetModal />
       </v-btn>
     </div>
     <!-- Screen size less than lg -->
@@ -37,7 +37,7 @@
           <v-btn color="primary" icon rounded="normal">
             <v-icon icon="mdi-feather"></v-icon>
             <v-tooltip activator="parent" location="right">Tweet</v-tooltip>
-            <TweetModal />
+            <CreateTweetModal />
           </v-btn>
       </div>
     </div>
