@@ -74,6 +74,7 @@
         :loading="loading"
         @add-to-thread="addToThread"
         @add-poll="addPoll"
+        @add-poll-choice="addPollChoice"
         @remove-poll="removePoll"
         @tweet="tweet"
       />
@@ -135,7 +136,7 @@ function removePoll(tweetNumber) {
 }
 function addPollChoice(tweetNumber) {
   const { poll } = thread.value[tweetNumber]
-  if (poll.choices.length < 4) {
+  if (poll.choices.length < 6) {
     poll.choices.push("")
   }
 }

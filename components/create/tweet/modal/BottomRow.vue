@@ -5,7 +5,11 @@
         <v-icon icon="mdi-image-outline"></v-icon>
         <v-tooltip activator="parent" location="bottom">Add media</v-tooltip>
       </v-btn>
-      <v-btn v-if="!isThread" @click="$emit(firstTweetHasPoll ? 'removePoll' : 'addPoll', 0)" icon class="ml-3 icon-btn" variant="text" color="primary">
+      <v-btn v-if="!isThread && firstTweetHasPoll" @click="addPollChoice" :disabled="thread[0].poll.choices.length >= 6" icon class="ml-3 icon-btn" variant="text" color="primary">
+        <v-icon icon="mdi-plus"></v-icon>
+        <v-tooltip activator="parent" location="bottom">Add choice</v-tooltip>
+      </v-btn>
+      <v-btn v-if="!isThread" @click="addPoll" icon class="ml-3 icon-btn" variant="text" color="primary">
         <v-icon :icon="firstTweetHasPoll ? 'mdi-close' : 'mdi-poll'"></v-icon>
         <v-tooltip activator="parent" location="bottom">{{ firstTweetHasPoll ? "Remove" : "Add" }} poll</v-tooltip>
       </v-btn>
@@ -29,7 +33,7 @@ const props = defineProps({
   isThread: Boolean,
   loading: Boolean,
 })
-const emit = defineEmits(["addToThread", "addPoll", "removePoll", "tweet"])
+const emit = defineEmits(["addToThread", "addPoll", "addPollChoice", "removePoll", "tweet"])
 
 const firstTweetHasPoll = computed(() => {
   const { poll } = props.thread[0]
@@ -39,6 +43,19 @@ const firstTweetHasPoll = computed(() => {
 })
 
 const bottomRow = ref(null)
+
+async function addPollChoice() {
+  emit('addPollChoice', 0)
+  await nextTick()
+  bottomRow.value.$el.scrollIntoView({ behavior: "smooth" })
+}
+
+async function addPoll() {
+  emit(firstTweetHasPoll.value ? 'removePoll' : 'addPoll', 0)
+  await nextTick()
+  bottomRow.value.$el.scrollIntoView({ behavior: "smooth" })
+}
+
 async function addToThread() {
   emit("addToThread")
   await nextTick()
