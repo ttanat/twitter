@@ -29,7 +29,7 @@
         <TweetFeedItemTopRow :tweet="tweet" />
         <TweetContent :content="tweet.content" />
         <div v-if="tweet.media.length"><img :src="tweet.media[0]"></div>
-        <TweetPoll v-if="tweet.poll" :poll="tweet.poll" />
+        <TweetPoll v-if="tweet.poll" :poll="tweet.poll" :tweet_id="tweet._id" />
         <TweetFeedItemBottomRow
           :tweet="tweet"
           @handle-retweet="$emit('handleRetweet', tweet._id)"

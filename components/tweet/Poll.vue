@@ -1,5 +1,5 @@
 <template>
-  <div class="no-navigate">
+  <div class="no-navigate" ref="pollDiv">
     <div
       v-for="(choice, i) in choices"
       :class="{ 'my-2': i === 0 || i === choices.length, 'my-3': i !== 0 && i !== choices.length }"
@@ -30,18 +30,26 @@
       <span>{{ poll.totalNumVotes }} votes</span>
       <span>&ensp;&bull;&ensp;</span>
       <span :title="expiryDate.toLocaleString()">{{ timeLeft || "Final results" }}</span>
+      <template v-if="timeLeft">
+        <span>&ensp;&bull;&ensp;</span>
+        <span v-if="voted">Voted</span>
+        <v-btn v-else @click="vote" :disabled="voting" rounded="pill" size="small">Vote</v-btn>
+      </template>
     </div>
   </div>
 </template>
 
 <script setup>
 const props = defineProps({
+  tweet_id: String,
   poll: Object,
   voted: {
     type: Boolean,
     default: false,
   },
 })
+
+const { $auth: auth } = useNuxtApp()
 
 const choices = ref(props.poll.choices.map(choice => {
   const percentage = Math.round((choice.numVotes / props.poll.totalNumVotes) * 100) || 0
@@ -81,6 +89,35 @@ const timeLeft = computed(() => {
   }
   return ""
 })
+
+const pollDiv = ref(null)
+const voting = ref(false)
+async function vote() {
+  if (!auth.loggedIn()) {
+    return false
+  }
+  voting.value = true
+  // Get poll choice that user selected
+  let selectedChoice
+  const choices = pollDiv.value.querySelectorAll(`input[name='${props.poll._id}']`)
+  for (const tmp of choices) {
+    if (tmp.checked) {
+      selectedChoice = tmp.value
+      break
+    }
+  }
+  // Send request
+  if (selectedChoice) {
+    const { error } = await useApiFetch("/api/tweet/vote", {
+      method: "POST",
+      body: { tweet_id: props.tweet_id, choice: selectedChoice },
+    })
+    if (error.value) {
+      console.log(error.value)
+    }
+  }
+  voting.value = false
+}
 </script>
 
 <style scoped>
