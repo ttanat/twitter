@@ -20,14 +20,18 @@ export default defineEventHandler(async event => {
     choice: string
   } = await readBody(event)
 
+  if (!tweet_id || !choice) {
+    return createError({ statusCode: 400 })
+  }
+
   // Check user hasn't already voted in this poll
-  const pv: { _id: string, choice: string }[] | undefined = user.pollsVoted?.toObject()
-  if (pv && pv.find(p => p._id === tweet_id)) {
+  if (await User.find({ _id: user._id, "pollsVoted._id": tweet_id }).exec()) {
     return createError({ statusCode: 400 })
   }
 
   // Get tweet
   const tweet = await Tweet.findOne({ _id: tweet_id }).exec()
+
   if (!tweet || !tweet.poll) {
     return createError({ statusCode: 400 })
   }
