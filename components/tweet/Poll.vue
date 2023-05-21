@@ -1,5 +1,6 @@
 <template>
-  <div class="no-navigate" ref="pollDiv">
+  <v-progress-circular v-if="checkingIfVoted" indeterminate></v-progress-circular>
+  <div v-else class="no-navigate" ref="pollDiv">
     <div
       v-for="(choice, i) in choices"
       :class="{ 'my-2': i === 0 || i === choices.length, 'my-3': i !== 0 && i !== choices.length }"
@@ -43,13 +44,19 @@
 const props = defineProps({
   tweet_id: String,
   poll: Object,
-  voted: {
-    type: Boolean,
-    default: false,
-  },
 })
 
 const { $auth: auth } = useNuxtApp()
+
+const voted = ref(false)
+const checkingIfVoted = ref(auth.loggedIn())
+if (auth.loggedIn()) {
+  const { data } = await useApiFetch("/api/tweet/voted", {
+    query: { tweet_id: props.tweet_id }
+  })
+  voted.value = data.value.voted
+  checkingIfVoted.value = false
+}
 
 const choices = ref(props.poll.choices.map(choice => {
   const percentage = Math.round((choice.numVotes / props.poll.totalNumVotes) * 100) || 0
@@ -114,6 +121,8 @@ async function vote() {
     })
     if (error.value) {
       console.log(error.value)
+    } else {
+      voted.value = true
     }
   }
   voting.value = false

@@ -26,7 +26,7 @@
     <!-- Media -->
     <div v-if="tweet.media?.length"><img :src="tweet.media[0]"></div>
     <!-- Poll -->
-    <TweetPoll v-if="tweet.poll" :poll="tweet.poll" :tweet_id="tweet._id" />
+    <TweetPoll v-if="tweet.poll" :poll="tweet.poll" :tweet_id="route.params._id" />
     <!-- Timestamp -->
     <div class="text-grey-darken-1 my-2 fs-15">{{ useFullTimestamp(tweet.timestamp) }}</div>
     <!-- Tweet stats -->

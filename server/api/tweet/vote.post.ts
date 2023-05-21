@@ -25,7 +25,7 @@ export default defineEventHandler(async event => {
   }
 
   // Check user hasn't already voted in this poll
-  if (await User.find({ _id: user._id, "pollsVoted._id": tweet_id }).exec()) {
+  if (await User.findOne({ _id: user._id, "pollsVoted._id": tweet_id }).exec()) {
     return createError({ statusCode: 400 })
   }
 
