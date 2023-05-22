@@ -23,6 +23,9 @@
     </div>
     <!-- Content -->
     <TweetContent :content="tweet.content" class="content mb-2" />
+    <!-- Quote tweet -->
+    <div v-if="tweet.quote && loadingQuote"><v-progress-circular indeterminate></v-progress-circular></div>
+    <TweetQuoted v-else-if="tweet.quote" :tweet="tweetToQuote" :link="true" />
     <!-- Media -->
     <div v-if="tweet.media?.length"><img :src="tweet.media[0]"></div>
     <!-- Poll -->
@@ -68,6 +71,11 @@ const props = defineProps({
 const emit = defineEmits(["handleRetweet", "handleLike", "replyCreated", "handleEdit"])
 
 const route = useRoute()
+
+let tweetToQuote, loadingQuote
+if (props.tweet.quote) {
+  ({ data: tweetToQuote, pending: loadingQuote } = await useApiFetch("/api/tweet/quote", { query: { _id: props.tweet.quote }}))
+}
 
 function getNumberTitle(number) {
   return number < 1e4 ? "" : number.toLocaleString()

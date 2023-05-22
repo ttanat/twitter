@@ -18,7 +18,7 @@ interface IResponse {
   _id?: Types.ObjectId
   user: IUserInfo
   content?: string
-  quotedTweet?: Types.ObjectId
+  quote?: Types.ObjectId
   timestamp?: Date
   media?: string[]
   poll?: object
@@ -43,7 +43,7 @@ export default defineEventHandler(async event => {
   const tweet = await Tweet.findOne({ _id }, {
     _id: 0,
     content: 1,
-    quotedTweet: 1,
+    quote: 1,
     timestamp: 1,
     media: 1,
     poll: 1,
