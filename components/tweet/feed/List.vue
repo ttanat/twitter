@@ -33,22 +33,24 @@ async function getTweets() {
   url.value = data.value.next
 }
 
-function findTweet(_id) {
-  return tweets.value.find(tweet => tweet._id === _id)
-}
-
 function handleRetweet(_id) {
-  const tweet = findTweet(_id)
-  const newValue = !tweet.isRetweeted
-  tweet.isRetweeted = newValue
-  tweet.numRetweets += newValue ? 1 : -1
+  for (const tweet of tweets.value) {
+    if (tweet._id === _id) {
+      const newValue = !tweet.isRetweeted
+      tweet.isRetweeted = newValue
+      tweet.numRetweets += newValue ? 1 : -1
+    }
+  }
 }
 
 function handleLike(_id) {
-  const tweet = findTweet(_id)
-  const newValue = !tweet.isLiked
-  tweet.isLiked = newValue
-  tweet.numLikes += newValue ? 1 : -1
+  for (const tweet of tweets.value) {
+    if (tweet._id === _id) {
+      const newValue = !tweet.isLiked
+      tweet.isLiked = newValue
+      tweet.numLikes += newValue ? 1 : -1
+    }
+  }
 }
 
 function prependFeed(tweet) {
