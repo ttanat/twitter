@@ -41,14 +41,6 @@ export default defineEventHandler(async event => {
         select: "-_id username name image",
       },
     })
-    .populate({
-      path: "quote",
-      select: "_id timestamp content media poll",
-      populate: {
-        path: "user",
-        select: "-_id username name image",
-      },
-    })
     .exec()
 
   let next = null
