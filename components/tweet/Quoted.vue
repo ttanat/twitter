@@ -1,5 +1,9 @@
 <template>
+  <div v-if="tweet.isPrivate" class="quote rounded-lg w-100 px-2 py-1 mt-1">
+    Quoted tweet is private
+  </div>
   <div
+    v-else
     @click="openTweet"
     class="quote rounded-lg w-100 px-2 py-1 mt-1"
     :style="[link ? 'cursor: pointer' : '']"

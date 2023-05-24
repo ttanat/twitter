@@ -58,7 +58,7 @@ export default defineEventHandler(async event => {
     // Check if user is following user who tweeted
     const isFollowing = await checkIsFollowing(username, response.user._id)
     if (!isFollowing) {
-      return createError({ statusCode: 403, statusMessage: "Tweet is private" })
+      return { isPrivate: true }
     }
   }
 
