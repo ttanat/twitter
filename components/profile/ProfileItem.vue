@@ -24,6 +24,8 @@
       <!-- Follow button -->
       <ProfileFollowButton
         :isFollowing="profile.isFollowing"
+        :isRequestingFollow="profile.isRequestingFollow"
+        :isPrivateProfile="!!profile.isPrivate"
         :username="profile.username"
         @handle-follow="(n) => {profile.isFollowing = n;profile.numFollowers += n ? 1 : -1}"
       />

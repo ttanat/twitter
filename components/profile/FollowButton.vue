@@ -1,14 +1,14 @@
 <template>
   <!-- Don't know how calc() works but it does -->
   <v-btn
-    v-if="$auth.getUsername() !== username"
-    :color="isFollowing? 'grey' : 'white'"
+    v-if="auth.getUsername() !== username"
+    :color="isFollowing || isRequestingFollow ? 'grey' : 'white'"
     rounded="pill"
-    :variant="isFollowing ? 'outlined' : 'elevated'"
+    :variant="isFollowing || isRequestingFollow ? 'outlined' : 'elevated'"
     class="font-weight-bold"
     style="margin-bottom: -14px"
-    :style="[isFollowing ? 'margin-left: calc(100% - 250px)' : 'margin-left: calc(100% - 220px)']"
-    @click="follow"
+    :style="btnStyle"
+    @click="handleFollow"
     :loading="loading"
   >
     {{ btnText }}
@@ -30,21 +30,51 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  isRequestingFollow: {
+    type: Boolean,
+    default: false,
+  },
+  isPrivateProfile: {
+    type: Boolean,
+    default: false,
+  },
   username: {
     type: String,
     required: true,
   }
 })
-const { $auth } = useNuxtApp()
+const { $auth: auth } = useNuxtApp()
 const emit = defineEmits(["handleFollow"])
 
-const btnText = computed(() => props.isFollowing ? "Following" : "Follow")
+const btnText = computed(() => {
+  if (props.isFollowing) {
+    return "Following"
+  } else if (props.isPrivateProfile) {
+    return props.isRequestingFollow ? "Requesting" : "Request"
+  }
+  return "Follow"
+})
+const btnStyle = [
+  props.isFollowing ? 'margin-left: calc(100% - 250px)' : // "Following"
+  props.isRequestingFollow ? 'margin-left: calc(100% - 256px)' : // "Requesting"
+  props.isPrivateProfile ? 'margin-left: calc(100% - 228px)' : // "Request"
+  'margin-left: calc(100% - 220px)' // "Follow"
+]
+
 const loading = ref(false)
 
-async function follow() {
-  if (!$auth.loggedIn()) {
+function handleFollow() {
+  if (!auth.loggedIn()) {
     return false
   }
+  if (props.isPrivateProfile) {
+    requestFollow()
+  } else {
+    follow()
+  }
+}
+
+async function follow() {
   loading.value = true
   const { error } = await useApiFetch("/api/follow", {
     method: props.isFollowing ? "DELETE" : "POST",
@@ -55,6 +85,16 @@ async function follow() {
   } else {
     emit("handleFollow", !props.isFollowing)
   }
+  loading.value = false
+}
+
+async function requestFollow() {
+  loading.value = true
+  const { error } = await useApiFetch("/api/follow/request", {
+    method: props.isRequestingFollow ? "DELETE" : "POST",
+    query: { username: props.username }
+  })
+  if (error.value) console.log(error.value)
   loading.value = false
 }
 </script>

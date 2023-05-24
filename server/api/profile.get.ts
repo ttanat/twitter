@@ -59,7 +59,7 @@ export default defineEventHandler(async event => {
       // Check if user is following or requesting to follow other user
       const check = await checkIsFollowingOrRequesting(event.context.user.username, profile._id)
       profile.isFollowing = check.isFollowing
-      if (!profile.isFollowing) profile.isRequestingFollow = check.isRequestingFollow
+      profile.isRequestingFollow = check.isRequestingFollow
     } else {
       // Check if user is following other user
       profile.isFollowing = await checkIsFollowing(event.context.user.username, profile._id)
