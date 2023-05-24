@@ -73,12 +73,13 @@
         <v-form
           ref="privacyForm"
           @submit.prevent="onSubmitPrivacyForm"
-          :disabled="privacyFormLoading"
+          :disabled="privacyFormLoading || loadingPrivacy"
         >
           <v-switch
+            v-model="privacy"
             label="Private account"
             color="blue-darken-3"
-            value="private"
+            :loading="loadingPrivacy ? 'warning' : false"
           ></v-switch>
           <v-btn
             color="blue-darken-3"
@@ -86,9 +87,13 @@
             type="submit"
             variant="elevated"
             :loading="privacyFormLoading"
+            :disabled="loadingPrivacy"
           >
             Change privacy
           </v-btn>
+          <ClientOnly>
+            <v-snackbar v-model="privacySnackbar" :timeout="3000" :color="privacySnackbarColor" rounded="pill">{{ privacySnackbarMessage }}</v-snackbar>
+          </ClientOnly>
         </v-form>
       </v-card>
     </div>
@@ -167,5 +172,31 @@ async function onSubmitPasswordForm() {
 
 const privacyForm = ref(null)
 const privacyFormLoading = ref(false)
-async function onSubmitPrivacyForm() {}
+const privacy = ref(false)
+// Load current privacy setting
+const { pending: loadingPrivacy } = await useApiFetch("/api/settings/privacy", {
+  onResponse({ response }) {
+    privacy.value = response._data.isPrivate
+  }
+})
+const privacySnackbar = ref(false)
+const privacySnackbarColor = ref("")
+const privacySnackbarMessage = ref("")
+
+async function onSubmitPrivacyForm() {
+  const { error } = await useApiFetch("/api/settings/privacy", {
+    server: false,
+    method: "POST",
+    body: { privacy: privacy.value },
+  })
+  if (error.value) {
+    privacySnackbarColor.value = "red"
+    privacySnackbarMessage.value = "Oops, something went wrong."
+  } else {
+    privacySnackbarColor.value = "success"
+    privacySnackbarMessage.value = "Privacy setting changed successfully."
+  }
+  privacySnackbar.value = true
+  privacyFormLoading.value = false
+}
 </script>
