@@ -63,9 +63,8 @@
               </v-chip>
             </div>
             <!-- <div v-if="tweet.media.length"><img :src="tweet.media[0]"></div> -->
-            <div v-if="pending"><v-progress-circular indeterminate></v-progress-circular></div>
             <!-- Show tweet that user is going to quote -->
-            <TweetQuoted v-else :tweet="tweetToQuote" :link="false" />
+            <TweetQuoted :quote_id="quote" :link="false" />
           </v-timeline-item>
         </v-timeline>
         <div v-show="message.length" class="text-error">{{ message }}</div>
@@ -100,8 +99,6 @@ const props = defineProps({
 })
 const emit = defineEmits(["close"])
 
-const { data: tweetToQuote, pending } = await useApiFetch("/api/tweet/quote", { query: { _id: props.quote }})
-
 const dialog = ref(false)
 watch(dialog, (val) => {
   if (!val) {
@@ -115,7 +112,6 @@ const files = ref([])
 const poll = ref({})
 
 const label = ref("What's happening?")
-label.value = `Quote ${tweetToQuote.value.user.name}...`
 const loading = ref(false)
 const message = ref("")
 function clearMessage() {

@@ -29,8 +29,7 @@
         <TweetFeedItemTopRow :tweet="tweet" />
         <TweetContent :content="tweet.content" />
         <!-- Quote tweet -->
-        <div v-if="tweet.quote && loadingQuote"><v-progress-circular indeterminate></v-progress-circular></div>
-        <TweetQuoted v-else-if="tweet.quote" :tweet="tweetToQuote" :link="true" />
+        <TweetQuoted v-if="tweet.quote" :quote_id="tweet.quote" :link="true" />
         <!-- Media -->
         <div v-if="tweet.media.length"><img :src="tweet.media[0]"></div>
         <!-- Poll -->
@@ -61,11 +60,6 @@ function openTweet(e) {
     el = el.parentNode
   }
   navigateTo(`/status/${props.tweet._id}`)
-}
-
-let tweetToQuote, loadingQuote
-if (props.tweet.quote) {
-  ({ data: tweetToQuote, pending: loadingQuote } = await useApiFetch("/api/tweet/quote", { query: { _id: props.tweet.quote }}))
 }
 </script>
 

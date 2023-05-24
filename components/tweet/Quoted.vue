@@ -1,5 +1,6 @@
 <template>
-  <div v-if="tweet.isPrivate" class="quote rounded-lg w-100 px-2 py-1 mt-1">
+  <div v-if="pending"><v-progress-circular indeterminate></v-progress-circular></div>
+  <div v-else-if="tweet.isPrivate" class="quote rounded-lg w-100 px-2 py-1 mt-1">
     Quoted tweet is private
   </div>
   <div
@@ -34,16 +35,18 @@
 
 <script setup>
 const props = defineProps({
-  tweet: Object,
+  quote_id: String,
   link: {
     default: true,
     required: false,
   },
 })
 
+const { data: tweet, pending } = await useApiFetch("/api/tweet/quote", { query: { _id: props.quote_id }})
+
 function openTweet() {
   if (props.link) {
-    navigateTo(`/status/${props.tweet._id}`)
+    navigateTo(`/status/${tweet._id}`)
   }
 }
 </script>
