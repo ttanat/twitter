@@ -1,4 +1,8 @@
-<template></template>
+<template>
+  <BaseLayout>
+    <TweetFeedList url="/api/tweets/explore" />
+  </BaseLayout>
+</template>
 
 <script setup>
 useHead({ title: "Explore" })
