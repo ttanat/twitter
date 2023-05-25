@@ -1,4 +1,5 @@
-import User, { ci } from "@/server/models/user"
+import User, { ci } from "~~/server/models/user"
+import Tweet from "~~/server/models/tweet"
 import { checkUsername } from "~~/server/utils/query"
 
 export default defineEventHandler(async event => {
@@ -15,6 +16,8 @@ export default defineEventHandler(async event => {
   const { privacy } = await readBody(event)
   user.isPrivate = privacy
   user.save()
+
+  await Tweet.updateMany({ user: user._id }, { isPrivate: privacy }).exec()
 
   return null
 })
