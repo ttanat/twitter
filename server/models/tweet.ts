@@ -74,8 +74,8 @@ const tweetSchema = new Schema<ITweet>({
   parent: { type: Schema.Types.ObjectId, ref: "Tweet" },
 
   isPrivate: Boolean,
-  isRemoved: Boolean,
-  isDeleted: Boolean,
+  isRemoved: { type: Boolean, default: false },
+  isDeleted: { type: Boolean, default: false },
 })
 
 tweetSchema.pre("save", function(next) {

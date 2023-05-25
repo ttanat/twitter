@@ -10,7 +10,7 @@ export default defineEventHandler(async event => {
     return createError({ statusCode: 400 })
   }
   // Get user
-  const user = await User.findOne({ username }, { _id: 1 }).collation(ci).exec()
+  const user = await User.findOne({ username }, { _id: 1, isPrivate: 1 }).collation(ci).exec()
   if (!user) {
     return createError({ statusCode: 400 })
   }
@@ -31,13 +31,14 @@ export default defineEventHandler(async event => {
     return createError({ statusCode: 400 })
   }
 
-  const tweet = await Tweet.create({
+  await Tweet.create({
     user: user._id,
     content: parsedContent,
     // media: files,
     poll: parsedPoll,
     hashtags: getHashtags(parsedContent),
     mentions: getMentions(parsedContent),
+    isPrivate: user.isPrivate,
   })
 
   return null

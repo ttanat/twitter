@@ -82,10 +82,9 @@ const userSchema = new Schema<IUser>({
   },
   validRefreshTokens: [{ type: String, match: /^[\w-]+\.[\w-]+\.[\w-]+$/ }],
 
-  isPrivate: Boolean,
-  isSuspended: Boolean,
-  isDeactivated: Boolean,
-  isDeleted: Boolean,
+  isPrivate: { type: Boolean, default: false },
+  isSuspended: { type: Boolean, default: false },
+  isDeleted: { type: Boolean, default: false },
   test: [String],
 })
 
