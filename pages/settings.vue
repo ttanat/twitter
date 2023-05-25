@@ -101,6 +101,7 @@
 </template>
 
 <script setup>
+definePageMeta({ middleware: ["auth"] })
 useHead({ title: "Settings" })
 useState("navBarRoute").value = "Settings"
 
