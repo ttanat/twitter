@@ -38,6 +38,10 @@ export default defineNuxtPlugin(_ => {
         // User object properties
         getUsername: (): string | null => (user.value as User)?.username || null,
         getName: (): string | null => (user.value as User)?.name || (user.value as User)?.username || null,
+        setName: (newName: string): void => {
+          const tmp = newName || (user.value as User)!.username
+          user.value = { ...user.value as User, name: tmp } as any
+        },
         getImage: (): string | null => (user.value as User)?.image || null,
         // User object
         getUser: (): User => (user.value as User),

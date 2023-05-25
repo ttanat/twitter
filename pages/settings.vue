@@ -105,6 +105,8 @@ definePageMeta({ middleware: ["auth"] })
 useHead({ title: "Settings" })
 useState("navBarRoute").value = "Settings"
 
+const { $auth: auth } = useNuxtApp()
+
 const nameForm = ref(null)
 const nameFormLoading = ref(false)
 const name = ref("")
@@ -129,6 +131,7 @@ async function onSubmitNameForm() {
     nameSnackbarColor.value = "red"
     nameSnackbarMessage.value = "Oops, something went wrong."
   } else {
+    auth.setName(name.value)
     nameForm.value.reset()
     nameSnackbarColor.value = "success"
     nameSnackbarMessage.value = "Name changed successfully."
