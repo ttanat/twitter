@@ -19,6 +19,10 @@ export const checkLikesAndRetweets = async (event: H3Event, tweets: any[]): Prom
     return tweets
   }
 
+  // Convert to object first
+  // Adding user likes and retweets won't work on documents
+  tweets = tweets.map(t => typeof t.toObject === "function" ? t.toObject() : t)
+
   // Get _id's of tweets
   const tweet_ids = tweets.map(tweet => tweet._id)
 
