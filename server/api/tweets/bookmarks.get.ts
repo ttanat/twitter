@@ -20,6 +20,7 @@ export default defineEventHandler(async event => {
     _id: 1,
     username: 1, // Select random field to prevent mongoose from selecting every field
     bookmarks: { $slice: ["$bookmarks", ...slice] },
+    following: 1,
   })
     .collation(ci)
     .exec()
@@ -27,7 +28,12 @@ export default defineEventHandler(async event => {
   if (!user) return createError({ statusCode: 400 })
 
   const tweets = await Tweet
-    .find({ _id: { $in: user.bookmarks }}, {}, { limit: 20 })
+    .find({
+      _id: { $in: user.bookmarks },
+      // Tweet has to be public or user's own tweet or user has to follow tweeter
+      $or: [{ isPrivate: false }, { user: user._id }, { user: { $in: user.following }}],
+    },
+      null, { limit: 20 })
     .populate("user", "-_id username name image")
     .exec()
 
