@@ -9,14 +9,18 @@ export default defineEventHandler(async event => {
   if (!currentUser || !targetUser) {
     return createError({ statusCode: 400 })
   }
-  // Check user can be followed
-  if (targetUser.isPrivate || targetUser.isSuspended || targetUser.isDeactivated || targetUser.isDeleted) {
+  // Check user account is available to follow
+  if (targetUser.isSuspended || targetUser.isDeleted) {
     return createError({ statusCode: 400 })
   }
 
   // Follow or unfollow
   let res
   if (getMethod(event) === "POST") {
+    // Cannot directly follow private account (need to request to follow)
+    if (targetUser.isPrivate) {
+      return createError({ statusCode: 400 })
+    }
     // Check follow limit
     if (currentUser.numFollowing >= 5000) {
       return createError({ statusCode: 400, statusMessage: "Can't follow more than 5000 people" })
