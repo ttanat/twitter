@@ -67,10 +67,10 @@ function handleFollow() {
   if (!auth.loggedIn()) {
     return false
   }
-  if (props.isPrivateProfile) {
-    requestFollow()
-  } else {
+  if (!props.isPrivateProfile || props.isFollowing) {
     follow()
+  } else {
+    requestFollow()
   }
 }
 
