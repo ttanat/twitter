@@ -29,6 +29,8 @@ export default defineEventHandler(async event => {
   const tweets = await Tweet.find({
     user: user._id,
     timestamp: { $lt: before },
+    isDeleted: false,
+    isRemoved: false,
   }, { /* Select all fields */ }, {
     limit: 20,
     sort: { timestamp: -1 },

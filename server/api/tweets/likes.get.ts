@@ -32,6 +32,8 @@ export default defineEventHandler(async event => {
       _id: { $in: user.likes },
       // Tweet has to be public or user's own tweet or user has to follow tweeter
       $or: [{ isPrivate: false }, { user: user._id }, { user: { $in: user.following }}],
+      isDeleted: false,
+      isRemoved: false,
     },
       null, { limit: 20 })
     .populate("user", "-_id username name image")
