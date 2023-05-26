@@ -7,7 +7,7 @@
     :variant="isFollowing || isRequestingFollow ? 'outlined' : 'elevated'"
     class="font-weight-bold"
     style="margin-bottom: -14px"
-    :style="btnStyle"
+    :style="{ 'margin-left': btnMarginLeft }"
     @click="handleFollow"
     :loading="loading"
   >
@@ -54,12 +54,12 @@ const btnText = computed(() => {
   }
   return "Follow"
 })
-const btnStyle = [
-  props.isFollowing ? 'margin-left: calc(100% - 250px)' : // "Following"
-  props.isRequestingFollow ? 'margin-left: calc(100% - 256px)' : // "Requesting"
-  props.isPrivateProfile ? 'margin-left: calc(100% - 228px)' : // "Request"
-  'margin-left: calc(100% - 220px)' // "Follow"
-]
+const btnMarginLeft = computed(() => {
+  return props.isFollowing ? 'calc(100% - 250px)' : // "Following"
+  props.isRequestingFollow ? 'calc(100% - 256px)' : // "Requesting"
+  props.isPrivateProfile ? 'calc(100% - 228px)' : // "Request"
+  'calc(100% - 220px)' // "Follow"
+})
 
 const loading = ref(false)
 
