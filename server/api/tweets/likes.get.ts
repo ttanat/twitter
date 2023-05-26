@@ -47,7 +47,7 @@ export default defineEventHandler(async event => {
   //   : await checkLikesAndRetweets(event, tweets)
 
   return {
-    results: await checkLikesAndRetweets(event, tweets),
+    results: await checkLikesAndRetweets(event, tweets, true),
     next,
   }
 })

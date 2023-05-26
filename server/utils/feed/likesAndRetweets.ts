@@ -6,7 +6,7 @@ import { checkUsername } from "~~/server/utils/query"
 
 type TweetIds = string[] | Types.ObjectId[]
 
-export const checkLikesAndRetweets = async (event: H3Event, tweets: any[]): Promise<any[]> => {
+export const checkLikesAndRetweets = async (event: H3Event, tweets: any[], allLiked: boolean = false): Promise<any[]> => {
   /*
     Tweets: array of documents or array of objects
     Depends on the route this function is called from
@@ -28,7 +28,7 @@ export const checkLikesAndRetweets = async (event: H3Event, tweets: any[]): Prom
 
   // Get likes and retweets
   const [likes, retweets] = await Promise.all([
-    checkLikes(tweet_ids, username),
+    allLiked ? new Set(tweet_ids.map(id => id.toString())) : checkLikes(tweet_ids, username),
     checkRetweets(tweet_ids, username),
   ])
 
