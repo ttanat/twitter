@@ -11,7 +11,7 @@
       <TweetFeedList :url="`/api/tweets/user?username=${username}&before=${new Date().toISOString()}`" />
     </v-window-item>
     <v-window-item value="2">
-      <TweetFeedList />
+      <TweetFeedList :url="`/api/tweets/user-replies?username=${username}&before=${new Date().toISOString()}`" />
     </v-window-item>
     <v-window-item value="3">
       <TweetFeedList />
