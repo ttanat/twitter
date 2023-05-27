@@ -15,6 +15,7 @@
   </v-btn>
   <v-btn
     v-else
+    to="/settings"
     color="primary"
     rounded="pill"
     variant="outlined"
