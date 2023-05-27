@@ -14,6 +14,8 @@
     <!-- Center -->
     <div class="font-weight-medium d-none d-md-block">{{ routeName }}</div>
     <v-text-field
+      v-model="searchQuery"
+      @keyup.enter="search"
       class="mx-5"
       density="compact"
       hide-details
@@ -42,6 +44,20 @@
 
 <script setup>
 const routeName = useState("navBarRoute")
+const route = useRoute()
+const router = useRouter()
+
+const searchQuery = ref(route.path === "/search" ? route.query.q : "")
+function search() {
+  const q = searchQuery.value
+  if (!q || (route.path === "/search" && q === route.query.q)) {
+    return false
+  }
+  router.push({
+    path: "/search",
+    query: { q },
+  })
+}
 </script>
 
 <style scoped>

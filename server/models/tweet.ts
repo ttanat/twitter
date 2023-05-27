@@ -108,5 +108,6 @@ tweetSchema.pre("save", function(next) {
 })
 
 tweetSchema.index({ user: 1, retweet: 1 })
+tweetSchema.index({ content: "text" })
 
 export default model<ITweet>("Tweet", tweetSchema)
