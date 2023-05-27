@@ -88,6 +88,8 @@ const userSchema = new Schema<IUser>({
   test: [String],
 })
 
+userSchema.index({ username: "text", name: "text" })
+
 export default model<IUser>("User", userSchema)
 
 interface ICollation {
