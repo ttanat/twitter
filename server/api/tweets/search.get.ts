@@ -22,7 +22,6 @@ export default defineEventHandler(async event => {
     )
     .populate("user", "-_id username name image")
     .exec()
-    console.log(tweets)
 
   let next = null
   if (tweets.length === 20) {
