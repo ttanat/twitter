@@ -23,6 +23,7 @@
             type="submit"
             variant="elevated"
             :loading="nameFormLoading"
+            :disabled="name === currentName"
           >
             Change name
           </v-btn>
@@ -46,6 +47,8 @@
             maxlength="160"
             density="compact"
             class="mb-2"
+            no-resize
+            rows="4"
             :disabled="loadingBio"
           ></v-textarea>
           <v-btn
@@ -54,7 +57,7 @@
             type="submit"
             variant="elevated"
             :loading="bioFormLoading"
-            :disabled="loadingBio"
+            :disabled="loadingBio || bio === currentBio"
           >
             Change bio
           </v-btn>
@@ -138,10 +141,12 @@ useHead({ title: "Settings" })
 useState("navBarRoute").value = "Settings"
 
 const { $auth: auth } = useNuxtApp()
+const user = useCookie("user")
 
 const nameForm = ref(null)
 const nameFormLoading = ref(false)
-const name = ref("")
+const name = ref(user.value.name)
+const currentName = ref(user.value.name)
 const nameRules = [
   v => (v || "").length <= 32 || "Name cannot be longer than 32 characters",
   v => (v || "").length > 0 || "Name must contain at least 1 character",
@@ -164,7 +169,7 @@ async function onSubmitNameForm() {
     nameSnackbarMessage.value = "Oops, something went wrong."
   } else {
     auth.setName(name.value)
-    nameForm.value.reset()
+    currentName.value = name.value
     nameSnackbarColor.value = "success"
     nameSnackbarMessage.value = "Name changed successfully."
   }
@@ -175,9 +180,11 @@ async function onSubmitNameForm() {
 const bioForm = ref(null)
 const bioFormLoading = ref(false)
 const bio = ref("")
+const currentBio = ref("")
 const { pending: loadingBio } = await useApiFetch("/api/settings/bio", {
   onResponse({ response }) {
     bio.value = response._data.bio
+    currentBio.value = response._data.bio
   }
 })
 const bioRules = [
@@ -200,6 +207,7 @@ async function onSubmitBioForm() {
     bioSnackbarColor.value = "red"
     bioSnackbarMessage.value = "Oops, something went wrong."
   } else {
+    currentBio.value = bio.value
     bioSnackbarColor.value = "success"
     bioSnackbarMessage.value = "Bio changed successfully."
   }
