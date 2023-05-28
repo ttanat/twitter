@@ -13,7 +13,7 @@ export const useContentSplit = (content: string): SplitContent[] => {
     e.g. ["hello ", "@john"]
     Array will start with non-match and alternate between matches and non-matches
   */
-  const parts = content.split(regex)
+  const parts = (content || "").split(regex)
 
   return parts.map(part => {
     if (part.match(hashtagRegex)) {
