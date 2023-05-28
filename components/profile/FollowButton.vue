@@ -45,7 +45,7 @@ const props = defineProps({
   }
 })
 const { $auth: auth } = useNuxtApp()
-const emit = defineEmits(["handleFollow"])
+const emit = defineEmits(["handleFollow", "handleRequest"])
 
 const btnText = computed(() => {
   if (props.isFollowing) {
@@ -95,7 +95,11 @@ async function requestFollow() {
     method: props.isRequestingFollow ? "DELETE" : "POST",
     query: { username: props.username }
   })
-  if (error.value) console.log(error.value)
+  if (error.value) {
+    console.log(error.value)
+  } else {
+    emit("handleRequest", !props.isRequestingFollow)
+  }
   loading.value = false
 }
 </script>

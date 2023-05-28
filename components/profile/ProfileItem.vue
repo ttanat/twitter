@@ -28,6 +28,7 @@
         :isPrivateProfile="!!profile.isPrivate"
         :username="profile.username"
         @handle-follow="(n) => {profile.isFollowing = n;profile.numFollowers += n ? 1 : -1}"
+        @handle-request="(n) => {profile.isRequestingFollow = n}"
       />
     </div>
     <div class="mx-5 mt-3" style="font-size: 15px">
