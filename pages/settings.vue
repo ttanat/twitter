@@ -33,6 +33,38 @@
       </v-card>
       <v-card class="mx-auto px-6 py-8 mb-5">
         <v-form
+          ref="bioForm"
+          @submit.prevent="onSubmitBioForm"
+          :disabled="bioFormLoading || loadingBio"
+        >
+          <v-textarea
+            variant="outlined"
+            v-model="bio"
+            label="Change bio"
+            :rules="bioRules"
+            :counter="160"
+            maxlength="160"
+            density="compact"
+            class="mb-2"
+            :disabled="loadingBio"
+          ></v-textarea>
+          <v-btn
+            color="blue-darken-3"
+            size="small"
+            type="submit"
+            variant="elevated"
+            :loading="bioFormLoading"
+            :disabled="loadingBio"
+          >
+            Change bio
+          </v-btn>
+        </v-form>
+        <ClientOnly>
+          <v-snackbar v-model="bioSnackbar" :timeout="3000" :color="bioSnackbarColor" rounded="pill">{{ bioSnackbarMessage }}</v-snackbar>
+        </ClientOnly>
+      </v-card>
+      <v-card class="mx-auto px-6 py-8 mb-5">
+        <v-form
           ref="passwordForm"
           @submit.prevent="onSubmitPasswordForm"
         >
@@ -79,7 +111,7 @@
             v-model="privacy"
             label="Private account"
             color="blue-darken-3"
-            :loading="loadingPrivacy ? 'warning' : false"
+            :disabled="loadingPrivacy"
           ></v-switch>
           <v-btn
             color="blue-darken-3"
@@ -138,6 +170,41 @@ async function onSubmitNameForm() {
   }
   nameSnackbar.value = true
   nameFormLoading.value = false
+}
+
+const bioForm = ref(null)
+const bioFormLoading = ref(false)
+const bio = ref("")
+const { pending: loadingBio } = await useApiFetch("/api/settings/bio", {
+  onResponse({ response }) {
+    bio.value = response._data.bio
+  }
+})
+const bioRules = [
+  v => (v || "").length <= 160 || "Bio cannot be longer than 160 characters",
+]
+const bioSnackbar = ref(false)
+const bioSnackbarColor = ref("")
+const bioSnackbarMessage = ref("")
+
+async function onSubmitBioForm() {
+  const { valid } = await bioForm.value.validate()
+  if (!valid) return false
+  bioFormLoading.value = true
+  const { error } = await useApiFetch("/api/settings/bio", {
+    server: false,
+    method: "POST",
+    body: { bio: bio.value },
+  })
+  if (error.value) {
+    bioSnackbarColor.value = "red"
+    bioSnackbarMessage.value = "Oops, something went wrong."
+  } else {
+    bioSnackbarColor.value = "success"
+    bioSnackbarMessage.value = "Bio changed successfully."
+  }
+  bioSnackbar.value = true
+  bioFormLoading.value = false
 }
 
 const passwordForm = ref(null)
