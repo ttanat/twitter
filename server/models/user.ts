@@ -45,7 +45,7 @@ const userSchema = new Schema<IUser>({
   name: { type: String, maxlength: 32, trim: true },
   image: String,
   banner: String,
-  bio: { type: String, maxlength: 150, trim: true },
+  bio: { type: String, maxlength: 150, trim: true, default: "" },
   isVerified: Boolean,
   numTweets: { type: Number, default: 0, min: 0 },
   dateJoined: { type: Date, default: Date.now, immutable: true },
