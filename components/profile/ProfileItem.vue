@@ -38,7 +38,7 @@
       <!-- Username -->
       <div class="text-grey-darken-1">@{{ profile.username }}</div>
       <!-- Bio -->
-      <div class="mt-2">{{ profile.bio }}</div>
+      <div class="mt-2"><TweetContent :content="profile.bio" /></div>
       <!-- Link and date joined -->
       <div class="mt-2">
         <NuxtLink v-if="profile.link" :to="profile.link" target="_blank" class="profile-link">
