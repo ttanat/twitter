@@ -1,8 +1,8 @@
 <template>
   <BaseLayout>
-    <div v-if="tweet.isDeleted" class="pa-3" style="border-bottom: solid 1px grey">
+    <div v-if="error || tweet.isDeleted || tweet.isRemoved" class="pa-3" style="border-bottom: solid 1px grey">
       <div class="rounded-lg pa-3" style="background: #0f0f0f;border: solid 1px grey">
-        Tweet has been deleted
+        Tweet is unavailable
       </div>
     </div>
     <TweetStatusItem
@@ -20,7 +20,7 @@
 <script setup>
 useState("navBarRoute").value = "Tweet"
 const route = useRoute()
-const { data: tweet } = await useApiFetch("/api/tweet", { query: { _id: route.params._id }, server: true })
+const { data: tweet, error } = await useApiFetch("/api/tweet", { query: { _id: route.params._id }, server: true })
 
 useHead({
   // Content ~ Name (@username)
