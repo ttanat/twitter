@@ -19,11 +19,11 @@ export default defineEventHandler(async event => {
   if (method === "POST") {
     // Find user and check if tweet exists
     const [user, tweet] = await Promise.all([
-      User.findOne({ username }, { _id: 1 }).collation(ci).exec(),
-      Tweet.findOne({ _id }, { _id: 1 }).exec(),
+      User.findOne({ username }, { _id: 1, isPrivate: 1 }).collation(ci).exec(),
+      Tweet.findOne({ _id }, { _id: 1, isPrivate: 1 }).exec(),
     ])
-    if (!user || !tweet) {
-      return createError({ statusCode: 404 })
+    if (!user || !tweet || user.isPrivate || tweet.isPrivate) {
+      return createError({ statusCode: 400 })
     }
 
     // Create retweet
@@ -45,6 +45,12 @@ export default defineEventHandler(async event => {
       }
       return createError({ statusCode: 500 })
     }
+  }
+
+  // Increment/decrement retweet count
+  const res2 = await Tweet.updateOne({ _id }, { $inc: { numRetweets: method === "POST" ? 1 : -1 }}).exec()
+  if (res2.modifiedCount !== 1) {
+    return createError({ statusCode: 500 })
   }
 
   return null
