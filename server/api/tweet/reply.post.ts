@@ -50,6 +50,9 @@ export default defineEventHandler(async event => {
     parent: parent._id,
   })
 
+  // Increment reply count on tweet/reply that user is replying to
+  await Tweet.updateOne({ _id: replyTo }, { $inc: { numReplies: 1 }}).exec()
+
   const response = await reply.populate("user", "-_id username name image")
 
   return response
