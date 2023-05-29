@@ -1,6 +1,7 @@
 <template>
   <BaseLayout>
     <TweetFeedList :url="url" />
+    <template #right><TrendingList /></template>
   </BaseLayout>
 </template>
 

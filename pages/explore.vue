@@ -1,6 +1,7 @@
 <template>
   <BaseLayout>
     <TweetFeedList url="/api/tweets/explore" />
+    <template #right><TrendingList /></template>
   </BaseLayout>
 </template>
 
