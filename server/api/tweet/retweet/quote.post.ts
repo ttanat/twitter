@@ -31,5 +31,8 @@ export default defineEventHandler(async event => {
     quote: tweet._id,
   })
 
+  // Increment quote count
+  await Tweet.updateOne({ _id: tweet._id }, { $inc: { numQuotes: 1 }}).exec()
+
   return null
 })
