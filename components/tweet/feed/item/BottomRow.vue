@@ -7,6 +7,16 @@
     </div>
     <div class="flex-grow-1">
       <v-btn
+        v-if="tweet.isPrivate"
+        class="no-navigate"
+        density="compact"
+        variant="text"
+        rounded="pill"
+      >
+        <v-icon size="18" icon="mdi-lock-outline" class="no-navigate" style="padding-top: 1px"></v-icon>
+      </v-btn>
+      <v-btn
+        v-else
         :loading="retweeting"
         :color="tweet.isRetweeted ? '#40a440' : ''"
         class="retweets no-navigate"

@@ -7,7 +7,11 @@
     </v-btn>
     <v-spacer></v-spacer>
     <v-spacer></v-spacer>
-    <v-btn :loading="retweeting" icon variant="text" class="icon-btn retweet" style="font-size: 18px">
+    <v-btn v-if="tweet.isPrivate" icon variant="text" class="icon-btn" style="font-size: 14px;padding-top: 1px">
+      <v-icon icon="mdi-lock-outline"></v-icon>
+      <v-tooltip activator="parent" location="bottom">Private</v-tooltip>
+    </v-btn>
+    <v-btn v-else :loading="retweeting" icon variant="text" class="icon-btn retweet" style="font-size: 18px">
       <v-icon icon="mdi-repeat-variant" :color="tweet.isRetweeted ? '#40a440' : ''"></v-icon>
       <TweetRetweetMenu
         :is-retweeted="tweet.isRetweeted"
