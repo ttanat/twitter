@@ -17,7 +17,6 @@ interface IProfile {
   numFollowers: number
   isPrivate: boolean
   isSuspended?: boolean
-  isDeactivated?: boolean
   isDeleted?: boolean
   isFollowing?: boolean
   isRequestingFollow?: boolean
@@ -45,13 +44,11 @@ export default defineEventHandler(async event => {
     numFollowers: 1,
     isPrivate: 1,
     isSuspended: 1,
-    isDeactivated: 1,
     isDeleted: 1,
   }).collation(ci).exec())?.toObject()
 
   if (!profile) return createError({ statusCode: 404, statusMessage: "User not found" })
   if (profile.isSuspended) return { isSuspended: true }
-  if (profile.isDeactivated) return { isDeactivated: true }
   if (profile.isDeleted) return { isDeleted: true }
 
   if (!isSelfProfile && event.context.user) {
@@ -68,7 +65,6 @@ export default defineEventHandler(async event => {
 
   delete profile._id
   delete profile.isSuspended
-  delete profile.isDeactivated
   delete profile.isDeleted
 
   return profile

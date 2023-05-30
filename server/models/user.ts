@@ -27,7 +27,6 @@ interface IUser {
   validRefreshTokens: Types.Array<string>
   isPrivate?: boolean
   isSuspended?: boolean
-  isDeactivated?: boolean
   isDeleted?: boolean
   test?: Types.Array<string>
 }

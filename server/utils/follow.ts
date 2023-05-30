@@ -15,7 +15,6 @@ type FollowUser = {
   numFollowing: number
   isPrivate: boolean
   isSuspended: boolean
-  isDeactivated: boolean
   isDeleted: boolean
 } | undefined
 
@@ -35,7 +34,6 @@ export const getUsers = async (event: H3Event): Promise<{ currentUser?: FollowUs
     numFollowing: 1,
     isPrivate: 1,
     isSuspended: 1,
-    isDeactivated: 1,
     isDeleted: 1
   }, { limit: 2 }).collation(ci).exec()
 
@@ -43,10 +41,8 @@ export const getUsers = async (event: H3Event): Promise<{ currentUser?: FollowUs
   const currentUser: FollowUser = users.find(user => user.username === currentUserUsername)?.toObject()
   const targetUser: FollowUser = users.find(user => user.username === targetUserUsername)?.toObject()
 
-  if (
-    currentUser?.isSuspended || currentUser?.isDeactivated || currentUser?.isDeleted ||
-    targetUser?.isSuspended || targetUser?.isDeactivated || targetUser?.isDeleted
-  ) {
+  if (currentUser?.isSuspended || currentUser?.isDeleted ||
+      targetUser?.isSuspended || targetUser?.isDeleted) {
     return {}
   }
 

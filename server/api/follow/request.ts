@@ -11,7 +11,7 @@ export default defineEventHandler(async event => {
     return createError({ statusCode: 400 })
   }
   // Check user can be sent follow request
-  if (!targetUser.isPrivate || targetUser.isSuspended || targetUser.isDeactivated || targetUser.isDeleted) {
+  if (!targetUser.isPrivate || targetUser.isSuspended || targetUser.isDeleted) {
     return createError({ statusCode: 400 })
   }
 
