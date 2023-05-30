@@ -1,5 +1,6 @@
 import Tweet from "~~/server/models/tweet"
 import User, { ci } from "~~/server/models/user"
+import { checkIsFollowing } from "~~/server/utils/following"
 import { checkUsername } from "~~/server/utils/query"
 import { Content, Files, Poll, parsePoll, validateTweetFormData, getHashtags, getMentions } from "~~/server/utils/tweet"
 
@@ -10,7 +11,7 @@ export default defineEventHandler(async event => {
     return createError({ statusCode: 400 })
   }
   // Get user
-  const user = await User.findOne({ username }, { _id: 1 }).collation(ci).exec()
+  const user = await User.findOne({ username }, { _id: 1, isPrivate: 1 }).collation(ci).exec()
   if (!user) {
     return createError({ statusCode: 400 })
   }
@@ -34,9 +35,18 @@ export default defineEventHandler(async event => {
   }
 
   // Get tweet/reply that user is replying to
-  const parent = await Tweet.findOne({ _id: replyTo }, { _id: 1, ancestors: 1 }).exec()
+  const parent = await Tweet.findOne({ _id: replyTo }, { _id: 1, ancestors: 1, isPrivate: 1, user: 1 }).exec()
   if (!parent) {
     return createError({ statusCode: 404 })
+  }
+
+  // If parent is private, check if user can reply
+  if (parent.isPrivate) {
+    // Can reply if user is replying to self or user is following tweeter
+    const canReply = user._id === parent.user || await checkIsFollowing(username, parent.user)
+    if (!canReply) {
+      return createError({ statusCode: 400 })
+    }
   }
 
   const reply = await Tweet.create({
@@ -48,6 +58,7 @@ export default defineEventHandler(async event => {
     mentions: getMentions(parsedContent),
     ancestors: parent.ancestors?.length ? [...parent.ancestors, parent._id] : [parent._id],
     parent: parent._id,
+    isPrivate: user.isPrivate,
   })
 
   // Increment reply count on tweet/reply that user is replying to
