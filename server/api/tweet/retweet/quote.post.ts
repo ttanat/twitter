@@ -17,10 +17,11 @@ export default defineEventHandler(async event => {
 
   // Find user and check if tweet exists
   const [user, tweet] = await Promise.all([
-    User.findOne({ username }, { _id: 1, isPrivate: 1 }).collation(ci).exec(),
-    Tweet.findOne({ _id: quote }, { _id: 1, isPrivate: 1 }).exec(),
+    User.findOne({ username }, { _id: 1, isPrivate: 1, isSuspended: 1, isDeleted: 1 }).collation(ci).exec(),
+    Tweet.findOne({ _id: quote }, { _id: 1, isPrivate: 1, isRemoved: 1, isDeleted: 1 }).exec(),
   ])
-  if (!user || !tweet || user.isPrivate || tweet.isPrivate) {
+  if (!user || user.isPrivate || user.isSuspended || user.isDeleted ||
+      !tweet || tweet.isPrivate || tweet.isRemoved || tweet.isDeleted) {
     return createError({ statusCode: 400 })
   }
 

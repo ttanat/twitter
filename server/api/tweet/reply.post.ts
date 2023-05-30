@@ -35,8 +35,12 @@ export default defineEventHandler(async event => {
   }
 
   // Get tweet/reply that user is replying to
-  const parent = await Tweet.findOne({ _id: replyTo }, { _id: 1, ancestors: 1, isPrivate: 1, user: 1 }).exec()
-  if (!parent) {
+  const parent = await Tweet.findOne(
+    { _id: replyTo },
+    { _id: 1, ancestors: 1, isPrivate: 1, user: 1, isRemoved: 1, isDeleted: 1 },
+  ).exec()
+
+  if (!parent || parent.isRemoved || parent.isDeleted) {
     return createError({ statusCode: 404 })
   }
 

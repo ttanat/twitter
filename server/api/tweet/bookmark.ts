@@ -16,6 +16,14 @@ export default defineEventHandler(async event => {
   }
   const isPostMethod = getMethod(event) === "POST"
 
+  // Prevent bookmarking deleted/removed tweet
+  if (isPostMethod) {
+    const tmp = await Tweet.findOne({ _id }, { isRemoved: 1, isDeleted: 1 }).exec()
+    if (!tmp || tmp.isRemoved || tmp.isDeleted) {
+      return createError({ statusCode: 400 })
+    }
+  }
+
   // const session = await mongoose.startSession()
   // try {
   //   // Use transaction
