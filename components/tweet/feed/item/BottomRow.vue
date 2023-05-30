@@ -51,6 +51,7 @@
     <div class="flex-grow-1">
       <v-btn class="hamburger replies no-navigate" icon density="compact" variant="text" rounded="circle">
         <v-icon size="24" icon="mdi-dots-horizontal" class="no-navigate"></v-icon>
+        <TweetHamburgerMenu :tweet_id="tweet._id" />
       </v-btn>
     </div>
   </div>

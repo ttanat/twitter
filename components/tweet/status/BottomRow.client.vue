@@ -32,8 +32,9 @@
     <v-spacer></v-spacer>
     <v-spacer></v-spacer>
     <v-btn icon variant="text" class="icon-btn reply" style="font-size: 14px">
-      <v-icon icon="mdi-export-variant"></v-icon>
-      <v-tooltip activator="parent" location="bottom">Share</v-tooltip>
+      <v-icon icon="mdi-dots-horizontal"></v-icon>
+      <v-tooltip activator="parent" location="bottom">Menu</v-tooltip>
+      <TweetHamburgerMenu :tweet_id="route.params._id" />
     </v-btn>
     <v-spacer></v-spacer>
   </div>
