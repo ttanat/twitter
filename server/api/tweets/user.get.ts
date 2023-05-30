@@ -14,9 +14,9 @@ export default defineEventHandler(async event => {
   const isSelfTweets = username === event.context.user?.username
 
   // Get user whose tweets are being viewed
-  const user = await User.findOne({ username }, { _id: 1, isPrivate: 1 }).collation(ci).exec()
-  if (!user) {
-    return createError({ statusCode: 404 })
+  const user = await User.findOne({ username }, { _id: 1, isPrivate: 1, isSuspended: 1, isDeleted: 1 }).collation(ci).exec()
+  if (!user || user.isSuspended || user.isDeleted) {
+    return createError({ statusCode: 400 })
   }
 
   // Check if user can view tweets from private account

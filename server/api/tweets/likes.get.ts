@@ -21,11 +21,15 @@ export default defineEventHandler(async event => {
     username: 1, // Select random field to prevent mongoose from selecting every field
     likes: { $slice: ["$likes", ...slice] },
     following: 1,
+    isSuspended: 1,
+    isDeleted: 1,
   })
     .collation(ci)
     .exec()
 
-  if (!user) return createError({ statusCode: 400 })
+  if (!user || user.isSuspended || user.isDeleted) {
+    return createError({ statusCode: 400 })
+  }
 
   const tweets = await Tweet
     .find({

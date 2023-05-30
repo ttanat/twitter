@@ -11,10 +11,11 @@ export default defineEventHandler(async event => {
 
   // Get parent tweet
   const parent = await Tweet
-    .findOne({ _id }, { _id: 1, isPrivate: 1 })
+    .findOne({ _id }, { _id: 1, isPrivate: 1, isRemoved: 1, isDeleted: 1 })
     .populate("user", "_id isPrivate")
     .exec()
-  if (!parent) {
+
+  if (!parent || parent.isRemoved || parent.isDeleted) {
     return createError({ statusCode: 400 })
   }
 
