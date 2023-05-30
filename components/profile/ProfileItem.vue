@@ -59,7 +59,14 @@
     </div>
     <!-- Tabs -->
     <div class="mt-2">
-      <ProfileTabs />
+      <div
+        v-if="profile.isPrivate && !profile.isFollowing"
+        class="py-5"
+        style="border-top: 1px solid grey;text-align: center;"
+      >
+        This account is private
+      </div>
+      <ProfileTabs v-else />
     </div>
   </div>
 </template>
