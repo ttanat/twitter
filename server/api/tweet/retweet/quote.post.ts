@@ -17,11 +17,11 @@ export default defineEventHandler(async event => {
 
   // Find user and check if tweet exists
   const [user, tweet] = await Promise.all([
-    User.findOne({ username }, { _id: 1 }).collation(ci).exec(),
-    Tweet.findOne({ _id: quote }, { _id: 1 }).exec(),
+    User.findOne({ username }, { _id: 1, isPrivate: 1 }).collation(ci).exec(),
+    Tweet.findOne({ _id: quote }, { _id: 1, isPrivate: 1 }).exec(),
   ])
-  if (!user || !tweet) {
-    return createError({ statusCode: 404 })
+  if (!user || !tweet || user.isPrivate || tweet.isPrivate) {
+    return createError({ statusCode: 400 })
   }
 
   // Create quote tweet
