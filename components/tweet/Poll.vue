@@ -51,11 +51,13 @@ const { $auth: auth } = useNuxtApp()
 const voted = ref(false)
 const checkingIfVoted = ref(auth.loggedIn())
 if (auth.loggedIn()) {
-  const { data } = await useApiFetch("/api/tweet/voted", {
-    query: { tweet_id: props.tweet_id }
+  await useApiFetch("/api/tweet/voted", {
+    query: { tweet_id: props.tweet_id },
+    onResponse({ response }) {
+      voted.value = response._data.voted
+      checkingIfVoted.value = false
+    }
   })
-  voted.value = data.value.voted
-  checkingIfVoted.value = false
 }
 
 const choices = ref(props.poll.choices.map(choice => {
