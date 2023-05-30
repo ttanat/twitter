@@ -14,7 +14,7 @@
       @handle-edit="handleEdit"
     />
     <TweetFeedList
-      v-if="!isUnavailable"
+      v-if="!tweet.isUnavailable"
       ref="replyFeed"
       :url="`/api/tweets/replies?_id=${route.params._id}&before=${new Date().toISOString()}`"
     />
