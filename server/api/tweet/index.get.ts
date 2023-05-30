@@ -57,8 +57,8 @@ export default defineEventHandler(async event => {
   }).populate<{ user: IUserInfo }>("user", "username name image bio isPrivate").exec()
 
   if (!tweet) return createError({ statusCode: 404 })
-  if (tweet.isRemoved) return { isRemoved: true }
-  if (tweet.isDeleted) return { isDeleted: true }
+  if (tweet.isRemoved) return { isUnavailable: true }
+  if (tweet.isDeleted) return { isUnavailable: true }
 
   // Initialize response object
   const response: IResponse = tweet.toObject()
@@ -68,13 +68,11 @@ export default defineEventHandler(async event => {
   const isSelfTweet = username === response.user.username
 
   // Check if user is following user who tweeted
-  if (await checkIsFollowing(username, response.user._id)) {
-    response.isFollowing = true
-  }
+  response.isFollowing = !isSelfTweet && await checkIsFollowing(username, response.user._id)
 
   // Protect private tweets
   if (!isSelfTweet && (response.isPrivate || response.user.isPrivate) && !response.isFollowing) {
-    return createError({ statusCode: 403, statusMessage: "Tweet is private" })
+    return { isUnavailable: true }
   }
 
   // Check if user liked or retweeted tweet

@@ -1,6 +1,6 @@
 <template>
   <BaseLayout>
-    <div v-if="error || tweet.isDeleted || tweet.isRemoved" class="pa-3" style="border-bottom: solid 1px grey">
+    <div v-if="tweet.isUnavailable" class="pa-3" style="border-bottom: solid 1px grey">
       <div class="rounded-lg pa-3" style="background: #0f0f0f;border: solid 1px grey">
         Tweet is unavailable
       </div>
@@ -13,7 +13,11 @@
       @reply-created="replyCreated"
       @handle-edit="handleEdit"
     />
-    <TweetFeedList ref="replyFeed" :url="`/api/tweets/replies?_id=${route.params._id}&before=${new Date().toISOString()}`" />
+    <TweetFeedList
+      v-if="!isUnavailable"
+      ref="replyFeed"
+      :url="`/api/tweets/replies?_id=${route.params._id}&before=${new Date().toISOString()}`"
+    />
   </BaseLayout>
 </template>
 

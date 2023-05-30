@@ -1,7 +1,7 @@
 <template>
   <div v-if="pending"><v-progress-circular indeterminate></v-progress-circular></div>
-  <div v-else-if="tweet.isPrivate" class="quote rounded-lg w-100 px-2 py-1 mt-1">
-    Quoted tweet is private
+  <div v-else-if="tweet.isUnavailable" class="quote rounded-lg w-100 px-2 py-1 mt-1">
+    Tweet is unavailable
   </div>
   <div
     v-else
