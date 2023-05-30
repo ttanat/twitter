@@ -7,6 +7,12 @@
           {{ isBookmarksPath ? "Unbookmark" : "Bookmark" }}
         </v-list-item-title>
       </v-list-item>
+      <v-list-item @click="copyLink">
+        <v-list-item-title>
+          <v-icon icon="mdi-link-variant"></v-icon>
+          Copy link
+        </v-list-item-title>
+      </v-list-item>
     </v-list>
   </v-menu>
   <v-snackbar v-model="snackbar" :timeout="3000" :color="snackbarColor" rounded="pill">{{ snackbarMessage }}</v-snackbar>
@@ -38,5 +44,18 @@ async function bookmark() {
     snackbarColor.value = "red"
   }
   snackbar.value = true
+}
+
+async function copyLink() {
+  const link = `${window.location.origin}/status/${props.tweet_id}`
+  navigator.clipboard.writeText(link).then(() => {
+    snackbarMessage.value = "Copied!"
+    snackbarColor.value = "success"
+  }, (err) => {
+    snackbarMessage.value = "Oops, something went wrong."
+    snackbarColor.value = "red"
+  }).finally(() => {
+    snackbar.value = true
+  })
 }
 </script>
