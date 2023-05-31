@@ -8,6 +8,9 @@
     @handle-retweet="handleRetweet"
     @handle-like="handleLike"
   />
+  <div v-show="url !== null" id="loading" class="pa-5" style="text-align: center">
+    <v-progress-circular indeterminate></v-progress-circular>
+  </div>
 </template>
 
 <script setup>
@@ -21,16 +24,30 @@ const props = defineProps({
 const url = ref(props.url)
 const tweets = ref([])
 
-// First load
-nextTick(() => {
-  getTweets()
+const io = ref(null)
+
+onMounted(() => {
+  io.value = new IntersectionObserver((entries, observer) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting && !!url.value) {
+        getTweets()
+      } else if (url.value === null) {
+        observer.unobserve(entry.target)
+      }
+    })
+  })
+
+  io.value.observe(document.querySelector("#loading"))
 })
 
 async function getTweets() {
   if (!url.value) return
-  const { data } = await useApiFetch(url.value)
+  // Use tmp and set url to <empty string> incase getTweets() is called multiple times
+  const tmp = url.value
+  url.value = ""
+  const { data } = await useApiFetch(tmp)
   tweets.value.push(...data.value.results)
-  url.value = data.value.next
+  url.value = data.value.next ?? null
 }
 
 function handleRetweet(_id) {
