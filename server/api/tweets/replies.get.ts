@@ -21,7 +21,7 @@ export default defineEventHandler(async event => {
 
   // Get current user
   const username = event.context.user?.username
-  const user = username ? await User.findOne({ username }, { following: 1 }).collation(ci).exec() : null
+  const user = username ? await User.findOne({ username }, { _id: 1, following: 1 }).collation(ci).exec() : null
 
   if (parent.isPrivate) {
     if (!user) {
@@ -36,7 +36,7 @@ export default defineEventHandler(async event => {
   // If signed in, tweet has to be public or user's own tweet or user has to follow tweeter
   // If not, then only allowed if reply is public
   const query = user ? { $or : [{ isPrivate: false }, { user: user._id }, { user: { $in: user.following }}]}
-                       : { isPrivate: false }
+                     : { isPrivate: false }
 
   const replies = await Tweet
     .find({
@@ -59,7 +59,7 @@ export default defineEventHandler(async event => {
   }
 
   return {
-    results: await checkLikesAndRetweets(event, replies),
+    results: await checkLikesAndRetweets(event, replies, { userId: user?._id }),
     next,
   }
 })

@@ -6,8 +6,13 @@ import { Types } from "mongoose"
 import { checkUsername } from "~~/server/utils/query"
 
 type TweetIds = string[] | Types.ObjectId[]
+type UserId = Types.ObjectId | string
+interface IOptions {
+  userId?: UserId | null
+  allLiked?: boolean
+}
 
-export const checkLikesAndRetweets = async (event: H3Event, tweets: any[], allLiked: boolean = false): Promise<any[]> => {
+export const checkLikesAndRetweets = async (event: H3Event, tweets: any[], options: IOptions = {}): Promise<any[]> => {
   /*
     Tweets: array of documents or array of objects
     Depends on the route this function is called from
@@ -27,10 +32,18 @@ export const checkLikesAndRetweets = async (event: H3Event, tweets: any[], allLi
   // Get _id's of tweets
   const tweet_ids = tweets.map(tweet => tweet._id)
 
+  // Get user's _id
+  let user_id : UserId | null | undefined = options.userId
+  if (!user_id) {
+    const user = await User.findOne({ username }, { _id: 1 }).collation(ci).exec()
+    if (!user) return tweets
+    user_id = user._id
+  }
+
   // Get likes and retweets
   const [likes, retweets] = await Promise.all([
-    allLiked ? new Set(tweet_ids.map(id => id.toString())) : checkLikes(tweet_ids, username),
-    checkRetweets(tweet_ids, username),
+    options.allLiked ? new Set(tweet_ids.map(id => id.toString())) : checkLikes(tweet_ids, user_id),
+    checkRetweets(tweet_ids, user_id),
   ])
 
   // Add user likes and retweets to tweets
@@ -74,14 +87,10 @@ export const checkLikesAndRetweets = async (event: H3Event, tweets: any[], allLi
   }
 */
 
-const checkLikes = async (tweet_ids: TweetIds, username: string): Promise<ReadonlySet<string>> => {
-  // Get user for their _id
-  const user = await User.findOne({ username }, { _id: 1 }).collation(ci).exec()
-  if (!user) return new Set()
-
+const checkLikes = async (tweet_ids: TweetIds, user_id: UserId): Promise<ReadonlySet<string>> => {
   // Check if user liked those tweets
   const likeObjs = await Like.find(
-    { user: user._id, targetTweet: { $in: tweet_ids }},
+    { user: user_id, targetTweet: { $in: tweet_ids }},
     { targetTweet: 1 },
     { limit: tweet_ids.length },
   ).exec()
@@ -93,16 +102,10 @@ const checkLikes = async (tweet_ids: TweetIds, username: string): Promise<Readon
   return new Set(likes)
 }
 
-const checkRetweets = async (tweet_ids: TweetIds, username: string): Promise<ReadonlySet<string>> => {
-  // Get user
-  const user = await User.findOne({ username }, { _id: 1 }).collation(ci).exec()
-  if (!user) {
-    return new Set()
-  }
-
+const checkRetweets = async (tweet_ids: TweetIds, user_id: UserId): Promise<ReadonlySet<string>> => {
   // Check if user retweeted those tweets
   const retweetObjs = await Tweet.find(
-    { user: user._id, retweet: { $in: tweet_ids }},
+    { user: user_id, retweet: { $in: tweet_ids }},
     { _id: 0, retweet: 1 },
     { limit: 20 },
   ).exec()

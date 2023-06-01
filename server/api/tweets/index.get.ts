@@ -58,7 +58,7 @@ export default defineEventHandler(async event => {
     .exec()
 
   let results = parseRetweets(tweets)
-  results = await checkLikesAndRetweets(event, results)
+  results = await checkLikesAndRetweets(event, results, { userId: user._id })
 
   return {
     results,
