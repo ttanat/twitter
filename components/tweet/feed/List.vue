@@ -8,7 +8,7 @@
     @handle-retweet="handleRetweet"
     @handle-like="handleLike"
   />
-  <div v-show="url !== null" id="loading" class="pa-5" style="text-align: center">
+  <div v-show="url !== null" ref="loadingDiv" class="loading pa-5" style="text-align: center">
     <v-progress-circular indeterminate></v-progress-circular>
   </div>
 </template>
@@ -25,6 +25,7 @@ const url = ref(props.url)
 const tweets = ref([])
 
 const io = ref(null)
+const loadingDiv = ref(null)
 
 onMounted(() => {
   io.value = new IntersectionObserver((entries, observer) => {
@@ -37,7 +38,7 @@ onMounted(() => {
     })
   })
 
-  io.value.observe(document.querySelector("#loading"))
+  io.value.observe(loadingDiv.value)
 })
 
 async function getTweets() {
