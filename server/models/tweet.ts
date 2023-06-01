@@ -107,7 +107,10 @@ tweetSchema.pre("save", function(next) {
   next()
 })
 
-tweetSchema.index({ user: 1, retweet: 1 })
-tweetSchema.index({ content: "text" })
+tweetSchema.index({ user: 1, retweet: 1 }) // For checkRetweets in utils
+tweetSchema.index({ user: 1, timestamp: -1 }) // For /api/tweets/user and /api/tweets/user-replies
+tweetSchema.index({ timestamp: -1, user: 1 }) // For /api/tweets
+tweetSchema.index({ parent: 1, timestamp: -1 }) // For /api/tweets/replies
+tweetSchema.index({ content: "text" }) // For /api/tweets/search
 
 export default model<ITweet>("Tweet", tweetSchema)
