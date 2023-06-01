@@ -1,26 +1,27 @@
 import Tweet from "~~/server/models/tweet"
 import User, { ci } from "~~/server/models/user"
-import { checkPageNumber, checkUsername } from "~~/server/utils/query"
+import { checkDateString, checkPageNumber, checkUsername } from "~~/server/utils/query"
 import { checkLikesAndRetweets, getNextUrl } from "~~/server/utils/feed"
+import Like from "~~/server/models/like"
+import { checkIsFollowing } from "~~/server/utils/following"
 
 export default defineEventHandler(async event => {
-  const { username } = getQuery(event)
-  if (!checkUsername(username)) {
+  const { username, before } = getQuery(event)
+  if (!checkUsername(username) || !checkDateString(before)) {
     return createError({ statusCode: 400 })
   }
-  // Get page number
-  const page = parseInt(getQuery(event).page as string)
-  if (!checkPageNumber(page)) {
-    return createError({ statusCode: 400 })
-  }
-  // Get slice for likes array
-  const slice = [page * -20, 20]
+
+  const currentUsername = event.context.user?.username
+  const currentUser = currentUsername ? await User.findOne(
+    { username: currentUsername },
+    { _id: 1, following: 1 },
+  ).collation(ci).exec() : null
+  const currentUserFollowing = new Set(currentUser?.following.map(userId => userId.toString()))
 
   const user = await User.findOne({ username }, {
     _id: 1,
-    username: 1, // Select random field to prevent mongoose from selecting every field
-    likes: { $slice: ["$likes", ...slice] },
     following: 1,
+    isPrivate: 1,
     isSuspended: 1,
     isDeleted: 1,
   })
@@ -31,26 +32,55 @@ export default defineEventHandler(async event => {
     return createError({ statusCode: 400 })
   }
 
-  const tweets = await Tweet
-    .find({
-      _id: { $in: user.likes },
-      // Tweet has to be public or user's own tweet or user has to follow tweeter
-      $or: [{ isPrivate: false }, { user: user._id }, { user: { $in: user.following }}],
-      isDeleted: false,
-      isRemoved: false,
-    },
-      null, { limit: 20 })
-    .populate("user", "-_id username name image")
-    .exec()
-
-  let next = null
-  if (tweets.length === 20) {
-    next = getNextUrl(event, { page: (page + 1).toString() })
+  // Check if current user can see user's likes
+  if (user.isPrivate) {
+    if (!currentUser) {
+      return createError({ statusCode: 403 })
+    }
+    if (user._id !== currentUser?._id) {
+      if (!(await checkIsFollowing(currentUsername, user._id))) {
+        return createError({ statusCode: 403 })
+      }
+    }
   }
 
-  // const tweetsWithIsLiked = event.context.user?.username === username
-  //   ? tweets.map(tweet => ({ ...tweet.toObject(), isLiked: true }))
-  //   : await checkLikesAndRetweets(event, tweets)
+  // Get likes
+  const likes = await Like.find(
+    { user: user._id, timestamp: { $lt: before }},
+    { targetTweet: 1, timestamp: 1 },
+    { limit: 20, sort: { timestamp: -1 }},
+  )
+  .populate({
+    path: "targetTweet",
+    populate: {
+      path: "user",
+      select: "_id username name image"
+    }
+  })
+  .exec()
+
+  // Get next URL
+  let next = null
+  if (likes.length === 20) {
+    next = getNextUrl(event, {
+      before: likes[likes.length - 1].timestamp.toISOString()
+    })
+  }
+
+  // Convert list of likes to list of tweets
+  let tweets: any[] = likes.map(like => like.targetTweet)
+
+  // Filter out certain tweets
+  tweets = tweets.filter(tweet => {
+    if (tweet.isDeleted || tweet.isRemoved) return false
+    if (!tweet.isPrivate) return true
+    if (tweet.user.username === currentUsername) return true
+    if (tweet.isPrivate) {
+      if (!currentUser) return false
+      if (!currentUserFollowing.has(tweet.user._id.toString())) return false
+    }
+    return true
+  })
 
   return {
     results: await checkLikesAndRetweets(event, tweets, true),

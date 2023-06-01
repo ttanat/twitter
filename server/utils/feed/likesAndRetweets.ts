@@ -1,3 +1,4 @@
+import Like from "~~/server/models/like"
 import Tweet from "~~/server/models/tweet"
 import User, { ci } from "~~/server/models/user"
 import { H3Event } from "h3"
@@ -50,22 +51,43 @@ export const checkLikesAndRetweets = async (event: H3Event, tweets: any[], allLi
   return tweets
 }
 
+/*
+  const checkLikes = async (tweet_ids: TweetIds, username: string): Promise<ReadonlySet<string>> => {
+    // Check if user liked those tweets
+    const likeObjs = await User.aggregate([
+      // Find user
+      { $match: { username }},
+      // Unwind likes
+      { $unwind: { path: "$likes" }},
+      // Get only likes field
+      { $project: { _id: 0, likes: 1 }},
+      // Get likes that are in tweet_ids
+      { $match: { likes: { $in: tweet_ids }}}
+      // Use collation for finding user
+    ], { collation: ci }).exec()
+
+    // Flatten array
+    const likes = likeObjs.map(obj => obj.likes.toString())
+
+    // Add _id's to set
+    return new Set(likes)
+  }
+*/
+
 const checkLikes = async (tweet_ids: TweetIds, username: string): Promise<ReadonlySet<string>> => {
+  // Get user for their _id
+  const user = await User.findOne({ username }, { _id: 1 }).collation(ci).exec()
+  if (!user) return new Set()
+
   // Check if user liked those tweets
-  const likeObjs = await User.aggregate([
-    // Find user
-    { $match: { username }},
-    // Unwind likes
-    { $unwind: { path: "$likes" }},
-    // Get only likes field
-    { $project: { _id: 0, likes: 1 }},
-    // Get likes that are in tweet_ids
-    { $match: { likes: { $in: tweet_ids }}}
-    // Use collation for finding user
-  ], { collation: ci }).exec()
+  const likeObjs = await Like.find(
+    { user: user._id, targetTweet: { $in: tweet_ids }},
+    { targetTweet: 1 },
+    { limit: tweet_ids.length },
+  ).exec()
 
   // Flatten array
-  const likes = likeObjs.map(obj => obj.likes.toString())
+  const likes = likeObjs.map(obj => obj.targetTweet.toString())
 
   // Add _id's to set
   return new Set(likes)
@@ -113,14 +135,25 @@ export const checkLikeAndRetweet = async (event: H3Event, _id: TweetId): Promise
   return { isLiked, isRetweeted }
 }
 
-const checkIsLiked = async (_id: TweetId, username: string): Promise<boolean> => {
-  // If user liked tweet, will get array of length 1, e.g. { likes: [ObjectId("abc")] }
-  const userLikes = await User.findOne(
-    { username },
-    { _id: 0, likes: { $elemMatch: { $eq: _id }},
-  }).collation(ci).exec()
+/*
+  const checkIsLiked = async (_id: TweetId, username: string): Promise<boolean> => {
+    // If user liked tweet, will get array of length 1, e.g. { likes: [ObjectId("abc")] }
+    const userLikes = await User.findOne(
+      { username },
+      { _id: 0, likes: { $elemMatch: { $eq: _id }},
+    }).collation(ci).exec()
 
-  return userLikes?.likes.length === 1
+    return userLikes?.likes.length === 1
+  }
+*/
+
+const checkIsLiked = async (_id: TweetId, username: string): Promise<boolean> => {
+  const user = await User.findOne({ username }, { _id: 1 }).exec()
+  if (!user) return false
+
+  const isLiked = await Like.findOne({ user: user._id, targetTweet: _id }).exec()
+
+  return !!isLiked
 }
 
 const checkIsRetweeted = async (_id: TweetId, username: string): Promise<boolean> => {
