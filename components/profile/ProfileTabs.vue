@@ -17,7 +17,7 @@
       <TweetFeedList />
     </v-window-item>
     <v-window-item value="4">
-      <TweetFeedList :url="`/api/tweets/likes?username=${username}&page=1`" />
+      <TweetFeedList :url="`/api/tweets/likes?username=${username}&before=${new Date().toISOString()}`" />
     </v-window-item>
   </v-window>
 </template>
