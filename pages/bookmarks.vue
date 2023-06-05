@@ -1,6 +1,6 @@
 <template>
   <BaseLayout v-if="$auth.loggedIn()">
-    <TweetFeedList :url="`/api/tweets/bookmarks?username=${$auth.getUsername()}&page=1`" />
+    <TweetFeedList :url="`/api/tweets/bookmarks?username=${$auth.getUsername()}&before=${new Date().toISOString()}`" />
   </BaseLayout>
 </template>
 

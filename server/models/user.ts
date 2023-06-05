@@ -16,8 +16,6 @@ interface IUser {
   numFollowers: number
   followRequestsSent: Types.Array<Types.ObjectId>
   followRequestsReceived: Types.Array<Types.ObjectId>
-  likes: Types.Array<Types.ObjectId>
-  bookmarks: Types.Array<Types.ObjectId>
   pollsVoted: Types.Array<{
     _id: Types.ObjectId
     choice: string
@@ -65,8 +63,6 @@ const userSchema = new Schema<IUser>({
   followRequestsSent: [{ type: Schema.Types.ObjectId }],
   followRequestsReceived: [{ type: Schema.Types.ObjectId }],
 
-  likes: [{ type: Schema.Types.ObjectId, ref: "Tweet" }],
-  bookmarks: [{ type: Schema.Types.ObjectId, ref: "Tweet" }],
   pollsVoted: [{
     _id: { type: Schema.Types.ObjectId, required: true, ref: "Tweet" },
     choice: { type: String, required: true, maxlength: 25 },

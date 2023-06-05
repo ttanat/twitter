@@ -1,48 +1,58 @@
-import Tweet from "~~/server/models/tweet"
+import Bookmark from "~~/server/models/bookmark"
 import User, { ci } from "~~/server/models/user"
-import { checkPageNumber, checkUsername } from "~~/server/utils/query"
+import { checkDateString, checkUsername } from "~~/server/utils/query"
 import { checkLikesAndRetweets, getNextUrl } from "~~/server/utils/feed"
 
 export default defineEventHandler(async event => {
   const username = event.context.user?.username
-  if (!checkUsername(username)) {
+  const { before } = getQuery(event)
+  if (!checkUsername(username) || !checkDateString(before)) {
     return createError({ statusCode: 400 })
   }
-  // Get page number
-  const page = parseInt(getQuery(event).page as string)
-  if (!checkPageNumber(page)) {
-    return createError({ statusCode: 400 })
-  }
-  // Get slice for bookmarks array
-  const slice = [page * -20, 20]
 
-  const user = await User.findOne({ username }, {
-    _id: 1,
-    username: 1, // Select random field to prevent mongoose from selecting every field
-    bookmarks: { $slice: ["$bookmarks", ...slice] },
-    following: 1,
+  const user = await User.findOne({ username }, { _id: 1, following: 1 }).collation(ci).exec()
+  if (!user) {
+    return createError({ statusCode: 400 })
+  }
+  const userFollowing = new Set(user.following.map(userId => userId.toString()))
+
+  // Get bookmarks
+  const bookmarks = await Bookmark.find(
+    { user: user._id, timestamp: { $lt: before }},
+    { targetTweet: 1, timestamp: 1 },
+    { limit: 20, sort: { timestamp: -1 }},
+  )
+  .populate({
+    path: "targetTweet",
+    populate: {
+      path: "user",
+      select: "_id username name image"
+    }
   })
-    .collation(ci)
-    .exec()
+  .exec()
 
-  if (!user) return createError({ statusCode: 400 })
-
-  const tweets = await Tweet
-    .find({
-      _id: { $in: user.bookmarks },
-      // Tweet has to be public or user's own tweet or user has to follow tweeter
-      $or: [{ isPrivate: false }, { user: user._id }, { user: { $in: user.following }}],
-      isDeleted: false,
-      isRemoved: false,
-    },
-      null, { limit: 20 })
-    .populate("user", "-_id username name image")
-    .exec()
-
+  // Get next URL
   let next = null
-  if (tweets.length === 20) {
-    next = getNextUrl(event, { page: (page + 1).toString() })
+  if (bookmarks.length === 20) {
+    next = getNextUrl(event, {
+      before: bookmarks[bookmarks.length - 1].timestamp.toISOString()
+    })
   }
+
+  // Convert list of bookmarks to list of tweets
+  let tweets: any[] = bookmarks.map(bookmark => bookmark.targetTweet)
+
+  // Filter out certain tweets
+  tweets = tweets.filter(tweet => {
+    if (tweet.isDeleted || tweet.isRemoved) return false
+    if (!tweet.isPrivate) return true
+    if (tweet.user.username === username) return true
+    if (tweet.isPrivate) {
+      if (!user) return false
+      if (!userFollowing.has(tweet.user._id.toString())) return false
+    }
+    return true
+  })
 
   return {
     results: await checkLikesAndRetweets(event, tweets),
