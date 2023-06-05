@@ -27,6 +27,10 @@
         </template>
 
         <TweetFeedItemTopRow :tweet="tweet" />
+        <div v-if="tweet.replyingTo && !route.path.startsWith('/status/')">
+          <span class="text-grey-darken-1">Replying to </span>
+          <NuxtLink :to="'/@'+tweet.replyingTo" class="text-primary">@{{ tweet.replyingTo }}</NuxtLink>
+        </div>
         <TweetContent :content="tweet.content" />
         <!-- Quote tweet -->
         <TweetQuoted v-if="tweet.quote" :quote_id="tweet.quote" :link="true" />
@@ -49,6 +53,8 @@ const props = defineProps({
   tweet: Object
 })
 const emit = defineEmits(["handleRetweet", "handleLike"])
+
+const route = useRoute()
 
 function openTweet(e) {
   /* Don't navigate to status page if element clicked has .no-navigate class */

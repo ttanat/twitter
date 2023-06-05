@@ -43,6 +43,7 @@ interface ITweet {
   numBookmarks: number
   ancestors?: Types.Array<Types.ObjectId>
   parent?: Types.ObjectId
+  replyingTo?: string
   isPrivate?: boolean
   isRemoved?: boolean
   isDeleted?: boolean
@@ -72,6 +73,7 @@ const tweetSchema = new Schema<ITweet>({
 
   ancestors: [{ type: Schema.Types.ObjectId, ref: "Tweet" }],
   parent: { type: Schema.Types.ObjectId, ref: "Tweet" },
+  replyingTo: String,
 
   isPrivate: Boolean,
   isRemoved: { type: Boolean, default: false },

@@ -37,8 +37,8 @@ export default defineEventHandler(async event => {
   // Get tweet/reply that user is replying to
   const parent = await Tweet.findOne(
     { _id: replyTo },
-    { _id: 1, ancestors: 1, isPrivate: 1, user: 1, isRemoved: 1, isDeleted: 1 },
-  ).exec()
+    { _id: 1, ancestors: 1, isPrivate: 1, isRemoved: 1, isDeleted: 1 },
+  ).populate("user", "_id username").exec()
 
   if (!parent || parent.isRemoved || parent.isDeleted) {
     return createError({ statusCode: 404 })
@@ -47,7 +47,7 @@ export default defineEventHandler(async event => {
   // If parent is private, check if user can reply
   if (parent.isPrivate) {
     // Can reply if user is replying to self or user is following tweeter
-    const canReply = user._id === parent.user || await checkIsFollowing(username, parent.user)
+    const canReply = user._id === parent.user._id || await checkIsFollowing(username, parent.user._id)
     if (!canReply) {
       return createError({ statusCode: 400 })
     }
@@ -62,6 +62,7 @@ export default defineEventHandler(async event => {
     mentions: getMentions(parsedContent),
     ancestors: parent.ancestors?.length ? [...parent.ancestors, parent._id] : [parent._id],
     parent: parent._id,
+    replyingTo: parent.user.username,
     isPrivate: user.isPrivate,
   })
 
