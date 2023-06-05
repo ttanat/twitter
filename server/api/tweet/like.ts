@@ -47,11 +47,19 @@ export default defineEventHandler(async event => {
 
   // Get user who is liking tweet and tweet being liked
   const [user, tweet] = await Promise.all([
-    User.findOne({ username }, { _id: 1 }).collation(ci).exec(),
-    Tweet.findOne({ _id }, { _id: 1 }).exec(),
+    User.findOne({ username }, { _id: 1, isSuspended: 1, isDeleted: 1, following: 1 }).collation(ci).exec(),
+    Tweet.findOne({ _id }, { _id: 1, isRemoved: 1, isDeleted: 1, isPrivate: 1, user: 1 }).exec(),
   ])
-  if (!user || !tweet) {
+  if (!user || user.isSuspended || user.isDeleted ||
+      !tweet || tweet.isRemoved || tweet.isDeleted) {
     return createError({ statusCode: 400 })
+  }
+
+  // If private, check if user can interact with tweet
+  if (tweet.isPrivate) {
+    if (!user.following.includes(tweet.user)) {
+      return createError({ statusCode: 403 })
+    }
   }
 
   if (isPostMethod) {
