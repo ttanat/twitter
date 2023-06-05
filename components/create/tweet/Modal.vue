@@ -223,7 +223,10 @@ async function tweet() {
   let response
   loading.value = true
   if (isThread.value) {
-    // TODO
+    response = await useApiFetch("/api/tweet/thread", {
+      method: "POST",
+      body: { thread: thread.value },
+    })
   } else {
     // Avoid errors with proxies and reactive values
     const tmp = JSON.parse(JSON.stringify(thread.value[0]))
