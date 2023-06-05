@@ -46,7 +46,7 @@ const { data: tweet, pending } = await useApiFetch("/api/tweet/quote", { query: 
 
 function openTweet() {
   if (props.link) {
-    navigateTo(`/status/${tweet._id}`)
+    navigateTo(`/status/${props.quote_id}`)
   }
 }
 </script>
