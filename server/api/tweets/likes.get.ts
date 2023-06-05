@@ -1,8 +1,7 @@
-import Tweet from "~~/server/models/tweet"
-import User, { ci } from "~~/server/models/user"
-import { checkDateString, checkPageNumber, checkUsername } from "~~/server/utils/query"
-import { checkLikesAndRetweets, getNextUrl } from "~~/server/utils/feed"
 import Like from "~~/server/models/like"
+import User, { ci } from "~~/server/models/user"
+import { checkDateString, checkUsername } from "~~/server/utils/query"
+import { checkLikesAndRetweets, getNextUrl } from "~~/server/utils/feed"
 import { checkIsFollowing } from "~~/server/utils/following"
 
 export default defineEventHandler(async event => {
